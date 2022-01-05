@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>TASK</title>
+    <meta name="description" content="AJAX/PHP/CURL/JSON example" />
+    <meta name="author" content="Paddy Evans" />
+    <link rel="stylesheet" type="text/css" href="libs/css/style.css" />
+  </head>
+  <header><h1>Country Info</h1></header>
+  <body>
+    <div class="flex-container border">
+      <!-- START OF PARAMETERS CONTROL -->
+      <div id="row-one" class="row">
+        <div class="left border">
+          <h3>API ONE</h3>
+        </div>
+        <div class="center border">
+          <h3>ADJUSTABLE PARAMETERS</h3>
+          <select id="selCountry">
+            <option value="GB">Great Britain</option>
+            <option value="FR">France</option>
+            <option value="DE">Germany</option>
+            <option value="US">USA</option>
+          </select>
+          <select id="selLanguage">
+            <option value="en">English</option>
+            <option value="fr">Francais</option>
+            <option value="de">Deutsche</option>
+          </select>
+        </div>
+        <div class="right border">
+          <h3>SUBMIT</h3>
+          <button id="btnRun">Run</button>
+        </div>
+      </div>
+      <div id="row-one" class="row">
+        <div class="left border">
+          <h3>API TWO</h3>
+        </div>
+        <div class="center border"><h3>ADJUSTABLE PARAMETERS</h3></div>
+        <div class="right border"><h3>SUBMIT</h3></div>
+      </div>
+      <div id="row-one" class="row">
+        <div class="left border">
+          <h3>API THREE</h3>
+        </div>
+        <div class="center border"><h3>ADJUSTABLE PARAMETERS</h3></div>
+        <div class="right border"><h3>SUBMIT</h3></div>
+      </div>
+      <!-- END OF PARAMETER SELECTION -->
+      <!-- START OF RESULTS SECTION -->
+      <div class="row border">
+        <div class="results-left border">
+          <table>
+            <tr>
+              <td align="right">Continent:</td>
+              <td id="txtContinent"></td>
+            </tr>
+
+            <tr>
+              <td align="right">Capital:</td>
+              <td id="txtCapital"></td>
+            </tr>
+
+            <tr>
+              <td align="right">Languages:</td>
+              <td id="txtLanguages"></td>
+            </tr>
+
+            <tr>
+              <td align="right">Population:</td>
+              <td id="txtPopulation"></td>
+            </tr>
+
+            <tr>
+              <td align="right">Area (km<sup>2</sup>):</td>
+              <td id="txtArea"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="results-center border">Hello</div>
+        <div class="results-right border">Hello</div>
+      </div>
+    </div>
+    <script
+      type="application/javascript"
+      src="libs/js/jquery-2.2.3.min.js"
+    ></script>
+    <script type="application/javascript" src="libs/js/script.js"></script>
+  </body>
+</html>
