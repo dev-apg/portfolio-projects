@@ -1,89 +1,159 @@
 <!DOCTYPE html>
-
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-
-    <title>TASK</title>
+    <title>API Demo</title>
     <meta name="description" content="AJAX/PHP/CURL/JSON example" />
-    <meta name="author" content="Paddy Evans" />
+    <meta name="author" content="apglynn" />
     <link rel="stylesheet" type="text/css" href="libs/css/style.css" />
   </head>
-  <header><h1>Country Info</h1></header>
+  <header><h1>Demonstrating APIs from geonames.org</h1></header>
   <body>
     <div class="flex-container border">
-      <!-- START OF PARAMETERS CONTROL -->
-      <div id="row-one" class="row">
+      <div class="row">
         <div class="left border">
-          <h3>API ONE</h3>
+          <h3>API Name</h3>
         </div>
         <div class="center border">
-          <h3>ADJUSTABLE PARAMETERS</h3>
-          <select id="selCountry">
-            <option value="GB">Great Britain</option>
-            <option value="FR">France</option>
-            <option value="DE">Germany</option>
-            <option value="US">USA</option>
-          </select>
-          <select id="selLanguage">
-            <option value="en">English</option>
-            <option value="fr">Francais</option>
-            <option value="de">Deutsche</option>
-          </select>
+          <h3>API Description</h3>
         </div>
-        <div class="right border">
-          <h3>SUBMIT</h3>
-          <button id="btnRun">Run</button>
-        </div>
+        <div class="right border"></div>
       </div>
       <div id="row-one" class="row">
         <div class="left border">
-          <h3>API TWO</h3>
+          <h3>ISO country code from coordinates</h3>
         </div>
-        <div class="center border"><h3>ADJUSTABLE PARAMETERS</h3></div>
-        <div class="right border"><h3>SUBMIT</h3></div>
+        <div class="center border">
+          <p>
+            The first API will update when co-ordinates are set within a
+            country. The default coordinates below are set to London.
+          </p>
+          <p>Here are some more suggestions to try:</p>
+          <ul>
+            <li>Ankara: (39, 32)</li>
+            <li>Baghdad:(33, 44)</li>
+            <li>Berlin: (52, 13)</li>
+            <li>Cape Town: (-33, 18)</li>
+          </ul>
+          <label for="lat">latitude: </label>
+          <input id="lat" type="number" value="51.5" />
+          <label for="lng">longitude: </label>
+          <input id="lng" type="number" value="0.1" />
+        </div>
+        <div class="right border"><button id="btnRun1">Submit</button></div>
       </div>
-      <div id="row-one" class="row">
+      <div id="row-three" class="row">
         <div class="left border">
-          <h3>API THREE</h3>
+          <h3>Weather from coordinates</h3>
         </div>
-        <div class="center border"><h3>ADJUSTABLE PARAMETERS</h3></div>
-        <div class="right border"><h3>SUBMIT</h3></div>
+        <div class="center border">
+          <p>
+            This API will update when the coordinates are set within a monitored
+            weather system such as a country. Here are some more suggestions for
+            you to try but the above suggestions work fine here too.
+          </p>
+          <ul>
+            <li>Delhi: (28, 77)</li>
+            <li>Madrid: (40, 4)</li>
+            <li>New York: (41, -74)</li>
+            <li>Paris: (48, 2)</li>
+          </ul>
+          <label for="api-2-lat">latitude: </label>
+          <input id="api-2-lat" type="number" value="51.5" />
+          <label for="api-2-lng">longitude: </label>
+          <input id="api-2-lng" type="number" value="0.1" />
+        </div>
+        <div class="right border"><button id="btnRun2">Submit</button></div>
+      </div>
+      <div id="row-four" class="row">
+        <div class="left border">
+          <h3>Hierarchies</h3>
+        </div>
+        <div class="center border">
+          <p>
+            Finally, the last API we are demonstrating will return places higher
+            up in the hierarchy of a named place.
+          </p>
+          <p>
+            If a city is selected below the results will display the city itself
+            as well as the country and continent of which it is a geographical
+            part of.
+          </p>
+          <select name="geonameId" id="api-3-select-country">
+            <option value="5128581" selected>New York</option>
+            <option value="1273294">Delhi</option>
+            <option value="2618425">Copenhagen</option>
+            <option value="3369157">Cape Town</option>
+            <option value="1650534">Bali</option>
+          </select>
+        </div>
+        <div class="right border"><button id="btnRun3">Submit</button></div>
       </div>
       <!-- END OF PARAMETER SELECTION -->
       <!-- START OF RESULTS SECTION -->
+      <h3>Results</h3>
       <div class="row border">
-        <div class="results-left border">
+        <div class="results-one border3">
+          <h3>ISO results</h3>
           <table>
             <tr>
-              <td align="right">Continent:</td>
-              <td id="txtContinent"></td>
+              <td>Country:</td>
+              <td id="txtCountryName"></td>
             </tr>
-
             <tr>
-              <td align="right">Capital:</td>
-              <td id="txtCapital"></td>
+              <td class="paramater">Code:</td>
+              <td id="txtCountryCode"></td>
             </tr>
-
             <tr>
-              <td align="right">Languages:</td>
-              <td id="txtLanguages"></td>
-            </tr>
-
-            <tr>
-              <td align="right">Population:</td>
-              <td id="txtPopulation"></td>
-            </tr>
-
-            <tr>
-              <td align="right">Area (km<sup>2</sup>):</td>
-              <td id="txtArea"></td>
+              <!-- <td align="right" class="paramater">Lang:</td> -->
+              <!-- <td id="txtLang"></td> -->
             </tr>
           </table>
         </div>
-        <div class="results-center border">Hello</div>
-        <div class="results-right border">Hello</div>
+        <div class="results-two border">
+          <h3>Weather</h3>
+          <table>
+            <tr>
+              <td>Country:</td>
+              <td id="api-2-countryCode"></td>
+            </tr>
+            <tr>
+              <td>Temperature:</td>
+              <td id="api-2-temperature"></td>
+            </tr>
+            <tr>
+              <td>Humidity:</td>
+              <td id="api-2-humidity"></td>
+            </tr>
+            <tr>
+              <td>Windspeed:</td>
+              <td id="api-2-windSpeed"></td>
+            </tr>
+            <tr>
+              <td>Clouds:</td>
+              <td id="api-2-clouds"></td>
+            </tr>
+          </table>
+        </div>
+        <div class="results-three border">
+          <h3>Hierarchies</h3>
+          <table>
+            <tr>
+              <td>Continent:</td>
+              <td id="api-3-continent"></td>
+            </tr>
+            <tr>
+              <td>Country:</td>
+              <td id="api-3-country"></td>
+            </tr>
+            <tr>
+              <td>City:</td>
+              <td id="api-3-city"></td>
+            </tr>
+          </table>
+        </div>
       </div>
+      <!-- END OF RESULTS SECTION -->
     </div>
     <script
       type="application/javascript"

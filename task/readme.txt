@@ -1,0 +1,20 @@
+Suggested co-ordinates:
+Ankara: 39.9334° N, 32.8597° E
+Baghdad: 33.3152° N, 44.3661° E (33, 44)
+Berlin: 52.5200° N, 13.4050° E (52, 13)
+Cape Town: 33.9249° S, 18.4241° E (-33, 18)
+Delhi: 28.7041° N, 77.1025° E (28, 77)
+London: 51.5072° N, 0.1276° W (51, 0)
+New York: 40.7128° N, 74.0060° W (41, -74)
+Paris: 48.8566° N, 2.3522° E (48, 2)
+Madrid: 40.4168° N, 3.7038° W (40.4, 3.7)
+
+Ankara: (39, 32)
+Baghdad: (33, 44)
+Berlin: (52, 13)
+Cape Town: (-33, 18)
+Delhi: (28, 77)
+London: (51, 0)
+Madrid: (40, 4)  
+New York: (41, -74)
+Paris: (48, 2)
