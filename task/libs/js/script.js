@@ -1,3 +1,13 @@
+$(window).on("load", function () {
+  if ($("#preloader").length) {
+    $("#preloader")
+      .delay(1000)
+      .fadeOut("slow", function () {
+        $(this).remove();
+      });
+  }
+});
+
 // FIRST API - ISO COUNTRY CODE
 $("#btnRun1").click(function () {
   $.ajax({
@@ -55,7 +65,7 @@ $("#btnRun2").click(function () {
   });
 });
 
-//THIRD API - RETURNING THE COUNTRY AND CONTINENT OF A CITY
+//THIRD API - HIERARCHIES
 
 $("#btnRun3").click(function () {
   $.ajax({
