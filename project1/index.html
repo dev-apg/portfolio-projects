@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Leaflet example" />
+    <meta name="author" content="apg" />
+    <link rel="stylesheet" type="text/css" href="libs/css/style.css" />
+    <link rel="stylesheet" href="libs/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="libs/css/leaflet.css" />
+    <script src="libs/js/leaflet.js"></script>
+    <title>LEAFLET example - html file loaded</title>
+  </head>
+  <body>
+    <div id="preloader"></div>
+    <div id="map">
+      <div id="nav-container">
+      <button
+      id = "modal-button"
+        class="btn btn-info"
+        data-toggle="modal"
+        data-target="#infoModal"
+      >
+        Information
+      </button>
+      <!-- MODAL -->
+      <div class="modal" id="infoModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title lead" id="api-location-string"></h5>
+              <button class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div id="data-content">
+                <table>
+                  <caption class="lead" id="api-location-string"><caption>
+                 <tr >
+                   <td class="text-right">Country: </td>
+                    <td id="api-country"></td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">Capital: </td><td id="api-capital"></td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">Pop. size: </td >
+                    <td id="api-population"></td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">Currency: </td >
+                    <td id="api-currency"></td>
+                  </tr>
+                  <tr>
+                    <td class="text-right" id="api-exchange-currencies">Ex.Rate($)</td >
+                    <td id="api-exchange-rate"></td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">Temp: </td >
+                    <td id="api-current-weather"></td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">Forecast: </td id="api-weather-forecast">
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+             
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" data-dismiss="modal">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COUNTRY SELECT MODAL -->
+
+      <button
+      class="btn btn-secondary"
+      data-toggle="modal"
+      data-target="#selectCountryModal"
+    >
+      Change location
+    </button>
+
+    <!-- MODAL -->
+    <div class="modal" id="selectCountryModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Modal Title</h5>
+            <button class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+           <select id="select"></select>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary " data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- JS SCRIPTS -->
+    <!-- MINIFIED JQUERY -->
+    <script
+      type="application/javascript"
+      src="libs/js/jquery-2.2.3.min.js"
+    ></script>
+    <script src="libs/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="libs/js/script.js"></script>
+  </body>
+</html>
