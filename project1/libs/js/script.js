@@ -36,17 +36,17 @@ $(window).on("load", function () {
   populateSelect();
 
   //getcoordinates and data
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      //----------------declare variables-----------------------//
-      // ---------------set coordinates-------------------------//
-      store.lat = position.coords.latitude;
-      store.lon = position.coords.longitude;
-      opencageCall(store.lat, store.lon).then(() =>
-        getData(store.countryCodeISO2)
-      );
-    });
-  }
+  // if (navigator.geolocation) {
+  //   navigator.geolocation.getCurrentPosition(function (position) {
+  //----------------declare variables-----------------------//
+  // ---------------set coordinates-------------------------//
+  // store.lat = position.coords.latitude;
+  // store.lon = position.coords.longitude;
+  store.lat = 51.5;
+  store.lon = 0.1;
+  opencageCall(store.lat, store.lon).then(() => getData(store.countryCodeISO2));
+  // });
+  // }
 });
 
 //---------------------GET DATA FUNCTION------------------------------//
