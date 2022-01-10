@@ -17,6 +17,8 @@ foreach($json_data['features'] as $country_data) {
     array_push($array, $tempArray);
 }
 
+sort($array);
+
 //encode array for return
 $encoded = json_encode($array);
 
