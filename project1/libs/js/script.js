@@ -35,32 +35,30 @@ $(window).on("load", function () {
   //populate select
   populateSelect();
 
-  //get coordinates and data
+  //getcoordinates and data
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
       //----------------declare variables-----------------------//
       // ---------------set coordinates-------------------------//
       store.lat = position.coords.latitude;
       store.lon = position.coords.longitude;
-      getData(store.lat, store.lon);
+      opencageCall(store.lat, store.lon).then(() =>
+        getData(store.countryCodeISO2)
+      );
     });
   }
 });
 
 //---------------------GET DATA FUNCTION------------------------------//
 //--retrieves data, populates store and updates index.html------------//
-const getData = (lat, lon) => {
-  opencageCall(lat, lon)
-    .then(() => geonamesCall(store.countryCodeISO2))
+const getData = (countryCode) => {
+  geonamesCall(countryCode)
     .then(() => openExchangeRatesCall(store.currencyISOCode))
     .then(() => addToHTML())
-    .then(() =>
-      map.panTo([store.lat, store.lon], { animate: true, duration: 0.25 })
-    )
+    .then(() => console.log(store))
     .then(() => {
-      getGeoJSONData(store.countryCodeISO2);
-    })
-    .then(() => console.log(store));
+      getGeoJSONData(countryCode);
+    });
 };
 
 //LEAFLET SETUP
@@ -70,8 +68,8 @@ L.tileLayer(
   {
     attribution:
       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-    minZoom: 5,
-    maxZoom: 18,
+    // minZoom: 3,
+    // maxZoom: 1,
   }
 ).addTo(map);
 
@@ -119,7 +117,7 @@ const getGeoJSONData = (countryCode) => {
         setStore("geojson", result);
         store.geojson = L.geoJSON(result, {
           style: function (feature) {
-            return { color: "rgba(60, 60, 112, 0.11)" };
+            // return { color: "rgba(60, 60, 112, 0.11)" };
           },
         }).addTo(map);
 
@@ -138,13 +136,13 @@ const getGeoJSONData = (countryCode) => {
 
 //Called on change country select
 $("#select").change(function () {
-  getGeoJSONData($("#select").val());
+  getData($("#select").val());
 });
 
 //-------------------API CALLS---------------------------------------------//
 //-------------------call to opencage using geolocation lat/lon------------//
-//-------------------retrieves user location: county, country, currency------------//
-
+//-------------------retrieves user location: county, country, currency----//
+//------------------runs on start-----------------------------------------//
 const opencageCall = (lat, lon) => {
   console.log("***opencageCall called***");
   return $.ajax({
