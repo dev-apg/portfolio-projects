@@ -7,7 +7,6 @@
 
 	$executionStartTime = microtime(true);
     
-    // $url = "https://api.opencagedata.com/geocode/v1/json?q=52+13&key=9f095f0ccd50463d93f420de10d4218f";
     $url = "https://api.opencagedata.com/geocode/v1/json?q={$_REQUEST['lat']}+{$_REQUEST['lon']}&key=9f095f0ccd50463d93f420de10d4218f";
 
 	$ch = curl_init();
@@ -25,9 +24,6 @@
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-	// $output['data'] = $decode['geonames'];
-	// $output['data'] = $decode;
-	// $output['data'] = $result;
 	$output['data'] = $decode;
 	
 

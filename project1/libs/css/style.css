@@ -57,13 +57,15 @@ caption {
 
 #nav-container {
   position: fixed;
-  bottom: 25px;
-  left: 10px;
+  top: 0px;
+  /* left: 10px; */
+  right: 0;
   z-index: 500;
+  width: 100%;
 }
 
-#infoModal {
-  z-index: 99999;
+div.leaflet-control-zoom.leaflet-bar.leaflet-control {
+  top: 80vh;
 }
 
 @-webkit-keyframes animate-preloader {

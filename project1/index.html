@@ -15,16 +15,47 @@
   <body>
     <div id="preloader"></div>
     <div id="map">
+
       <div id="nav-container">
-      <button
-      id = "modal-button"
-        class="btn btn-info"
-        data-toggle="modal"
-        data-target="#infoModal"
-      >
-        Information
-      </button>
-      <!-- MODAL -->
+<nav class="navbar navbar-expand-sm navbar-light bg-light mb-3">
+  <div class="container">
+    <a class="navbar-brand" href="#">Gazatteer</a>
+    <button
+      class="navbar-toggler"
+      data-toggle="collapse"
+      data-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="#"
+            data-toggle="modal"
+            data-target="#infoModal"
+            >General</a
+          >
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Services</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-toggle="modal" data-target="#selectCountryModal">Select Country</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+    </div>  
+
+      <!-- INFORMATION MODAL -->
       <div class="modal" id="infoModal">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -76,17 +107,8 @@
         </div>
       </div>
 
-      <!-- COUNTRY SELECT MODAL -->
+      <!-------- SELECT COUNTRY MODAL ---------------->
 
-      <button
-      class="btn btn-secondary"
-      data-toggle="modal"
-      data-target="#selectCountryModal"
-    >
-      Change location
-    </button>
-
-    <!-- MODAL -->
     <div class="modal" id="selectCountryModal">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -95,7 +117,7 @@
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
-           <select id="select"></select>
+           <select id="select" class="custom-select"></select>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary " data-dismiss="modal">
@@ -105,7 +127,7 @@
         </div>
       </div>
     </div>
-  </div>
+  
     <!-- JS SCRIPTS -->
     <!-- MINIFIED JQUERY -->
     <script
