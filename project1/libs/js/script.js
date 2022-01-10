@@ -1,18 +1,18 @@
 const store = {
-  locationString: "",
-  country: "",
-  currencyName: "",
-  currencyISOCode: "",
+  // locationString: "",
+  // country: "",
+  // currencyName: "",
+  currencyISO3Code: "",
   countryCodeISO2: "",
   countryCodeISO3: "",
   geonameId: "",
-  capital: "",
-  population: "",
-  languages: "",
-  lat: "",
-  lon: "",
-  symbol: "",
-  exchangeRate: "",
+  // capital: "",
+  // population: "",
+  // languages: "",
+  // lat: "",
+  // lon: "",
+  // symbol: "",
+  // exchangeRate: "",
   geojson: "",
 };
 
@@ -51,13 +51,13 @@ $(window).on("load", function () {
 
 //---------------------GET DATA FUNCTION------------------------------//
 //--retrieves data, populates store and updates index.html------------//
-const getData = (countryCode) => {
-  geonamesCall(countryCode)
-    .then(() => openExchangeRatesCall(store.currencyISOCode))
+const getData = (countryCodeISO2) => {
+  geonamesCall(countryCodeISO2)
+    .then(() => openExchangeRatesCall(store.currencyISO3Code))
     .then(() => addToHTML())
     .then(() => console.log(store))
     .then(() => {
-      getGeoJSONData(countryCode);
+      getGeoJSONData(countryCodeISO2);
     });
 };
 
@@ -83,7 +83,7 @@ const populateSelect = () => {
     dataType: "json",
     data: {},
     success: function (result) {
-      console.log(JSON.stringify(result));
+      // console.log(JSON.stringify(result));
       if (result) {
         result.forEach((country) => {
           $("#select").append(
@@ -99,8 +99,10 @@ const populateSelect = () => {
     },
   });
 };
-// ----------------2. getting coordinates for geoJSON layer-----------//
+
+// ------------2. getting coordinates for Leaflet.js geoJSON layer-----------//
 let geojson = {};
+
 const getGeoJSONData = (countryCode) => {
   console.log("***getGeonJSONData*** was called");
   $.ajax({
@@ -140,11 +142,12 @@ $("#select").change(function () {
 });
 
 //-------------------API CALLS---------------------------------------------//
-//-------------------call to opencage using geolocation lat/lon------------//
-//-------------------retrieves user location: county, country, currency----//
+
+//-----------0-opencage using geolocation lat/lon-------------------------//
+//--------retrieves ISO2 country to add to store and use in getData-------//
 //------------------runs on start-----------------------------------------//
 const opencageCall = (lat, lon) => {
-  console.log("***opencageCall called***");
+  console.log("***opencageCall***");
   return $.ajax({
     url: "libs/php/api-opencage.php",
     type: "POST",
@@ -154,30 +157,12 @@ const opencageCall = (lat, lon) => {
       lon: lon,
     },
     success: function (result) {
-      // console.log(JSON.stringify(result));
+      console.log(JSON.stringify(result));
       if (result.status.name == "ok") {
-        setStore("country", result.data.results[0].components.country);
-        setStore(
-          "currencyName",
-          result.data.results[0].annotations.currency.name
-        );
-        setStore(
-          "currencyISOCode",
-          result.data.results[0].annotations.currency.iso_code
-        );
-        setStore(
-          "currencySymbol",
-          result.data.results[0].annotations.currency.symbol
-        );
         setStore(
           "countryCodeISO2",
           result.data.results[0].components["ISO_3166-1_alpha-2"]
         );
-        setStore(
-          "countryCodeISO3",
-          result.data.results[0].components["ISO_3166-1_alpha-3"]
-        );
-        setStore("locationString", result.data.results[0].formatted);
         return result;
       }
     },
@@ -189,7 +174,7 @@ const opencageCall = (lat, lon) => {
   });
 };
 
-//-----------------------geonames------------------//
+//----------------------1-geonames------------------//
 //-------------POST: country code------------------//
 //-------------GET: ------------------------------//
 const geonamesCall = (countryCodeISO2) => {
@@ -204,10 +189,23 @@ const geonamesCall = (countryCodeISO2) => {
     success: function (result) {
       // console.log(JSON.stringify(result));
       if (result.status.name == "ok") {
+        //country name
+        $(".api-country").html(result.data[0].countryName);
+        //capital city
+        $("#api-capital").html(result.data[0].capital);
+        //population
+        $("#api-population").html(result.data[0].population);
+        //currency name - add to store and html
+        setStore("currencyISO3Code", result.data[0].currencyCode);
+        $("#api-currency").html(result.data[0].currencyCode);
+        //languages
+        $("#api-languages").html(result.data[0].languages);
+        //country code ISO3
+        setStore("countryCodeISO3", result.data[0].isoAlpha3);
+        //continent
+        $("#api-continent").html(result.data[0].continent);
+        //geonameId
         setStore("geonameId", result.data[0].geonameId);
-        setStore("capital", result.data[0].capital);
-        setStore("population", result.data[0].population);
-        setStore("languages", result.data[0].languages);
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
@@ -219,7 +217,7 @@ const geonamesCall = (countryCodeISO2) => {
   });
 };
 
-//--------------------OPENEXCHANGERATES------------//
+//--------------OPENEXCHANGERATES------------//
 const openExchangeRatesCall = (currency) => {
   console.log("***openExchangeRatesCall***");
   return $.ajax({
@@ -228,11 +226,14 @@ const openExchangeRatesCall = (currency) => {
     dataType: "json",
     data: {},
     success: function (result) {
-      console.log(JSON.stringify(result));
+      console.log({ currencyinOpenExchangeRates: currency });
+      // console.log(JSON.stringify(result));
       if (result.status.name == "ok") {
         const rates = Object.entries(result.data.rates);
         const rate = rates.filter((rate) => rate[0] === currency);
-        setStore("exchangeRate", rate[0][1]);
+        // setStore("exchangeRate", rate[0][1]);
+        console.log({ rate: rate[0][1] });
+        $("#api-exchange-rate").html(rate[0][1].toFixed(2));
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
@@ -247,13 +248,13 @@ const openExchangeRatesCall = (currency) => {
 //---------------ADD DATA TO DOM-----------//
 
 const addToHTML = () => {
-  console.log("add to html fired");
-  $("#api-location-string").html(store.locationString);
-  $(".api-country").html(store.country);
-  $("#api-capital").html(store.capital);
-  $("#api-population").html(store.population);
-  $("#api-currency").html(store.currencyName);
-  $("#api-exchange-rate").html(
-    `${store.currencySymbol}${store.exchangeRate.toFixed(2)}`
-  );
+  // console.log("add to html fired");
+  // $("#api-location-string").html(store.locationString);
+  // $(".api-country").html(store.country);
+  // $("#api-capital").html(store.capital);
+  // $("#api-population").html(store.population);
+  // $("#api-currency").html(store.currencyName);
+  // $("#api-exchange-rate").html(
+  //   `${store.currencySymbol}${store.exchangeRate.toFixed(2)}`
+  // );
 };

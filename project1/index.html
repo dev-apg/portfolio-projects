@@ -19,7 +19,7 @@
       <div id="nav-container">
 <nav class="navbar navbar-expand-sm navbar-light bg-light mb-3">
   <div class="container">
-    <a class="navbar-brand" href="#"><span class="font-weight-bold"> Gazatter</span> || 
+    <a class="navbar-brand" href="#"><span class="font-weight-bold"> Gazatteer</span> || 
       <span class="api-country font-weight-normal"></span></a>
     <button
       class="navbar-toggler"
@@ -36,17 +36,17 @@
             href="#"
             data-toggle="modal"
             data-target="#infoModal"
-            >General</a
+            >General Info</a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">About</a>
+          <a class="nav-link" href="#">Places of Interest</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Services</a>
+          <a class="nav-link" href="#">News</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-toggle="modal" data-target="#selectCountryModal">Select Country</a>
+          <a class="nav-link" href="#" data-toggle="modal" data-target="#selectCountryModal">Change Country</a>
         </li>
       </ul>
     </div>
@@ -78,6 +78,14 @@
                   <tr>
                     <td class="text-right">Pop. size: </td >
                     <td id="api-population"></td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">Languages: </td >
+                    <td id="api-languages"></td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">continent: </td >
+                    <td id="api-continent"></td>
                   </tr>
                   <tr>
                     <td class="text-right">Currency: </td >
@@ -114,7 +122,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Modal Title</h5>
+            <h5 class="modal-title">Select Country</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
