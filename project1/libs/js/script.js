@@ -228,7 +228,7 @@ const openExchangeRatesCall = (currency) => {
     dataType: "json",
     data: {},
     success: function (result) {
-      // console.log(JSON.stringify(result));
+      console.log(JSON.stringify(result));
       if (result.status.name == "ok") {
         const rates = Object.entries(result.data.rates);
         const rate = rates.filter((rate) => rate[0] === currency);
