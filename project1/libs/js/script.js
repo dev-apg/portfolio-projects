@@ -13,6 +13,7 @@ const store = {
   lon: "",
   symbol: "",
   exchangeRate: "",
+  geojson: "",
 };
 
 function setStore(name, value) {
@@ -52,13 +53,27 @@ const getData = (lat, lon) => {
   opencageCall(lat, lon)
     .then(() => geonamesCall(store.countryCodeISO2))
     .then(() => openExchangeRatesCall(store.currencyISOCode))
-    .then(() => console.log(store))
     .then(() => addToHTML())
     .then(() =>
       map.panTo([store.lat, store.lon], { animate: true, duration: 0.25 })
     )
-    .then(() => youAreHere(store.lat, store.lon));
+    .then(() => {
+      getGeoJSONData(store.countryCodeISO2);
+    })
+    .then(() => console.log(store));
 };
+
+//LEAFLET SETUP
+const map = L.map("map").setView([200, 200], 14);
+L.tileLayer(
+  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+  {
+    attribution:
+      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    minZoom: 5,
+    maxZoom: 18,
+  }
+).addTo(map);
 
 //--------COUNTRYBORDERS.GEO.JSON FILE---------------//
 //-------1. populating select tag country options------//
@@ -86,17 +101,31 @@ const populateSelect = () => {
     },
   });
 };
-
-const getGeoJSONData = () => {
+// ----------------2. getting coordinates for geoJSON layer-----------//
+let geojson = {};
+const getGeoJSONData = (countryCode) => {
+  console.log("***getGeonJSONData*** was called");
   $.ajax({
     url: "libs/php/countryBorders-geoJSON.php",
     type: "GET",
     dataType: "json",
-    data: { countryCode: "CR" },
+    data: { countryCode: countryCode },
     success: function (result) {
-      console.log(JSON.stringify(result));
+      // console.log(JSON.stringify(result));
       if (result) {
-        console.log("you're going to do it ");
+        if (store.geojson !== "") {
+          store.geojson.remove();
+        }
+        setStore("geojson", result);
+        store.geojson = L.geoJSON(result, {
+          style: function (feature) {
+            return { color: "rgba(60, 60, 112, 0.11)" };
+          },
+        }).addTo(map);
+
+        map.fitBounds(store.geojson.getBounds(), {
+          padding: [18, 18],
+        });
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
@@ -106,6 +135,11 @@ const getGeoJSONData = () => {
     },
   });
 };
+
+//Called on change country select
+$("#select").change(function () {
+  getGeoJSONData($("#select").val());
+});
 
 //-------------------API CALLS---------------------------------------------//
 //-------------------call to opencage using geolocation lat/lon------------//
@@ -217,7 +251,7 @@ const openExchangeRatesCall = (currency) => {
 const addToHTML = () => {
   console.log("add to html fired");
   $("#api-location-string").html(store.locationString);
-  $("#api-country").html(store.country);
+  $(".api-country").html(store.country);
   $("#api-capital").html(store.capital);
   $("#api-population").html(store.population);
   $("#api-currency").html(store.currencyName);
@@ -225,44 +259,3 @@ const addToHTML = () => {
     `${store.currencySymbol}${store.exchangeRate.toFixed(2)}`
   );
 };
-
-//LEAFLET
-const map = L.map("map").setView([0, 0], 14);
-L.tileLayer(
-  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
-  {
-    attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-    minZoom: 5,
-    maxZoom: 18,
-  }
-).addTo(map);
-
-const marker = L.marker([51.5, -0.09]).addTo(map);
-
-function youAreHere(lat, lon) {
-  const circle = L.circle([lat, lon], {
-    color: "red",
-    fillColor: "#f03",
-    fillOpacity: 0.5,
-    radius: 200,
-  }).addTo(map);
-  circle.bindPopup("Your location");
-}
-
-const polygon = L.polygon([
-  [-5.661948614921897, 54.55460317648385],
-  [-6.197884894220977, 53.86756500916334],
-  [-6.953730231137996, 54.073702297575636],
-  [-7.572167934591079, 54.05995636658599],
-  [-7.366030646178785, 54.595840969452695],
-  [-7.572167934591079, 55.1316222194549],
-  [-6.733847011736145, 55.1728600124238],
-  [-5.661948614921897, 54.55460317648385],
-]).addTo(map);
-
-//markers
-//openPopup method only works for markers
-marker.bindPopup("<b>Hey there</b><br>I am a marker.").openPopup();
-
-// polygon.bindPopup("I am a polygon");

@@ -51,9 +51,9 @@ caption {
   animation: animate-preloader 1s linear infinite;
 }
 
-.btn {
+/* .btn {
   pointer-events: auto;
-}
+} */
 
 #nav-container {
   position: fixed;
@@ -63,6 +63,10 @@ caption {
   z-index: 500;
   width: 100%;
 }
+
+/* .color {
+color: rgba(60, 60, 112, 0.11)
+} */
 
 div.leaflet-control-zoom.leaflet-bar.leaflet-control {
   top: 80vh;
