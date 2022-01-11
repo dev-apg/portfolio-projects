@@ -78,6 +78,15 @@ img {
   }
 }
 
+/* Important part */
+.modal-dialog {
+  overflow-y: initial !important;
+}
+.modal-body {
+  height: 80vh;
+  overflow-y: auto;
+}
+
 @media only screen and (max-width: 366px) {
   #nav-country-name {
     display: none;
@@ -88,9 +97,9 @@ img {
   }
 }
 
-#infoModal {
-  max-height: fit-content;
-}
+/* #infoModal {
+  max-height: 50vh;
+} */
 
 @-webkit-keyframes animate-preloader {
   0% {

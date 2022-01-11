@@ -16,6 +16,7 @@ let store = {
   // symbol: "",
   // exchangeRate: "",
   geojsonMapLayer: "",
+  citiesLayer: "",
   geojsonData: "",
   boundingBox: [],
 };
@@ -62,6 +63,7 @@ const getData = (countryCodeISO2) => {
     .then(() => getGeoJSONData(countryCodeISO2))
     .then(() => restCountriesCall(store.countryCodeISO3))
     .then(() => geonamesCitiesCall(store.boundingBox))
+    .then(() => geonamesEarthquakesCall(store.boundingBox))
     .then(() => (document.querySelector("#select").value = countryCodeISO2));
 };
 
@@ -70,6 +72,7 @@ const getData = (countryCodeISO2) => {
 const emptyStore = () => {
   if (store.geojsonMapLayer !== "") {
     store.geojsonMapLayer.remove();
+    store.citiesLayer.remove();
     store = {};
   }
 };
@@ -127,7 +130,7 @@ const getGeoJSONData = (countryCode) => {
     dataType: "json",
     data: { countryCode: countryCode },
     success: function (result) {
-      // console.log(JSON.stringify(result));
+      console.log(JSON.stringify(result));
       if (result) {
         // 1. create map layer for Leaflet bounding box
         setStore("geojsonMapLayer", result);
@@ -294,11 +297,11 @@ const restCountriesCall = (countryCodeISO3) => {
   });
 };
 
-//----------------GEONAMES----------------//
+//----------------GEONAMES CITIES----------------//
 
 const geonamesCitiesCall = (boundingBox) => {
   console.log("***geonamesCitiesCall*** was called");
-  console.log({ boundingboxfromCities: store.boundingBox });
+  // console.log({ boundingboxfromCities: store.boundingBox });
   return $.ajax({
     url: "libs/php/api-geonames-cities.php",
     type: "POST",
@@ -337,6 +340,67 @@ const geonamesCitiesCall = (boundingBox) => {
               .openPopup();
           }
         }
+      });
+    },
+
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+      console.log(textStatus);
+      console.log(errorThrown);
+    },
+  });
+};
+
+//----------------GEONAMES EARTHQUAKES----------------//
+
+const geonamesEarthquakesCall = (boundingBox) => {
+  console.log("***geonamesEarthquakesCall*** was called");
+  // console.log({ boundingboxfromCities: store.boundingBox });
+  return $.ajax({
+    url: "libs/php/api-geonames-earthquakes.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      north: boundingBox[3],
+      south: boundingBox[1],
+      east: boundingBox[2],
+      west: boundingBox[0],
+    },
+    success: function (result) {
+      // console.log(JSON.stringify(result));
+      console.log(result.data);
+
+      result.data.forEach((earthquake) => {
+        // console.log(earthquake);
+
+        const thedate = new Date(earthquake.datetime);
+        const months = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+
+        let date =
+          thedate.getDate().toString() +
+          " " +
+          months[thedate.getMonth()] +
+          " " +
+          thedate.getFullYear();
+
+        L.marker([earthquake.lat, earthquake.lng], { color: "#f8b02b" })
+          .addTo(map)
+          .bindPopup(
+            `Earthquake<br> ${date}<br>Magnitude: ${earthquake.magnitude}`
+          );
       });
     },
 
@@ -422,7 +486,7 @@ function fixPopulation(num) {
   if (num.length <= 6) {
     num = num.slice(0, -1);
     num = num / 100;
-    num = num.toFixed(1);
+    num = num.toFixed(0);
     num = num + " thousand";
   } else if (num.length <= 9) {
     num = num.slice(0, -4);
