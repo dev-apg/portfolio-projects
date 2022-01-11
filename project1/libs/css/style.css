@@ -68,6 +68,30 @@ div.leaflet-control-zoom.leaflet-bar.leaflet-control {
   top: 75vh;
 }
 
+img {
+  max-height: 15px;
+}
+
+@media only screen and (max-width: 775px) {
+  #nav-flag {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 366px) {
+  #nav-country-name {
+    display: none;
+  }
+
+  #decorative-bars {
+    display: none;
+  }
+}
+
+#infoModal {
+  max-height: fit-content;
+}
+
 @-webkit-keyframes animate-preloader {
   0% {
     -webkit-transform: rotate(0deg);

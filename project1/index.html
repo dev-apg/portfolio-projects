@@ -13,15 +13,17 @@
     <title>Gazatteer</title>
   </head>
   <body>
-    <div id="preloader"></div>
+    <div id="preloader"></div>  
     <div id="map">
-
       <div id="nav-container">
 <nav class="navbar navbar-expand-sm navbar-light bg-light mb-3">
   <div class="container">
-    <a class="navbar-brand" href="#"><span class="font-weight-bold"> Gazatteer</span> || 
-      <span class="api-country font-weight-normal"></span></a>
-    <button
+        <div class="navbar-brand"><span class="font-weight-bold"> Gazatteer</span>
+          <span id="decorative-bars"> || </span>
+          <span id="nav-country-name" class="api-country font-weight-normal"></span>
+          <img id="nav-flag" class="api-flag img-fluid">
+        </div> 
+      <button
       class="navbar-toggler"
       data-toggle="collapse"
       data-target="#navbarNav"
@@ -61,12 +63,13 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title lead" id="api-location-string"></h5>
+              <h5 class="modal-title lead api-country" id="api-location-string" ></h5>
+              <img class="api-flag">
               <button class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
               <div id="data-content">
-                <table>
+                <table class="table">
                   <caption class="lead" id="api-location-string"><caption>
                  <tr >
                    <td class="text-right">Country: </td>
@@ -80,12 +83,16 @@
                     <td id="api-population"></td>
                   </tr>
                   <tr>
-                    <td class="text-right">Languages: </td >
+                    <td class="text-right">Main Language: </td >
                     <td id="api-languages"></td>
                   </tr>
                   <tr>
-                    <td class="text-right">continent: </td >
+                    <td class="text-right">Continent: </td >
                     <td id="api-continent"></td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">Lat/Long: </td >
+                    <td ><span id="api-latitude"></span>, <span id="api-longitude"></span></td>
                   </tr>
                   <tr>
                     <td class="text-right">Currency: </td >
@@ -96,7 +103,11 @@
                     <td id="api-exchange-rate"></td>
                   </tr>
                   <tr>
-                    <td class="text-right">Temp: </td >
+                    <td class="text-right">Area <span>km<sup>2</sup></span>: </td >
+                    <td id="api-area"></td>
+                  </tr> 
+                  <tr>
+                    <td class="text-right">Current Weather: </td >
                     <td id="api-current-weather"></td>
                   </tr>
                   <tr>
@@ -126,7 +137,7 @@
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
-           <select id="select" class="custom-select"></select>
+            <select id="select" class="custom-select" ></select>
           </div>
           <div class="modal-footer">
             <button class="btn btn-secondary " data-dismiss="modal">
@@ -135,8 +146,9 @@
           </div>
         </div>
       </div>
+      
     </div>
-  
+    
     <!-- JS SCRIPTS -->
     <!-- MINIFIED JQUERY -->
     <script
