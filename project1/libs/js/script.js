@@ -17,6 +17,7 @@ let store = {
   // exchangeRate: "",
   geojsonMapLayer: "",
   citiesLayer: "",
+  earthquakesLayer: "",
   geojsonData: "",
   boundingBox: [],
 };
@@ -35,10 +36,20 @@ $(window).on("load", function () {
       .fadeOut("fast", function () {
         $(this).remove();
       });
-  }
 
-  //populate select
-  populateSelect();
+    //populate select
+    populateSelect();
+
+    //sets country select to current country
+    $("#select").change(function () {
+      getData($("#select").val());
+    });
+
+    //show hide control so it doesn't clash with the extending menu
+    $(".navbar-toggler").on("click", () => {
+      $(".leaflet-control-layers").toggle();
+    });
+  }
 
   //getcoordinates and data
   // if (navigator.geolocation) {
@@ -54,10 +65,70 @@ $(window).on("load", function () {
   // }
 });
 
+//-----------------empty store function------------------------------//
+
+const clearData = () => {
+  if (store.geojsonMapLayer !== "") {
+    store.geojsonMapLayer.remove();
+    map.removeLayer(store.citiesLayer);
+    // store.citiesLayer.remove();
+  }
+  // store = {};
+};
+
+//LEAFLET SETUP
+const map = L.map("map").setView([200, 200], 14);
+
+const streetTiles = L.tileLayer(
+  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+  {
+    attribution:
+      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    minZoom: 3,
+    maxZoom: 5,
+  }
+).addTo(map);
+
+const topographicTiles = L.tileLayer(
+  "https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+  {
+    attribution:
+      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    minZoom: 3,
+    maxZoom: 5,
+  }
+).addTo(map);
+
+const satelliteTiles = L.tileLayer(
+  "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
+  {
+    attribution:
+      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    minZoom: 3,
+    maxZoom: 5,
+  }
+).addTo(map);
+
+store.citiesLayer = L.layerGroup().addTo(map);
+store.earthquakesLayer = L.layerGroup().addTo(map);
+
+const baseLayers = {
+  Satellite: satelliteTiles,
+  Topographic: topographicTiles,
+  Street: streetTiles,
+};
+
+const overlays = {
+  earthquakes: store.earthquakesLayer,
+  cities: store.citiesLayer,
+};
+
+L.control.layers(baseLayers, overlays).addTo(map);
+
 //---------------------GET DATA FUNCTION------------------------------//
 //--retrieves data, populates store and updates index.html------------//
 const getData = (countryCodeISO2) => {
-  emptyStore();
+  clearData();
   geonamesCall(countryCodeISO2)
     .then(() => openExchangeRatesCall(store.currencyISO3Code))
     .then(() => getGeoJSONData(countryCodeISO2))
@@ -67,29 +138,7 @@ const getData = (countryCodeISO2) => {
     .then(() => (document.querySelector("#select").value = countryCodeISO2));
 };
 
-//-----------------empty store function------------------------------//
-
-const emptyStore = () => {
-  if (store.geojsonMapLayer !== "") {
-    store.geojsonMapLayer.remove();
-    store.citiesLayer.remove();
-    store = {};
-  }
-};
-
-//LEAFLET SETUP
-const map = L.map("map").setView([200, 200], 14);
-L.tileLayer(
-  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
-  {
-    attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-    // minZoom: 3,
-    // maxZoom: 1,
-  }
-).addTo(map);
-
-//add layer to add markers to
+L.control.scale().addTo(map);
 
 //--------COUNTRYBORDERS.GEO.JSON FILE---------------//
 //-------1. populating select tag country options------//
@@ -136,7 +185,7 @@ const getGeoJSONData = (countryCode) => {
         setStore("geojsonMapLayer", result);
         store.geojsonMapLayer = L.geoJSON(result, {
           style: function (feature) {
-            // return { color: "rgba(60, 60, 112, 0.11)" };
+            return { color: "rgba(35, 161, 192, 0.548)" };
           },
         }).addTo(map);
         map.fitBounds(store.geojsonMapLayer.getBounds(), {
@@ -156,11 +205,6 @@ const getGeoJSONData = (countryCode) => {
     },
   });
 };
-
-//Called on change country select
-$("#select").change(function () {
-  getData($("#select").val());
-});
 
 //-------------------API CALLS---------------------------------------------//
 
@@ -215,7 +259,7 @@ const geonamesCall = (countryCodeISO2) => {
         //capital city
         $("#api-capital").html(result.data[0].capital);
         //population
-        $("#api-population").html(result.data[0].population);
+        $("#api-population").html(fixPopulation(result.data[0].population));
         //currency name - add to store and html
         setStore("currencyISO3Code", result.data[0].currencyCode);
         $("#api-currency").html(result.data[0].currencyCode);
@@ -249,13 +293,9 @@ const openExchangeRatesCall = (currency) => {
     dataType: "json",
     data: {},
     success: function (result) {
-      // console.log({ currencyinOpenExchangeRates: currency });
-      // console.log(JSON.stringify(result));
       if (result.status.name == "ok") {
         const rates = Object.entries(result.data.rates);
         const rate = rates.filter((rate) => rate[0] === currency);
-        // setStore("exchangeRate", rate[0][1]);
-        // console.log({ rate: rate[0][1] });
         $("#api-exchange-rate").html(rate[0][1].toFixed(2));
       }
     },
@@ -279,7 +319,6 @@ const restCountriesCall = (countryCodeISO3) => {
       // console.log(JSON.stringify(result));
       if (result.status.name == "ok") {
         console.log(result.data);
-        // console.log(result.data.capital);
         setStore("capital", result.data.capital);
         $("#api-languages").html(result.data.languages[0].name);
         $("#api-latitude").html(result.data.latlng[0]);
@@ -301,7 +340,6 @@ const restCountriesCall = (countryCodeISO3) => {
 
 const geonamesCitiesCall = (boundingBox) => {
   console.log("***geonamesCitiesCall*** was called");
-  // console.log({ boundingboxfromCities: store.boundingBox });
   return $.ajax({
     url: "libs/php/api-geonames-cities.php",
     type: "POST",
@@ -313,8 +351,6 @@ const geonamesCitiesCall = (boundingBox) => {
       west: boundingBox[0],
     },
     success: function (result) {
-      // console.log(JSON.stringify(result));
-
       console.log(result.data[0]);
 
       result.data.forEach((city) => {
@@ -325,13 +361,13 @@ const geonamesCitiesCall = (boundingBox) => {
         ) {
           if (city.name !== store.capital) {
             L.marker([city.lat, city.lng])
-              .addTo(map)
+              .addTo(store.citiesLayer)
               .bindPopup(
                 `${city.name}<br>Population: ${fixPopulation(city.population)}`
               );
           } else {
             L.marker([city.lat, city.lng])
-              .addTo(map)
+              .addTo(store.citiesLayer)
               .bindPopup(
                 `${city.name}<br>${
                   store.countryCodeISO3
@@ -355,7 +391,6 @@ const geonamesCitiesCall = (boundingBox) => {
 
 const geonamesEarthquakesCall = (boundingBox) => {
   console.log("***geonamesEarthquakesCall*** was called");
-  // console.log({ boundingboxfromCities: store.boundingBox });
   return $.ajax({
     url: "libs/php/api-geonames-earthquakes.php",
     type: "POST",
@@ -367,12 +402,9 @@ const geonamesEarthquakesCall = (boundingBox) => {
       west: boundingBox[0],
     },
     success: function (result) {
-      // console.log(JSON.stringify(result));
       console.log(result.data);
 
       result.data.forEach((earthquake) => {
-        // console.log(earthquake);
-
         const thedate = new Date(earthquake.datetime);
         const months = [
           "January",
@@ -397,7 +429,7 @@ const geonamesEarthquakesCall = (boundingBox) => {
           thedate.getFullYear();
 
         L.marker([earthquake.lat, earthquake.lng], { color: "#f8b02b" })
-          .addTo(map)
+          .addTo(store.earthquakesLayer)
           .bindPopup(
             `Earthquake<br> ${date}<br>Magnitude: ${earthquake.magnitude}`
           );
@@ -480,6 +512,8 @@ function getCoordinatesDump(gj) {
   }
   return coords;
 }
+
+//---makes population figures readable----//
 
 function fixPopulation(num) {
   num = num.toString();

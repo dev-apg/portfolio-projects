@@ -6,13 +6,8 @@ body {
 html,
 body,
 #map {
-  height: 100%;
-  width: 100%;
-}
-
-#map {
   position: absolute;
-  top: 0;
+  top: 15px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -55,6 +50,11 @@ caption {
   pointer-events: auto;
 } */
 
+.leaflet-control-layers {
+  top: 30px;
+  right: 8px;
+}
+
 #nav-container {
   position: fixed;
   top: 0px;
@@ -70,7 +70,12 @@ div.leaflet-control-zoom.leaflet-bar.leaflet-control {
 
 img {
   max-height: 15px;
+  /* color: rgba(35, 161, 192, 0.548); */
 }
+
+/* .leaflet-control-scale-line {
+  bottom: 10vh;
+} */
 
 @media only screen and (max-width: 775px) {
   #nav-flag {
