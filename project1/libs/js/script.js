@@ -135,6 +135,7 @@ const getData = (countryCodeISO2) => {
     .then(() => restCountriesCall(store.countryCodeISO3))
     .then(() => geonamesCitiesCall(store.boundingBox))
     .then(() => geonamesEarthquakesCall(store.boundingBox))
+    .then(() => openWeatherCall(store.lat, store.lon))
     .then(() => (document.querySelector("#select").value = countryCodeISO2));
 };
 
@@ -434,6 +435,29 @@ const geonamesEarthquakesCall = (boundingBox) => {
             `Earthquake<br> ${date}<br>Magnitude: ${earthquake.magnitude}`
           );
       });
+    },
+
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+      console.log(textStatus);
+      console.log(errorThrown);
+    },
+  });
+};
+
+//---------openweather----------------------//
+const openWeatherCall = (lat, lon) => {
+  console.log("***openWeatherCall***");
+  return $.ajax({
+    url: "libs/php/api-openweather.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      latitude: lat,
+      longitude: lon,
+    },
+    success: function (result) {
+      console.log(result.data);
     },
 
     error: function (jqXHR, textStatus, errorThrown) {
