@@ -77,6 +77,10 @@ img {
   bottom: 10vh;
 } */
 
+.modal-dialog {
+  height: 50vh;
+}
+
 @media only screen and (max-width: 775px) {
   #nav-flag {
     display: none;

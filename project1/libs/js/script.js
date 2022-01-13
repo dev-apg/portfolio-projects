@@ -69,15 +69,19 @@ $(window).on("load", function () {
 
 const clearData = () => {
   if (store.geojsonMapLayer !== "") {
-    store.geojsonMapLayer.remove();
-    map.removeLayer(store.citiesLayer);
+    // store.geojsonMapLayer.remove();
+    // map.removeLayer(store.citiesLayer);
     // store.citiesLayer.remove();
+    $(".leaflet-popup-pane").empty();
+    $(".leaflet-marker-pane").empty();
+    $(".leaflet-marker-icon").remove();
+    $(".leaflet-popup").remove();
+    $(".leaflet-pane.leaflet-shadow-pane").remove();
   }
-  // store = {};
 };
 
 //LEAFLET SETUP
-const map = L.map("map").setView([200, 200], 14);
+const map = L.map("map").setView([50, 0], 14);
 
 const streetTiles = L.tileLayer(
   "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
@@ -124,6 +128,22 @@ const overlays = {
 };
 
 L.control.layers(baseLayers, overlays).addTo(map);
+
+// icons;
+let cityIcon = L.icon({
+  iconUrl: "libs/css/images/bigcity.png",
+  iconSize: [38, 45], // size of the icon
+});
+
+let capitalCityIcon = L.icon({
+  iconUrl: "libs/css/images/capitalcity.png",
+  iconSize: [38, 45], // size of the icon
+});
+
+let earthquakeIcon = L.icon({
+  iconUrl: "libs/css/images/earthquake.png",
+  iconSize: [38, 45], // size of the icon
+});
 
 //---------------------GET DATA FUNCTION------------------------------//
 //--retrieves data, populates store and updates index.html------------//
@@ -208,7 +228,6 @@ const getGeoJSONData = (countryCode) => {
 };
 
 //-------------------API CALLS---------------------------------------------//
-
 //-----------0-opencage using geolocation lat/lon-------------------------//
 //--------retrieves ISO2 country to add to store and use in getData-------//
 //------------------runs on start-----------------------------------------//
@@ -245,6 +264,7 @@ const opencageCall = (lat, lon) => {
 //-------------GET: ------------------------------//
 const geonamesCall = (countryCodeISO2) => {
   console.log("***geonamesCall***");
+  // console.log({ "geonames input cc": countryCodeISO2 });
   return $.ajax({
     url: "libs/php/api-geonames.php",
     type: "POST",
@@ -254,6 +274,7 @@ const geonamesCall = (countryCodeISO2) => {
     },
     success: function (result) {
       // console.log(JSON.stringify(result));
+      // console.log(result.data);
       if (result.status.name == "ok") {
         //country name
         $(".api-country").html(result.data[0].countryName);
@@ -338,7 +359,6 @@ const restCountriesCall = (countryCodeISO3) => {
 };
 
 //----------------GEONAMES CITIES----------------//
-
 const geonamesCitiesCall = (boundingBox) => {
   console.log("***geonamesCitiesCall*** was called");
   return $.ajax({
@@ -361,13 +381,13 @@ const geonamesCitiesCall = (boundingBox) => {
           city.population > 100000
         ) {
           if (city.name !== store.capital) {
-            L.marker([city.lat, city.lng])
+            L.marker([city.lat, city.lng], { icon: cityIcon })
               .addTo(store.citiesLayer)
               .bindPopup(
                 `${city.name}<br>Population: ${fixPopulation(city.population)}`
               );
           } else {
-            L.marker([city.lat, city.lng])
+            L.marker([city.lat, city.lng], { icon: capitalCityIcon })
               .addTo(store.citiesLayer)
               .bindPopup(
                 `${city.name}<br>${
@@ -429,7 +449,10 @@ const geonamesEarthquakesCall = (boundingBox) => {
           " " +
           thedate.getFullYear();
 
-        L.marker([earthquake.lat, earthquake.lng], { color: "#f8b02b" })
+        L.marker([earthquake.lat, earthquake.lng], {
+          color: "#f8b02b",
+          icon: earthquakeIcon,
+        })
           .addTo(store.earthquakesLayer)
           .bindPopup(
             `Earthquake<br> ${date}<br>Magnitude: ${earthquake.magnitude}`
