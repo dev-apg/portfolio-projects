@@ -7,7 +7,7 @@ html,
 body,
 #map {
   position: absolute;
-  top: 15px;
+  top: 24px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -78,7 +78,7 @@ img {
 } */
 
 .modal-dialog {
-  height: 50vh;
+  /* height: 50vh; */
 }
 
 @media only screen and (max-width: 775px) {
@@ -88,13 +88,13 @@ img {
 }
 
 /* Important part */
-.modal-dialog {
+/* .modal-dialog {
   overflow-y: initial !important;
 }
 .modal-body {
   height: 80vh;
   overflow-y: auto;
-}
+} */
 
 @media only screen and (max-width: 366px) {
   #nav-country-name {

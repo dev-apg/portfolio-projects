@@ -1,35 +1,34 @@
+   
 <?php
 
-	// remove for production
+// remove for production
 
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
+ini_set('display_errors', 'On');
+error_reporting(E_ALL);
 
-	$executionStartTime = microtime(true);
-    
-    $url = "https://api.opencagedata.com/geocode/v1/json?q={$_REQUEST['lat']}+{$_REQUEST['lon']}&key=9f095f0ccd50463d93f420de10d4218f";
+$executionStartTime = microtime(true);
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_URL,$url);
+$url = "https://api.opencagedata.com/geocode/v1/json?q={$_REQUEST['lat']}+{$_REQUEST['lon']}&key=9f095f0ccd50463d93f420de10d4218f";
 
-	$result=curl_exec($ch);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_URL,$url);
 
-	curl_close($ch);
+$result=curl_exec($ch);
 
-	 $decode = json_decode($result,true);	
+curl_close($ch);
 
-	$output['status']['code'] = "200";
-	$output['status']['name'] = "ok";
-	$output['status']['description'] = "success";
-	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-	$output['data'] = $decode;
-	
+ $decode = json_decode($result,true);	
 
-	header('Content-Type: application/json; charset=UTF-8');
+$output['status']['code'] = "200";
+$output['status']['name'] = "ok";
+$output['status']['description'] = "success";
+$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
+$output['data'] = $decode;
 
 
+header('Content-Type: application/json; charset=UTF-8');
 
-	echo json_encode($output); 
+echo json_encode($output); 
 ?>
