@@ -71,18 +71,16 @@ let earthquakeIcon = L.icon({
   iconSize: [38, 45], // size of the icon
 });
 
-// set up layers
-const citiesLayer = L.layerGroup();
-const earthquakesLayer = L.layerGroup();
-const capitalLayer = L.layerGroup();
 // set up layer group
-const featureGroup1 = L.featureGroup()
-  .bindPopup("featureGroup member")
-  .addTo(map);
+const featureGroup1 = L.featureGroup().addTo(map);
 
-citiesLayer.addTo(featureGroup1);
-earthquakesLayer.addTo(featureGroup1);
-capitalLayer.addTo(featureGroup1);
+const citiesMCG = L.markerClusterGroup();
+const capitalMCG = L.markerClusterGroup();
+const earthquakesMCG = L.markerClusterGroup();
+
+citiesMCG.addTo(featureGroup1);
+capitalMCG.addTo(featureGroup1);
+earthquakesMCG.addTo(featureGroup1);
 
 const baseLayers = {
   Satellite: satelliteTiles,
@@ -91,9 +89,9 @@ const baseLayers = {
 };
 
 const overlays = {
-  earthquakes: earthquakesLayer,
-  cities: citiesLayer,
-  capital: capitalLayer,
+  cities: citiesMCG,
+  capital: capitalMCG,
+  earthquakes: earthquakesMCG,
 };
 
 L.control.layers(baseLayers, overlays).addTo(map);
@@ -315,7 +313,7 @@ function locationData(selectedCountry) {
                   icon: cityIcon,
                   riseOnHover: true,
                 })
-                  .addTo(citiesLayer)
+                  .addTo(citiesMCG)
                   .bindPopup(
                     `${city.name}<br>Population: ${fixPopulation(
                       city.population
@@ -326,7 +324,7 @@ function locationData(selectedCountry) {
                   icon: capitalCityIcon,
                   riseOnHover: true,
                 })
-                  .addTo(capitalLayer)
+                  .addTo(capitalMCG)
                   .bindPopup(
                     `${city.name}<br class="pop-up-title">${
                       infoStore.countryName
@@ -346,7 +344,7 @@ function locationData(selectedCountry) {
       });
     }
 
-    function geonamesEarthquakesCall(boundingBox) {
+    function geonamesEarthquakesCall() {
       console.log("***geonamesEarthquakesCall*** was called");
       return $.ajax({
         url: "libs/php/api-geonames-earthquakes.php",
@@ -390,7 +388,7 @@ function locationData(selectedCountry) {
               color: "#f8b02b",
               icon: earthquakeIcon,
             })
-              .addTo(earthquakesLayer)
+              .addTo(earthquakesMCG)
               .bindPopup(
                 `Earthquake<br> ${date}<br>Magnitude: ${earthquake.magnitude}`
               );
