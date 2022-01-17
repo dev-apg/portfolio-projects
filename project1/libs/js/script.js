@@ -8,9 +8,9 @@ $(window).on("load", function () {
       });
   }
   //show hide control so it doesn't clash with the dropdown menu
-  $(".navbar-toggler").on("click", () => {
-    $(".leaflet-control-layers").toggle();
-  });
+  // $(".navbar-toggler").on("click", () => {
+  //   $(".leaflet-control-layers").toggle();
+  // });
   //run locationData on change
   $("#select").change(function () {
     locationData($("#select").val());
@@ -36,25 +36,25 @@ const streetTiles = L.tileLayer(
   }
 ).addTo(map);
 
-const topographicTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
-  {
-    attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-    minZoom: 3,
-    maxZoom: 18,
-  }
-).addTo(map);
+// const topographicTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 3,
+//     maxZoom: 18,
+//   }
+// ).addTo(map);
 
-const satelliteTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
-  {
-    attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-    minZoom: 3,
-    maxZoom: 18,
-  }
-).addTo(map);
+// const satelliteTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 3,
+//     maxZoom: 18,
+//   }
+// ).addTo(map);
 
 let cityIcon = L.icon({
   iconUrl: "libs/css/images/bigcity.png",
@@ -83,8 +83,8 @@ capitalMCG.addTo(featureGroup1);
 earthquakesMCG.addTo(featureGroup1);
 
 const baseLayers = {
-  Satellite: satelliteTiles,
-  Topographic: topographicTiles,
+  // Satellite: satelliteTiles,
+  // Topographic: topographicTiles,
   Street: streetTiles,
 };
 
@@ -133,12 +133,21 @@ function locationData(selectedCountry) {
       )
       .catch((error) => logError(error))
       .then(() => getData(infoStore.twoLetterCountryCode))
+      .then(() => setSelected())
       .catch((error) => console.log(error));
   } else {
     //destroy featureGroup
     //call getData with userLocation (two letter country code)
     console.log();
     getData(selectedCountry);
+  }
+
+  //setSelected
+  function setSelected() {
+    $(`#select option[value=${infoStore.twoLetterCountryCode}]`).prop(
+      "selected",
+      true
+    );
   }
 
   //-------------------getLocation() - declared inside locationData()-----------------//

@@ -15,51 +15,20 @@
     <title>Gazatteer</title>
   </head>
   <body>
-    <div id="preloader"></div>  
+    <div id="preloader">Gazatteer loading...</div>  
     <div id="map">
       <div id="nav-container">
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-3">
   <div class="container">
-        <div class="navbar-brand"><span class="font-weight-bold"> Gazatteer</span>
-          <span id="decorative-bars"> || </span>
-          <span id="nav-country-name" class="api-country font-weight-normal"></span>
-          <img id="nav-flag" class="api-flag img-fluid">
-        </div> 
-      <button
-      class="navbar-toggler"
-      data-toggle="collapse"
-      data-target="#navbarNav"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            href="#"
-            data-toggle="modal"
-            data-target="#infoModal"
-            >General Info</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Places of Interest</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">News</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" data-toggle="modal" data-target="#selectCountryModal">Change Country</a>
-        </li>
-      </ul>
+      <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="inputGroupSelect01">Select</label>
+      </div>
+      <select class="custom-select" id="select"></select>
     </div>
   </div>
 </nav>
-
-
     </div>  
-
       <!-- INFORMATION MODAL -->
       <div class="modal" id="infoModal">
         <div class="modal-dialog .modal-dialog-scrollable">
