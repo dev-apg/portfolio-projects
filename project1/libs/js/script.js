@@ -96,6 +96,23 @@ const overlays = {
 
 L.control.layers(baseLayers, overlays).addTo(map);
 
+// Easy Buttons
+
+const easyButton = L.easyButton({
+  states: [
+    {
+      icon: "<span class='fas fa-info' ></span>",
+      onClick: function () {
+        $("#infoModal").modal("show");
+      },
+      id: "myEasyButton",
+    },
+  ],
+}).addTo(map);
+
+// $("myEasyButton").attr("data-toggle", "modal");
+// $("myEasyButton").attr("data-target", "#infoModal");
+
 //CALL FUNCTIONS
 populateSelect();
 locationData();
