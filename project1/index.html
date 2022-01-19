@@ -33,7 +33,7 @@
     </div>  
       <!-- INFORMATION MODAL -->
       <div class="modal" id="infoModal">
-        <div class="modal-dialog .modal-dialog-scrollable">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
             <div class="modal-header text-center">
               <h5 class="modal-title lead api-country" id="api-location-string" ></h5>
@@ -100,26 +100,22 @@
         </div>
       </div>
 
-      <!-------- SELECT COUNTRY MODAL ---------------->
-
-    <div class="modal" id="selectCountryModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Select Country</h5>
-            <button class="close" data-dismiss="modal">&times;</button>
-          </div>
-          <div class="modal-body">
-            <select id="select" class="custom-select" ></select>
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary " data-dismiss="modal">
-              Close
-            </button>
+      <!-------- WIKI MODAL ---------------->
+      <div class="modal" id="wikiModal">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header text-center">
+              <h5 class="modal-title lead api-country" id="">Title</h5>
+              <img class="api-flag fluid" />
+              <button class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div id="wiki-data"></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+   
     
     <!-- JS SCRIPTS -->
     <!-- MINIFIED JQUERY -->

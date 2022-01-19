@@ -96,9 +96,9 @@ const overlays = {
 
 L.control.layers(baseLayers, overlays).addTo(map);
 
-// Easy Buttons
-
-const easyButton = L.easyButton({
+// EASY BUTTONS
+//general info button
+const generalInfoButton = L.easyButton({
   states: [
     {
       icon: "<span class='fas fa-info' ></span>",
@@ -110,8 +110,17 @@ const easyButton = L.easyButton({
   ],
 }).addTo(map);
 
-// $("myEasyButton").attr("data-toggle", "modal");
-// $("myEasyButton").attr("data-target", "#infoModal");
+const wikiButton = L.easyButton({
+  states: [
+    {
+      icon: "<span class='fab fa-wikipedia-w' ></span>",
+      onClick: function () {
+        $("#wikiModal").modal("show");
+      },
+      id: "myEasyButton",
+    },
+  ],
+}).addTo(map);
 
 //CALL FUNCTIONS
 populateSelect();
@@ -233,6 +242,7 @@ function locationData(selectedCountry) {
 
     //remove previous layers
     featureGroup1.eachLayer((layer) => layer.clearLayers());
+    $("#wiki-data").empty();
     if (!infoStore.geojsonCountryOutline === "") {
       infoStore.geojsonCountryOutline.remove();
     }
@@ -243,6 +253,7 @@ function locationData(selectedCountry) {
       .then(() => geonamesCitiesCall(infoStore.boundingBox, countryCodeISO2))
       .then(() => geonamesEarthquakesCall(infoStore.boundingBox))
       .then(() => restCountriesCall(infoStore.threeLetterCountryCode))
+      .then(() => geonamesWikiCall())
       .then(() => addToHTML());
 
     function getGeoJSONData(countryCodeISO2) {
@@ -456,6 +467,37 @@ function locationData(selectedCountry) {
       });
     }
 
+    function geonamesWikiCall() {
+      return $.ajax({
+        url: "libs/php/api-geonames-wikipedia.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          north: infoStore.boundingBox._northEast.lat,
+          south: infoStore.boundingBox._southWest.lat,
+          east: infoStore.boundingBox._northEast.lng,
+          west: infoStore.boundingBox._southWest.lng,
+        },
+        success: function (result) {
+          console.log(result.data);
+          const articles = JSON.parse(result.data);
+          articles.forEach((story) => {
+            // console.log(story);
+            $("#wiki-data").append(
+              `<p class="lead">${story[0][0]}</p><p>${story[1][0]}</p>
+              <p><a href=${story[2][0]} target="_blank">${story[2][0]}</a></p><hr/>`
+            );
+          });
+        },
+
+        error: function (jqXHR, textStatus, errorThrown) {
+          console.log(jqXHR);
+          console.log(textStatus);
+          console.log(errorThrown);
+        },
+      });
+    }
+
     function addToHTML() {
       $(".api-country").html(infoStore.countryName);
       $("#api-capital").html(infoStore.capital);
@@ -501,6 +543,15 @@ function populateSelect(countryCodeISO3) {
     },
   });
 }
+
+$("#infoModal")
+  .modal()
+  .on("shown", function () {
+    $("body").css("overflow", "hidden");
+  })
+  .on("hidden", function () {
+    $("body").css("overflow", "auto");
+  });
 
 //---makes population figures readable----//
 function fixPopulation(num) {
