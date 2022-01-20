@@ -15,6 +15,11 @@ body,
   height: 100vh;
 }
 
+.scroll-disable {
+  overflow: hidden;
+  overflow-y: auto;
+}
+
 caption {
   caption-side: top;
 }

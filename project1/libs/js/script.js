@@ -110,12 +110,28 @@ const generalInfoButton = L.easyButton({
   ],
 }).addTo(map);
 
+//wikipedia articles
 const wikiButton = L.easyButton({
   states: [
     {
       icon: "<span class='fab fa-wikipedia-w' ></span>",
       onClick: function () {
         $("#wikiModal").modal("show");
+      },
+      id: "myEasyButton",
+    },
+  ],
+}).addTo(map);
+
+//newsarticles
+const newsButton = L.easyButton({
+  states: [
+    {
+      icon: "<span class='fas fa-newspaper' ></span>",
+      onClick: function () {
+        $("#newsModal").modal("show");
+        $("body").addClass("scroll-disable");
+        $("#map").addClass("scroll-disable");
       },
       id: "myEasyButton",
     },
@@ -254,6 +270,7 @@ function locationData(selectedCountry) {
       .then(() => geonamesEarthquakesCall(infoStore.boundingBox))
       .then(() => restCountriesCall(infoStore.threeLetterCountryCode))
       .then(() => geonamesWikiCall())
+      .then(() => apiNewsCall())
       .then(() => addToHTML());
 
     function getGeoJSONData(countryCodeISO2) {
@@ -498,6 +515,37 @@ function locationData(selectedCountry) {
       });
     }
 
+    function apiNewsCall() {
+      console.log("***apiNewsCall***");
+      console.log(infoStore.countryName);
+      return $.ajax({
+        url: "libs/php/api-apinews.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          countryname: infoStore.countryName,
+          // countryname: "United%Kingdom",
+        },
+        success: function (result) {
+          console.log(result);
+          // const articles = JSON.parse(result.data);
+          result.data.articles.forEach((story) => {
+            console.log(story);
+            $("#news-data").append(
+              `<p class="lead">${story.title}</p><p>${story.description}</p>
+               <p><a href=${story.url} target="_blank">${story.url}</a></p><hr/>`
+            );
+          });
+        },
+
+        error: function (jqXHR, textStatus, errorThrown) {
+          console.log(jqXHR);
+          console.log(textStatus);
+          console.log(errorThrown);
+        },
+      });
+    }
+
     function addToHTML() {
       $(".api-country").html(infoStore.countryName);
       $("#api-capital").html(infoStore.capital);
@@ -544,14 +592,14 @@ function populateSelect(countryCodeISO3) {
   });
 }
 
-$("#infoModal")
-  .modal()
-  .on("shown", function () {
-    $("body").css("overflow", "hidden");
-  })
-  .on("hidden", function () {
-    $("body").css("overflow", "auto");
-  });
+// $("#infoModal")
+//   .modal()
+//   .on("shown", function () {
+//     $("body").css("overflow", "hidden");
+//   })
+//   .on("hidden", function () {
+//     $("body").css("overflow", "auto");
+//   });
 
 //---makes population figures readable----//
 function fixPopulation(num) {
