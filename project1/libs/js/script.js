@@ -71,16 +71,23 @@ let earthquakeIcon = L.icon({
   iconSize: [38, 45], // size of the icon
 });
 
+let volcanoIcon = L.icon({
+  iconUrl: "libs/css/images/volcano.png",
+  iconSize: [38, 45], // size of the icon
+});
+
 // set up layer group
 const featureGroup1 = L.featureGroup().addTo(map);
 
 const citiesMCG = L.markerClusterGroup();
 const capitalMCG = L.markerClusterGroup();
 const earthquakesMCG = L.markerClusterGroup();
+const volcanoesMCG = L.markerClusterGroup();
 
 citiesMCG.addTo(featureGroup1);
 capitalMCG.addTo(featureGroup1);
 earthquakesMCG.addTo(featureGroup1);
+volcanoesMCG.addTo(featureGroup1);
 
 const baseLayers = {
   // Satellite: satelliteTiles,
@@ -92,6 +99,7 @@ const overlays = {
   cities: citiesMCG,
   capital: capitalMCG,
   earthquakes: earthquakesMCG,
+  volcanoes: volcanoesMCG,
 };
 
 L.control.layers(baseLayers, overlays).addTo(map);
@@ -165,6 +173,7 @@ function locationData(selectedCountry) {
     longitude: "",
     area: "",
     flag: "",
+    cityDetails: [],
   };
 
   if (!selectedCountry) {
@@ -271,6 +280,7 @@ function locationData(selectedCountry) {
       .then(() => restCountriesCall(infoStore.threeLetterCountryCode))
       .then(() => geonamesWikiCall())
       .then(() => apiNewsCall())
+      .then(() => apiVolcanoesCall())
       .then(() => addToHTML());
 
     function getGeoJSONData(countryCodeISO2) {
@@ -363,6 +373,11 @@ function locationData(selectedCountry) {
             console.log(city);
             if (city.countrycode === countryCodeISO2) {
               if (city.toponymName !== infoStore.capital) {
+                infoStore.cityDetails.push({
+                  toponymName: city.toponymName,
+                  lat: city.lat,
+                  lng: city.lng,
+                });
                 L.marker([city.lat, city.lng], {
                   icon: cityIcon,
                   riseOnHover: true,
@@ -374,6 +389,11 @@ function locationData(selectedCountry) {
                     )}`
                   );
               } else {
+                infoStore.cityDetails.push({
+                  toponymName: city.toponymName,
+                  lat: city.lat,
+                  lng: city.lng,
+                });
                 L.marker([city.lat, city.lng], {
                   icon: capitalCityIcon,
                   riseOnHover: true,
@@ -388,6 +408,7 @@ function locationData(selectedCountry) {
               }
             }
           });
+          console.log(infoStore.cityDetails);
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -441,6 +462,7 @@ function locationData(selectedCountry) {
             L.marker([earthquake.lat, earthquake.lng], {
               color: "#f8b02b",
               icon: earthquakeIcon,
+              riseOnHover: true,
             })
               .addTo(earthquakesMCG)
               .bindPopup(
@@ -496,10 +518,9 @@ function locationData(selectedCountry) {
           west: infoStore.boundingBox._southWest.lng,
         },
         success: function (result) {
-          console.log(result.data);
+          // console.log(result.data);
           const articles = JSON.parse(result.data);
           articles.forEach((story) => {
-            // console.log(story);
             $("#wiki-data").append(
               `<p class="lead">${story[0][0]}</p><p>${story[1][0]}</p>
               <p><a href=${story[2][0]} target="_blank">${story[2][0]}</a></p><hr/>`
@@ -524,17 +545,49 @@ function locationData(selectedCountry) {
         dataType: "json",
         data: {
           countryname: infoStore.countryName,
-          // countryname: "United%Kingdom",
         },
         success: function (result) {
           console.log(result);
           // const articles = JSON.parse(result.data);
           result.data.articles.forEach((story) => {
-            console.log(story);
+            // console.log(story);
             $("#news-data").append(
               `<p class="lead">${story.title}</p><p>${story.description}</p>
                <p><a href=${story.url} target="_blank">${story.url}</a></p><hr/>`
             );
+          });
+        },
+
+        error: function (jqXHR, textStatus, errorThrown) {
+          console.log(jqXHR);
+          console.log(textStatus);
+          console.log(errorThrown);
+        },
+      });
+    }
+
+    function apiVolcanoesCall() {
+      console.log("***apiVolcanoesCall***");
+      return $.ajax({
+        url: "libs/php/api-volcanoes.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          countryname: infoStore.countryName,
+        },
+        success: function (result) {
+          console.log(result);
+          result.data.forEach((volcano) => {
+            console.log(volcano.properties);
+            L.marker(
+              [volcano.properties.Latitude, volcano.properties.Longitude],
+              {
+                icon: volcanoIcon,
+                riseOnHover: true,
+              }
+            )
+              .addTo(volcanoesMCG)
+              .bindPopup(`${volcano.properties.Volcano_Name}<br>Volcano`);
           });
         },
 
@@ -591,15 +644,6 @@ function populateSelect(countryCodeISO3) {
     },
   });
 }
-
-// $("#infoModal")
-//   .modal()
-//   .on("shown", function () {
-//     $("body").css("overflow", "hidden");
-//   })
-//   .on("hidden", function () {
-//     $("body").css("overflow", "auto");
-//   });
 
 //---makes population figures readable----//
 function fixPopulation(num) {
