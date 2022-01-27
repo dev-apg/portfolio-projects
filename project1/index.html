@@ -9,128 +9,153 @@
     <link rel="stylesheet" type="text/css" href="libs/css/style.css" />
     <link rel="stylesheet" href="libs/css/bootstrap.min.css" />
     <link rel="stylesheet" href="libs/css/leaflet.css" />
-    <link rel="stylesheet" href="libs/css/MarkerCluster.css">
-    <link rel="stylesheet" href="libs/css/MarkerCluster.Default.css">
-    <link rel="stylesheet" href="libs/css/easy-button.css">
-    <link href="libs/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="libs/css/MarkerCluster.css" />
+    <link rel="stylesheet" href="libs/css/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="libs/css/easy-button.css" />
+    <link href="libs/css/all.css" rel="stylesheet" />
     <script src="libs/js/leaflet.js"></script>
-    <title>Gazatteer</title>
+    <title>Gazetteer</title>
   </head>
   <body>
-    <div id="preloader">Gazatteer loading...</div>  
+    <div id="preloader">Gazetteer loading...</div>
     <div id="map"></div>
-      <div id="nav-container">
-      <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-3">
-        <div class="container">
-      <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <label class="input-group-text" for="inputGroupSelect01">Select</label>
-      </div>
-      <select class="custom-select" id="select"></select>
+    <div id="nav-container" class="">
+      <nav
+        class="navbar navbar-expand-sm navbar-dark bg-dark mb-3"
+      >
+        <img
+          src="libs/imgs/Gazetteer@2x.png"
+          id="gazetteer-large"
+          class="fluid align-self-start"
+          alt=""
+        />
+        <img
+          src="libs/imgs/Gazetteer.png"
+          id="gazetteer-small"
+          class="fluid align-self-start"
+          alt=""
+        />
+        <div id="inner-nav-container" class="d-flex align-items">
+          <div id="nav-flag-div" class="">
+            <img id="nav-flag" class="api-flag fluid" alt="flag" />
+          </div>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01"
+                >Select</label
+              >
+            </div>
+            <select class="custom-select" id="select"></select>
+          </div>
+        </div>
+      </nav>
     </div>
-  </div>
-</nav>
-    </div>  
-      <!-- INFORMATION MODAL -->
-      <div class="modal" id="infoModal">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header text-center">
-              <h5 class="modal-title lead api-country" id="api-location-string" ></h5>
-              <img class="api-flag">
-              <button class="close" data-dismiss="modal">&times;</button>
+    <!-- INFORMATION MODAL -->
+    <div class="modal" id="infoModal">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header text-center">
+            <h5 class="modal-title lead api-country"></h5>
+            <img class="api-flag" />
+            <button class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="data-content">
+              <table class="table">
+                <tr>
+                  <td class="text-right">Country:</td>
+                  <td class="api-country"></td>
+                </tr>
+                <tr>
+                  <td class="text-right">Capital:</td>
+                  <td id="api-capital"></td>
+                </tr>
+                <tr>
+                  <td class="text-right">Pop. size:</td>
+                  <td id="api-population"></td>
+                </tr>
+                <tr>
+                  <td class="text-right">Main Language:</td>
+                  <td id="api-languages"></td>
+                </tr>
+                <tr>
+                  <td class="text-right">Continent:</td>
+                  <td id="api-continent"></td>
+                </tr>
+                <tr>
+                  <td class="text-right">Latitude/Longitude:</td>
+                  <td>
+                    <span id="api-latitude"></span>,
+                    <span id="api-longitude"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="text-right">Currency:</td>
+                  <td id="api-currency"></td>
+                </tr>
+                <tr>
+                  <td class="text-right" id="api-exchange-currencies">
+                    Ex.Rate($)
+                  </td>
+                  <td id="api-exchange-rate"></td>
+                </tr>
+                <tr>
+                  <td class="text-right">
+                    Area <span>km<sup>2</sup></span
+                    >:
+                  </td>
+                  <td id="api-area"></td>
+                </tr>
+                <tr>
+                  <td class="text-right">Current Weather:</td>
+                  <td id="api-current-weather"></td>
+                </tr>
+                <tr>
+                  <td class="text-right">Forecast:</td>
+                  <td id="api-weather-forecast"></td>
+                </tr>
+              </table>
             </div>
-            <div class="modal-body">
-              <div id="data-content">
-                <table class="table">
-                  <caption class="lead" id="api-location-string"><caption>
-                 <tr >
-                   <td class="text-right">Country: </td>
-                    <td class="api-country"></td>
-                  </tr>
-                  <tr>
-                    <td class="text-right">Capital: </td><td id="api-capital"></td>
-                  </tr>
-                  <tr>
-                    <td class="text-right">Pop. size: </td >
-                    <td id="api-population"></td>
-                  </tr>
-                  <tr>
-                    <td class="text-right">Main Language: </td >
-                    <td id="api-languages"></td>
-                  </tr>
-                  <tr>
-                    <td class="text-right">Continent: </td >
-                    <td id="api-continent"></td>
-                  </tr>
-                  <tr>
-                    <td class="text-right">Latitude/Longitude: </td >
-                    <td ><span id="api-latitude"></span>, <span id="api-longitude"></span></td>
-                  </tr>
-                  <tr>
-                    <td class="text-right">Currency: </td >
-                    <td id="api-currency"></td>
-                  </tr>
-                  <tr>
-                    <td class="text-right" id="api-exchange-currencies">Ex.Rate($)</td >
-                    <td id="api-exchange-rate"></td>
-                  </tr>
-                  <tr>
-                    <td class="text-right">Area <span>km<sup>2</sup></span>: </td >
-                    <td id="api-area"></td>
-                  </tr> 
-                  <tr>
-                    <td class="text-right">Current Weather: </td >
-                    <td id="api-current-weather"></td>
-                  </tr>
-                  <tr>
-                    <td class="text-right">Forecast: </td id="api-weather-forecast">
-                    <td></td>
-                  </tr>
-                </table>
-              </div>
-             
-            </div>
-            <!-- <div class="modal-footer">
+          </div>
+          <!-- <div class="modal-footer">
               <button class="btn btn-secondary" data-dismiss="modal">
                 Close
               </button>
             </div> -->
-          </div>
-        </div>
-      </div>
-
-      <!-------- WIKI MODAL ---------------->
-      <div class="modal" id="wikiModal">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header text-center">
-              <h5 class="modal-title lead api-country" id="">Title</h5>
-              <img class="api-flag fluid" />
-              <button class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-              <div id="wiki-data"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-   <!-- NEWS MODAL -->
-   <div class="modal" id="newsModal">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header text-center">
-          <h5 class="modal-title lead api-country" id="">Title</h5>
-          <img class="api-flag fluid" />
-          <button class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div id="news-data"></div>
         </div>
       </div>
     </div>
-  </div> 
 
+    <!-------- WIKI MODAL ---------------->
+    <div class="modal" id="wikiModal">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header text-center">
+            <h5 class="modal-title lead api-country" id="">Title</h5>
+            <img class="api-flag fluid" />
+            <button class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="wiki-data"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- NEWS MODAL -->
+    <div class="modal" id="newsModal">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header text-center">
+            <h5 class="modal-title lead api-country" id="">Title</h5>
+            <img class="api-flag fluid" />
+            <button class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="news-data"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- JS SCRIPTS -->
     <!-- MINIFIED JQUERY -->

@@ -7,21 +7,92 @@ html,
 body,
 #map {
   position: absolute;
-  top: 24px;
-  bottom: 0;
-  left: 0;
-  right: 0;
+
   width: 100%;
   height: 100vh;
 }
 
-.scroll-disable {
-  overflow: hidden;
-  overflow-y: auto;
+/* outermost div */
+#nav-container {
+  position: fixed;
+  top: 0px;
+  /* left: 10px; */
+  right: 0;
+  z-index: 500;
+  width: 100%;
+  color: #fff;
+  /* border: red 1px solid; */
+  align-items: center;
+}
+
+#inner-nav-container {
+  border: blue 1px solid;
+  margin-left: auto;
+  margin-right: auto;
+  /* display: flex;
+  justify-content: space-around;
+  align-items: center; */
+}
+
+#nav-flag-div {
+  background-color: #343a40;
+  height: 37px;
+  width: 74px;
+  margin-right: 5px;
+}
+
+#inner-nav-container img {
+  border-radius: 3px;
+}
+
+div.input-group {
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  /* border: red solid 1px; */
+}
+
+#nav-flag {
+  max-height: 37px;
+  margin-right: 4px;
+}
+
+#gazetteer-large {
+  max-height: 37px;
+  position: absolute;
+  display: block;
+  /* margin-right: 4px; */
+}
+
+#gazetteer-small {
+  position: absolute;
+  display: none;
+}
+
+@media only screen and (max-width: 520px) {
+  #gazetteer-large {
+    display: none;
+  }
+  #gazetteer-small {
+    display: block;
+    max-width: 85px;
+    margin-top: 8px;
+    left: 6px;
+  }
+}
+
+#nav-flag {
+  /* padding: 0px; */
+  /* float: right; */
 }
 
 caption {
   caption-side: top;
+}
+
+#select {
+  max-width: 11rem;
 }
 
 /* Preloader */
@@ -60,31 +131,17 @@ caption {
   right: 8px;
 }
 
-#nav-container {
-  position: fixed;
-  top: 0px;
-  /* left: 10px; */
-  right: 0;
-  z-index: 500;
-  width: 100%;
-}
-
 div.leaflet-control-zoom.leaflet-bar.leaflet-control {
   top: 75vh;
 }
 
-img {
-  max-height: 15px;
-  /* color: rgba(35, 161, 192, 0.548); */
+div.leaflet-control-layers.leaflet-control {
+  top: 75vh;
 }
 
-/* .leaflet-control-scale-line {
-  bottom: 10vh;
+/* .modal-dialog {
+  height: 50vh;
 } */
-
-.modal-dialog {
-  /* height: 50vh; */
-}
 
 @media only screen and (max-width: 775px) {
   #nav-flag {

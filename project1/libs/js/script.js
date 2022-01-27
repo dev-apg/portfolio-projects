@@ -102,7 +102,7 @@ const overlays = {
   volcanoes: volcanoesMCG,
 };
 
-L.control.layers(baseLayers, overlays).addTo(map);
+L.control.layers(baseLayers, overlays, { collapsed: false }).addTo(map);
 
 // EASY BUTTONS
 //general info button
