@@ -13,60 +13,58 @@ body,
 }
 
 /* outermost div */
-#nav-container {
+#nav-container-all {
+  background-color: #343a40;
   position: fixed;
   top: 0px;
-  /* left: 10px; */
   right: 0;
   z-index: 500;
   width: 100%;
   color: #fff;
   /* border: red 1px solid; */
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 
-#inner-nav-container {
-  border: blue 1px solid;
-  margin-left: auto;
-  margin-right: auto;
-  /* display: flex;
-  justify-content: space-around;
-  align-items: center; */
+#gazetteer-large {
+  max-height: 37px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  /* border: green 1px solid; */
 }
 
-#nav-flag-div {
+#flag-select-container {
+  /* border: blue 1px solid; */
+  /* width: 100%; */
+  display: flex;
+  /* justify-content: flex-start; */
+  /* align-content: center; */
+}
+
+.nav-flag-div {
+  background: no-repeat url("/imgs/gb.png") center center/cover;
   background-color: #343a40;
   height: 37px;
   width: 74px;
   margin-right: 5px;
 }
 
-#inner-nav-container img {
-  border-radius: 3px;
+.nav-spacer-div {
+  /* background: no-repeat url("/imgs/gb.png") center center/cover; */
+  background-color: #343a40;
+  height: 37px;
+  width: 74px;
+  margin-right: 5px;
 }
 
 div.input-group {
-  width: 300px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  /* border: red solid 1px; */
-}
-
-#nav-flag {
-  max-height: 37px;
-  margin-right: 4px;
-}
-
-#gazetteer-large {
-  max-height: 37px;
-  position: absolute;
-  display: block;
-  /* margin-right: 4px; */
+  max-width: 14.5rem;
 }
 
 #gazetteer-small {
-  position: absolute;
+  /* position: absolute; */
   display: none;
 }
 
@@ -82,17 +80,8 @@ div.input-group {
   }
 }
 
-#nav-flag {
-  /* padding: 0px; */
-  /* float: right; */
-}
-
 caption {
   caption-side: top;
-}
-
-#select {
-  max-width: 11rem;
 }
 
 /* Preloader */
@@ -122,10 +111,6 @@ caption {
   animation: animate-preloader 1s linear infinite;
 }
 
-/* .btn {
-  pointer-events: auto;
-} */
-
 .leaflet-control-layers {
   top: 30px;
   right: 8px;
@@ -139,24 +124,15 @@ div.leaflet-control-layers.leaflet-control {
   top: 75vh;
 }
 
-/* .modal-dialog {
+.modal-dialog {
   height: 50vh;
-} */
+}
 
 @media only screen and (max-width: 775px) {
   #nav-flag {
     display: none;
   }
 }
-
-/* Important part */
-/* .modal-dialog {
-  overflow-y: initial !important;
-}
-.modal-body {
-  height: 80vh;
-  overflow-y: auto;
-} */
 
 @media only screen and (max-width: 366px) {
   #nav-country-name {
@@ -167,10 +143,6 @@ div.leaflet-control-layers.leaflet-control {
     display: none;
   }
 }
-
-/* #infoModal {
-  max-height: 50vh;
-} */
 
 @-webkit-keyframes animate-preloader {
   0% {

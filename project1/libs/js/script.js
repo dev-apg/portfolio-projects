@@ -610,6 +610,7 @@ function locationData(selectedCountry) {
       $("#api-longitude").html(infoStore.longitude);
       $("#api-area").html(infoStore.area);
       $(".api-flag").attr("src", infoStore.flag);
+      $(".nav-flag-div").css("background-image", `url(${infoStore.flag})`);
     }
   }
 }

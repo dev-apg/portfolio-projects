@@ -19,26 +19,17 @@
   <body>
     <div id="preloader">Gazetteer loading...</div>
     <div id="map"></div>
-    <div id="nav-container" class="">
-      <nav
-        class="navbar navbar-expand-sm navbar-dark bg-dark mb-3"
-      >
+    <nav class="">
+      <!-- class="navbar navbar-expand-sm navbar-dark bg-dark mb-3" -->
+      <div id="nav-container-all" class="">
         <img
           src="libs/imgs/Gazetteer@2x.png"
           id="gazetteer-large"
           class="fluid align-self-start"
           alt=""
         />
-        <img
-          src="libs/imgs/Gazetteer.png"
-          id="gazetteer-small"
-          class="fluid align-self-start"
-          alt=""
-        />
-        <div id="inner-nav-container" class="d-flex align-items">
-          <div id="nav-flag-div" class="">
-            <img id="nav-flag" class="api-flag fluid" alt="flag" />
-          </div>
+        <div id="flag-select-container" class="">
+          <div class="nav-flag-div"></div>
           <div class="input-group">
             <div class="input-group-prepend">
               <label class="input-group-text" for="inputGroupSelect01"
@@ -47,9 +38,10 @@
             </div>
             <select class="custom-select" id="select"></select>
           </div>
+          <div class="nav-spacer-div"></div>
         </div>
-      </nav>
-    </div>
+      </div>
+    </nav>
     <!-- INFORMATION MODAL -->
     <div class="modal" id="infoModal">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
