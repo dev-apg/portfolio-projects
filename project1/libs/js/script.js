@@ -25,16 +25,27 @@ const map = L.map("map", {
   zoom: 4,
 });
 
-//import map tiles
 const streetTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
     attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     minZoom: 3,
     maxZoom: 18,
   }
 ).addTo(map);
+
+// MAPTILER TILES - CURRENTLY LOCKED OUT DUE TO OVER USE OF FREE ACCOUNT
+//import map tiles
+// const streetTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 3,
+//     maxZoom: 18,
+//   }
+// ).addTo(map);
 
 // const topographicTiles = L.tileLayer(
 //   "https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
@@ -166,6 +177,7 @@ function locationData(selectedCountry) {
     capital: "",
     population: "",
     currencyISO3Code: "",
+    currencyName: "",
     continent: "",
     geonameId: "",
     languages: "",
@@ -174,6 +186,7 @@ function locationData(selectedCountry) {
     area: "",
     flag: "",
     cityDetails: [],
+    countryImages: [],
   };
 
   if (!selectedCountry) {
@@ -268,6 +281,7 @@ function locationData(selectedCountry) {
     //remove previous layers
     featureGroup1.eachLayer((layer) => layer.clearLayers());
     $("#wiki-data").empty();
+    $("#info-image-div").empty();
     if (!infoStore.geojsonCountryOutline === "") {
       infoStore.geojsonCountryOutline.remove();
     }
@@ -281,6 +295,7 @@ function locationData(selectedCountry) {
       .then(() => geonamesWikiCall())
       .then(() => apiNewsCall())
       .then(() => apiVolcanoesCall())
+      .then(() => apiUnsplashCall())
       .then(() => addToHTML());
 
     function getGeoJSONData(countryCodeISO2) {
@@ -495,6 +510,7 @@ function locationData(selectedCountry) {
             infoStore.longitude = result.data.latlng[1];
             infoStore.area = result.data.area;
             infoStore.flag = result.data.flags.png;
+            infoStore.currencyName = result.data.currencies[0].name;
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -599,11 +615,33 @@ function locationData(selectedCountry) {
       });
     }
 
+    function apiUnsplashCall() {
+      console.log("***apiUnsplashCall***");
+      return $.ajax({
+        url: "libs/php/api-unsplash.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          countryname: infoStore.countryName,
+        },
+        success: function (result) {
+          infoStore.countryImages.push(result.data);
+          console.log(infoStore.countryImages[0]);
+        },
+
+        error: function (jqXHR, textStatus, errorThrown) {
+          console.log(jqXHR);
+          console.log(textStatus);
+          console.log(errorThrown);
+        },
+      });
+    }
+
     function addToHTML() {
       $(".api-country").html(infoStore.countryName);
       $("#api-capital").html(infoStore.capital);
       $("#api-population").html(fixPopulation(infoStore.population));
-      $("#api-currency").html(infoStore.currencyCode);
+      $("#api-currency").html(infoStore.currencyName);
       $("#api-continent").html(infoStore.continent);
       $("#api-languages").html(infoStore.languages);
       $("#api-latitude").html(infoStore.latitude);
@@ -611,6 +649,9 @@ function locationData(selectedCountry) {
       $("#api-area").html(infoStore.area);
       $(".api-flag").attr("src", infoStore.flag);
       $(".nav-flag-div").css("background-image", `url(${infoStore.flag})`);
+      $("#info-image-div").append(
+        `<img id='country-image' src=${infoStore.countryImages[0]}/>`
+      );
     }
   }
 }

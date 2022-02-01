@@ -30,7 +30,7 @@ body,
 #gazetteer-large {
   max-height: 37px;
   position: absolute;
-  top: 0px;
+  top: 3px;
   left: 0px;
   /* border: green 1px solid; */
 }
@@ -44,11 +44,13 @@ body,
 }
 
 .nav-flag-div {
-  background: no-repeat url("/imgs/gb.png") center center/cover;
+  background: no-repeat url("") center center/cover;
   background-color: #343a40;
   height: 37px;
   width: 74px;
-  margin-right: 5px;
+  border-radius: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .nav-spacer-div {
@@ -56,11 +58,14 @@ body,
   background-color: #343a40;
   height: 37px;
   width: 74px;
-  margin-right: 5px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 div.input-group {
+  margin: 3px;
   max-width: 14.5rem;
+  max-height: 37px;
 }
 
 #gazetteer-small {
@@ -68,15 +73,33 @@ div.input-group {
   display: none;
 }
 
-@media only screen and (max-width: 520px) {
+.api-flag {
+  width: 50px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+
+#info-image-div {
+  /* border: red 1px solid; */
+  height: 100px;
+}
+
+#country-image {
+  border-radius: 5px;
+}
+
+@media only screen and (max-width: 640px) {
   #gazetteer-large {
     display: none;
   }
-  #gazetteer-small {
-    display: block;
-    max-width: 85px;
-    margin-top: 8px;
-    left: 6px;
+}
+
+@media only screen and (max-width: 394px) {
+  .nav-flag-div {
+    display: none;
+  }
+  .nav-spacer-div {
+    display: none;
   }
 }
 
@@ -126,22 +149,6 @@ div.leaflet-control-layers.leaflet-control {
 
 .modal-dialog {
   height: 50vh;
-}
-
-@media only screen and (max-width: 775px) {
-  #nav-flag {
-    display: none;
-  }
-}
-
-@media only screen and (max-width: 366px) {
-  #nav-country-name {
-    display: none;
-  }
-
-  #decorative-bars {
-    display: none;
-  }
 }
 
 @-webkit-keyframes animate-preloader {
