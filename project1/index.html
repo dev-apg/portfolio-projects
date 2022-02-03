@@ -19,8 +19,8 @@
   <body>
     <div id="preloader">Gazetteer loading...</div>
     <div id="map"></div>
-    <nav class="">
-      <!-- class="navbar navbar-expand-sm navbar-dark bg-dark mb-3" -->
+
+    <nav>
       <div id="nav-container-all" class="">
         <img
           src="libs/imgs/Gazetteer@2x.png"
@@ -40,17 +40,17 @@
         </div>
       </div>
     </nav>
+
     <!-- INFORMATION MODAL -->
     <div class="modal fade" id="infoModal">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-          <div class="modal-header text-center">
-            <h5 class="modal-title lead" id="">
-              <span class="api-country"></span>
-            </h5>
-            <img class="api-flag fluid" />
+          <div class="modal-header">
+            <img class="api-flag" />
+            <h5 class="lead">General Information</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
+
           <div class="modal-body">
             <div id="data-content">
               <div
@@ -131,9 +131,9 @@
     <div class="modal fade" id="wikiModal">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-          <div class="modal-header text-center">
-            <h5 class="modal-title lead api-country" id="">Title</h5>
+          <div class="modal-header">
             <img class="api-flag fluid" />
+            <h5 class="modal-title lead" id="">Wikipedia Articles</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
@@ -142,13 +142,14 @@
         </div>
       </div>
     </div>
+
     <!-- NEWS MODAL -->
     <div class="modal fade" id="newsModal">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-          <div class="modal-header text-center">
-            <h5 class="modal-title lead api-country" id="">Title</h5>
-            <img class="api-flag fluid" />
+          <div class="modal-header">
+            <img class="api-flag" />
+            <h5 class="modal-title lead" id="">News</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
@@ -159,14 +160,19 @@
     </div>
 
     <!-- JS SCRIPTS -->
-    <!-- MINIFIED JQUERY -->
     <script
       type="application/javascript"
       src="libs/js/jquery-2.2.3.min.js"
     ></script>
-    <script src="libs/js/bootstrap.min.js"></script>
-    <script src="libs/js/leaflet.markercluster.js"></script>
-    <script src="libs/js/easy-button.js"></script>
+    <script
+      type="application/javascript"
+      src="libs/js/bootstrap.min.js"
+    ></script>
+    <script
+      type="application/javascript"
+      src="libs/js/leaflet.markercluster.js"
+    ></script>
+    <script type="application/javascript" src="libs/js/easy-button.js"></script>
     <script type="application/javascript" src="libs/js/script.js"></script>
   </body>
 </html>

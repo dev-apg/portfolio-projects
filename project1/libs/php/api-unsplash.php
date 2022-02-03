@@ -9,7 +9,6 @@
 
 	$countryName = urlencode($_REQUEST['countryname']);
     
-	// $url = "https://api.unsplash.com/search/photos/?query=united%20kingdom&orientation=landscape&client_id=r_dBk7vpq9h1SIS-IqKLPgTXXRDqzaeA0hPvYkWnt1w";
 	$url = "https://api.unsplash.com/search/photos/?query={$countryName}&orientation=landscape&client_id=r_dBk7vpq9h1SIS-IqKLPgTXXRDqzaeA0hPvYkWnt1w";
 
 	$ch = curl_init();
