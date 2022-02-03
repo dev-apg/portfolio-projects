@@ -544,7 +544,7 @@ function locationData(selectedCountry) {
 
     function apiNewsCall() {
       console.log("***apiNewsCall***");
-      console.log(infoStore.countryName);
+      // console.log(infoStore.countryName);
       return $.ajax({
         url: "libs/php/api-apinews.php",
         type: "POST",
@@ -558,8 +558,16 @@ function locationData(selectedCountry) {
           result.data.articles.forEach((story) => {
             // console.log(story);
             $("#news-data").append(
-              `<p class="lead">${story.title}</p><p>${story.description}</p>
-               <p><a href=${story.url} target="_blank">${story.url}</a></p><hr/>`
+              `<p class="lead">${
+                story.title
+              }</p><p class="font-italic">${readableDate(
+                story.publishedAt
+              )}</p><img class="news-image" src=${story.urlToImage}><p>${
+                story.description
+              }</p>
+               <p><a href=${story.url} target="_blank">${
+                story.url
+              }</a></p><hr/>`
             );
           });
         },
@@ -701,4 +709,16 @@ function fixPopulation(num) {
     }
     return (num = num.replace(".0", ""));
   }
+}
+
+//make date readable
+function readableDate(rawDate) {
+  let date = new Date(rawDate);
+  let options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return new Intl.DateTimeFormat("en-GB", options).format(date);
 }

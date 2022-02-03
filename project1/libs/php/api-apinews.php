@@ -11,8 +11,11 @@
 	$country = urlencode($_REQUEST['countryname']);
 
 
-// $url = "https://newsapi.org/v2/everything?q=france&from=2022-01-19&sortBy=popularity&apiKey=5a1e8fc66a7545a19da5af17cdb9e12a";
-$url = "https://newsapi.org/v2/everything?q={$country}&from={$today}&sortBy=popularity&apiKey=5a1e8fc66a7545a19da5af17cdb9e12a";
+	// $url = "https://newsapi.org/v2/everything?q=france&from=2022-01-19&sortBy=popularity&apiKey=5a1e8fc66a7545a19da5af17cdb9e12a";
+	// $url = "https://newsapi.org/v2/everything?q={$country}&from={$today}&sortBy=popularity&apiKey=5a1e8fc66a7545a19da5af17cdb9e12a";
+	// $url = "https://newsapi.org/v2/everything?q={$country}&from={$today}&sortBy=popularity&apiKey=5a1e8fc66a7545a19da5af17cdb9e12a";
+	$url= "https://newsapi.org/v2/everything?q={$country}&sortBy=relevancy&excludeDomains=blogspot.com&sortBy=publishedAt&apiKey=5a1e8fc66a7545a19da5af17cdb9e12a";
+	
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

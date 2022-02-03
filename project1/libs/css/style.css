@@ -82,10 +82,21 @@ div.input-group {
 #info-image-div {
   /* border: red 1px solid; */
   height: 100px;
+  margin-top: -10px;
+  margin-bottom: 5px;
 }
 
 #country-image {
   border-radius: 5px;
+}
+
+.news-image {
+  width: 100%;
+}
+
+.modal-title-container {
+  /* display: flex;
+  justify-content: space-around; */
 }
 
 @media only screen and (max-width: 640px) {
