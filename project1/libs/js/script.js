@@ -347,7 +347,7 @@ function locationData(selectedCountry) {
             infoStore.population = result.data[0].population;
             infoStore.currencyISO3Code = result.data[0].currencyCode;
             infoStore.threeLetterCountryCode = result.data[0].isoAlpha3;
-            infoStore.continent = result.data[0].continent;
+            infoStore.continent = result.data[0].continentName;
             infoStore.geonameId = result.data[0].geonameId;
           }
         },
