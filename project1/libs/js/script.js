@@ -7,11 +7,8 @@ $(window).on("load", function () {
         $(this).remove();
       });
   }
-  //show hide control so it doesn't clash with the dropdown menu
-  // $(".navbar-toggler").on("click", () => {
-  //   $(".leaflet-control-layers").toggle();
-  // });
-  //run locationData on change
+
+  //call locationData on change
   $("#select").change(function () {
     locationData($("#select").val());
   });
@@ -280,7 +277,10 @@ function locationData(selectedCountry) {
 
     //remove previous layers
     featureGroup1.eachLayer((layer) => layer.clearLayers());
+    //clear modal data
     $("#wiki-data").empty();
+    $("#news-data").empty();
+    //clear unsplash country image
     $("#info-image-div").empty();
     if (!infoStore.geojsonCountryOutline === "") {
       infoStore.geojsonCountryOutline.remove();
@@ -320,7 +320,6 @@ function locationData(selectedCountry) {
             });
             //2. create bounding box co-ordinates
             infoStore.boundingBox = infoStore.geojsonCountryOutline.getBounds();
-            // console.log({ boundingBox: infoStore.boundingBox });
           }
         },
 
@@ -334,7 +333,6 @@ function locationData(selectedCountry) {
 
     function geonamesCall(countryCodeISO2) {
       console.log("***geonamesCall***");
-      // console.log({ "geonames input cc": countryCodeISO2 });
       return $.ajax({
         url: "libs/php/api-geonames.php",
         type: "POST",
@@ -343,21 +341,13 @@ function locationData(selectedCountry) {
           countryCodeISO2: countryCodeISO2,
         },
         success: function (result) {
-          // console.log(result.data);
           if (result.status.name == "ok") {
-            //country name
             infoStore.countryName = result.data[0].countryName;
-            //capital city
             infoStore.capital = result.data[0].capital;
-            //population
             infoStore.population = result.data[0].population;
-            //currency name
             infoStore.currencyISO3Code = result.data[0].currencyCode;
-            //country code ISO3
             infoStore.threeLetterCountryCode = result.data[0].isoAlpha3;
-            //continent
             infoStore.continent = result.data[0].continent;
-            //geonameId
             infoStore.geonameId = result.data[0].geonameId;
           }
         },
