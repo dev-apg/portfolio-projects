@@ -875,7 +875,6 @@ document.getElementById("more").onclick = function () {
   Array.from(collection).forEach((row) => {
     row.classList.toggle("hide-row");
   });
-  console.log($("#more").html());
   if ($("#more").html() === "(show forecast)") {
     $("#more").html("(hide forecast)");
   } else {
