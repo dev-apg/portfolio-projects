@@ -114,6 +114,10 @@ div.input-group {
   background-color: rgb(250, 252, 253);
 }
 
+.units {
+  color: rgb(112, 112, 112);
+}
+
 @media only screen and (max-width: 640px) {
   #gazetteer-large {
     display: none;

@@ -596,21 +596,21 @@ function locationData(selectedCountry) {
         },
         success: function (result) {
           // console.log(result.data.list[0]);
-          console.log(result.data.list);
+          // console.log(result.data.list);
 
           const forecast = result.data.list;
           for (let i = 0; i < 5; i++) {
             const obj = {};
             if (i === 0) {
-              obj.dateTime = readableDate(forecast[i].dt_txt);
+              obj.dateTime = forecastTime(forecast[i].dt);
             } else if (
               i > 0 &&
-              readableDate(forecast[i].dt_txt) !==
-                readableDate(forecast[i - 1].dt_txt)
+              forecastDay(forecast[i].dt) === forecastDay(forecast[i - 1].dt)
             ) {
-              obj.dateTime = readableDate(forecast[i].dt_txt);
+              obj.dateTime = forecastTime(forecast[i].dt);
+            } else {
+              obj.dateTime = forecastDayAndTime(forecast[i].dt);
             }
-            // obj.dateTime = readableDate(forecast[i].dt_txt);
             obj.description = forecast[i].weather[0].description;
             obj.icon = forecast[i].weather[0].icon;
             obj.temp = forecast[i].main.temp;
@@ -783,16 +783,48 @@ function readableDate(rawDate) {
   return new Intl.DateTimeFormat("en-GB", options).format(date);
 }
 
-function readableDateUNIX(unixDate) {
-  let date = new Date(unixDate * 1000);
+function forecastDay(rawDate) {
+  rawDate = rawDate * 1000;
+  let date = new Date(rawDate);
   let options = {
     weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
   };
-  const newDate = new Intl.DateTimeFormat("en-GB", options).format(date);
-  return newDate;
+  return new Intl.DateTimeFormat("en-GB", options).format(date);
+}
+
+function forecastTime(rawDate) {
+  rawDate = rawDate * 1000;
+  let date = new Date(rawDate);
+  let hours = date.getHours();
+
+  if (hours === 12) {
+    hours = hours + "pm";
+  } else if (hours > 12) {
+    hours = hours - 12 + "pm";
+  } else {
+    hours = hours + "am";
+  }
+  return hours;
+}
+
+function forecastDayAndTime(rawDate) {
+  rawDate = rawDate * 1000;
+  let date = new Date(rawDate);
+  let options = {
+    weekday: "long",
+  };
+  let hours = date.getHours();
+
+  if (hours === 12) {
+    hours = hours + "pm";
+  } else if (hours === 0) {
+    hours = "12am";
+  } else if (hours > 13) {
+    hours = hours - 12 + "pm";
+  } else {
+    hours = hours + "am";
+  }
+  return new Intl.DateTimeFormat("en-GB", options).format(date) + " " + hours;
 }
 
 //SHOW FORECAST ON INFO MODAL
@@ -801,4 +833,10 @@ document.getElementById("more").onclick = function () {
   Array.from(collection).forEach((row) => {
     row.classList.toggle("hide-row");
   });
+  console.log($("#more").html());
+  if ($("#more").html() === "(more...)") {
+    $("#more").html("(less...)");
+  } else {
+    $("#more").html("(more...)");
+  }
 };
