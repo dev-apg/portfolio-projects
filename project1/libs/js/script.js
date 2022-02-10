@@ -175,6 +175,7 @@ function locationData(selectedCountry) {
     population: "",
     currencyISO3Code: "",
     currencyName: "",
+    currencySymbol: "",
     continent: "",
     geonameId: "",
     languages: "",
@@ -505,6 +506,7 @@ function locationData(selectedCountry) {
             infoStore.area = result.data.area;
             infoStore.flag = result.data.flags.png;
             infoStore.currencyName = result.data.currencies[0].name;
+            infoStore.currencySymbol = result.data.currencies[0].symbol;
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -721,11 +723,12 @@ function locationData(selectedCountry) {
       $("#api-capital").html(infoStore.capital);
       $("#api-population").html(fixPopulation(infoStore.population));
       $("#api-currency").html(infoStore.currencyName);
+      $("#api-currency-symbol").html(infoStore.currencySymbol);
       $("#api-continent").html(infoStore.continent);
       $("#api-languages").html(infoStore.languages);
       $("#api-latitude").html(infoStore.latitude);
       $("#api-longitude").html(infoStore.longitude);
-      $("#api-area").html(infoStore.area);
+      $("#api-area").html(fixPopulation(infoStore.area));
       $(".api-flag").attr("src", infoStore.flag);
       $(".nav-flag-div").css("background-image", `url(${infoStore.flag})`);
       $("#info-image-div").append(
