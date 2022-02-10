@@ -79,15 +79,6 @@
                   <td id="api-continent"></td>
                 </tr>
                 <tr>
-                  <td class="text-right font-weight-bold">
-                    Latitude/Longitude:
-                  </td>
-                  <td>
-                    <span id="api-latitude"></span>,
-                    <span id="api-longitude"></span>
-                  </td>
-                </tr>
-                <tr>
                   <td class="text-right font-weight-bold">Currency:</td>
                   <td id="api-currency"></td>
                 </tr>
@@ -100,6 +91,82 @@
                   </td>
                   <td id="api-exchange-rate"></td>
                 </tr>
+
+                <tr>
+                  <td class="text-right font-weight-bold">Current Weather:</td>
+                  <td id="api-current-weather">
+                    <img
+                      class="weather-img"
+                      src="http://openweathermap.org/img/wn/10d@2x.png"
+                    />
+                    <span id="current-temp"></span><span>&deg;C </span>
+                    <span id="more">more...</span>
+                    <!-- <span id="current-weather"></span> -->
+                  </td>
+                </tr>
+                <!-- FORECAST -->
+                <tr class="weather-row hide-row forecast">
+                  <td
+                    id="weather-0-dateTime"
+                    class="text-right font-weight-bold"
+                  ></td>
+                  <td>
+                    <img id="weather-0-icon" class="weather-img" /><span
+                      id="weather-0-temp"
+                    ></span
+                    ><span>&deg;C </span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row forecast">
+                  <td
+                    id="weather-1-dateTime"
+                    class="text-right font-weight-bold"
+                  ></td>
+                  <td>
+                    <img id="weather-1-icon" class="weather-img" /><span
+                      id="weather-1-temp"
+                    ></span
+                    ><span>&deg;C </span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row forecast">
+                  <td
+                    id="weather-2-dateTime"
+                    class="text-right font-weight-bold"
+                  ></td>
+                  <td>
+                    <img id="weather-2-icon" class="weather-img" /><span
+                      id="weather-2-temp"
+                    ></span
+                    ><span>&deg;C </span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row forecast">
+                  <td
+                    id="weather-3-dateTime"
+                    class="text-right font-weight-bold"
+                  ></td>
+                  <td>
+                    <img id="weather-3-icon" class="weather-img" /><span
+                      id="weather-3-temp"
+                    ></span
+                    ><span>&deg;C </span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row forecast">
+                  <td
+                    id="weather-4-dateTime"
+                    class="text-right font-weight-bold"
+                  ></td>
+                  <td>
+                    <img id="weather-4-icon" class="weather-img" /><span
+                      id="weather-4-temp"
+                    ></span
+                    ><span>&deg;C </span>
+                  </td>
+                </tr>
+                <!-- END OF FORECAST -->
+
                 <tr>
                   <td class="text-right font-weight-bold">Area:</td>
                   <td>
@@ -108,12 +175,13 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="text-right font-weight-bold">Current Weather:</td>
-                  <td id="api-current-weather"></td>
-                </tr>
-                <tr>
-                  <td class="text-right font-weight-bold">Forecast:</td>
-                  <td id="api-weather-forecast"></td>
+                  <td class="text-right font-weight-bold">
+                    Latitude/Longitude:
+                  </td>
+                  <td>
+                    <span id="api-latitude"></span>,
+                    <span id="api-longitude"></span>
+                  </td>
                 </tr>
               </table>
             </div>

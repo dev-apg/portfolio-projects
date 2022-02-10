@@ -182,8 +182,11 @@ function locationData(selectedCountry) {
     longitude: "",
     area: "",
     flag: "",
-    cityDetails: [],
+    currentTemp: "",
+    currentWeather: "",
+    // cityDetails: [],
     countryImages: [],
+    weather: [],
   };
 
   if (!selectedCountry) {
@@ -296,6 +299,7 @@ function locationData(selectedCountry) {
       .then(() => apiNewsCall())
       .then(() => apiVolcanoesCall())
       .then(() => apiUnsplashCall())
+      .then(() => apiOpenWeatherCall())
       .then(() => addToHTML());
 
     function getGeoJSONData(countryCodeISO2) {
@@ -378,11 +382,11 @@ function locationData(selectedCountry) {
             console.log(city);
             if (city.countrycode === countryCodeISO2) {
               if (city.toponymName !== infoStore.capital) {
-                infoStore.cityDetails.push({
-                  toponymName: city.toponymName,
-                  lat: city.lat,
-                  lng: city.lng,
-                });
+                // infoStore.cityDetails.push({
+                //   toponymName: city.toponymName,
+                //   lat: city.lat,
+                //   lng: city.lng,
+                // });
                 L.marker([city.lat, city.lng], {
                   icon: cityIcon,
                   riseOnHover: true,
@@ -394,11 +398,11 @@ function locationData(selectedCountry) {
                     )}`
                   );
               } else {
-                infoStore.cityDetails.push({
-                  toponymName: city.toponymName,
-                  lat: city.lat,
-                  lng: city.lng,
-                });
+                // infoStore.cityDetails.push({
+                //   toponymName: city.toponymName,
+                //   lat: city.lat,
+                //   lng: city.lng,
+                // });
                 L.marker([city.lat, city.lng], {
                   icon: capitalCityIcon,
                   riseOnHover: true,
@@ -580,6 +584,49 @@ function locationData(selectedCountry) {
       });
     }
 
+    function apiOpenWeatherCall() {
+      console.log("***apiOpenWeatherCall***");
+      return $.ajax({
+        url: "libs/php/api-openweather.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          latitude: infoStore.latitude,
+          longitude: infoStore.longitude,
+        },
+        success: function (result) {
+          // console.log(result.data.list[0]);
+          console.log(result.data.list);
+
+          const forecast = result.data.list;
+          for (let i = 0; i < 5; i++) {
+            const obj = {};
+            if (i === 0) {
+              obj.dateTime = readableDate(forecast[i].dt_txt);
+            } else if (
+              i > 0 &&
+              readableDate(forecast[i].dt_txt) !==
+                readableDate(forecast[i - 1].dt_txt)
+            ) {
+              obj.dateTime = readableDate(forecast[i].dt_txt);
+            }
+            // obj.dateTime = readableDate(forecast[i].dt_txt);
+            obj.description = forecast[i].weather[0].description;
+            obj.icon = forecast[i].weather[0].icon;
+            obj.temp = forecast[i].main.temp;
+            infoStore.weather.push(obj);
+          }
+          console.log(infoStore.weather);
+        },
+
+        error: function (jqXHR, textStatus, errorThrown) {
+          console.log(jqXHR);
+          console.log(textStatus);
+          console.log(errorThrown);
+        },
+      });
+    }
+
     function apiVolcanoesCall() {
       console.log("***apiVolcanoesCall***");
       return $.ajax({
@@ -650,6 +697,19 @@ function locationData(selectedCountry) {
       $("#info-image-div").append(
         `<img id='country-image' src=${infoStore.countryImages[0]}/>`
       );
+      $("#current-temp").html(infoStore.currentTemp);
+      $("#current-weather").html(infoStore.currentWeather);
+
+      // FORECAST
+      for (let i = 0; i < 5; i++) {
+        $(`#weather-${i}-dateTime`).html(infoStore.weather[i].dateTime);
+        $(`#weather-${i}-icon`).attr(
+          "src",
+          `libs/imgs/${infoStore.weather[i].icon}@2x.png`
+        );
+        $(`#weather-${i}-icon`).attr("alt", infoStore.weather[i].description);
+        $(`#weather-${i}-temp`).html(infoStore.weather[i].temp);
+      }
     }
   }
 }
@@ -722,3 +782,23 @@ function readableDate(rawDate) {
   };
   return new Intl.DateTimeFormat("en-GB", options).format(date);
 }
+
+function readableDateUNIX(unixDate) {
+  let date = new Date(unixDate * 1000);
+  let options = {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const newDate = new Intl.DateTimeFormat("en-GB", options).format(date);
+  return newDate;
+}
+
+//SHOW FORECAST ON INFO MODAL
+document.getElementById("more").onclick = function () {
+  const collection = document.getElementsByClassName("weather-row");
+  Array.from(collection).forEach((row) => {
+    row.classList.toggle("hide-row");
+  });
+};

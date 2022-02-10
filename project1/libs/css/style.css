@@ -82,22 +82,36 @@ div.input-group {
 
 #info-image-div {
   /* border: red 1px solid; */
-  height: 100px;
+  height: 200px;
   margin-top: -10px;
   margin-bottom: 5px;
 }
 
+.weather-img {
+  max-height: 45px;
+}
+
+#more {
+  font-size: 0.8rem;
+  color: rgb(0, 166, 216);
+  cursor: pointer;
+}
+
+.hide-row {
+  display: none;
+}
+
 #country-image {
-  border-radius: 5px;
+  /* border-radius: 5px; */
+  width: 100%;
 }
 
 .news-image {
   width: 100%;
 }
 
-.modal-title-container {
-  /* display: flex;
-  justify-content: space-around; */
+.forecast {
+  background-color: rgb(250, 252, 253);
 }
 
 @media only screen and (max-width: 640px) {
