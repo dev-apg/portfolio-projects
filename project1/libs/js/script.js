@@ -726,8 +726,8 @@ function locationData(selectedCountry) {
       $("#api-currency-symbol").html(infoStore.currencySymbol);
       $("#api-continent").html(infoStore.continent);
       $("#api-languages").html(infoStore.languages);
-      $("#api-latitude").html(infoStore.latitude);
-      $("#api-longitude").html(infoStore.longitude);
+      $("#api-latitude").html(fixLatitude(infoStore.latitude));
+      $("#api-longitude").html(fixLongitude(infoStore.longitude));
       $("#api-area").html(fixPopulation(infoStore.area));
       $(".api-flag").attr("src", infoStore.flag);
       $(".nav-flag-div").css("background-image", `url(${infoStore.flag})`);
@@ -884,3 +884,23 @@ document.getElementById("more").onclick = function () {
     $("#more").html("(show forecast)");
   }
 };
+
+function fixLatitude(lat) {
+  lat = parseInt(lat);
+
+  if (lat < 0) {
+    return Math.abs(lat) + "\u00B0S";
+  } else {
+    return lat + "\u00B0N";
+  }
+}
+
+function fixLongitude(lon) {
+  lon = parseInt(lon);
+
+  if (lon < 0) {
+    return Math.abs(lon) + "\u00B0W";
+  } else {
+    return lon + "\u00B0E";
+  }
+}
