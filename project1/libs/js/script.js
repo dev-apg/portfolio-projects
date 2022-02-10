@@ -182,8 +182,7 @@ function locationData(selectedCountry) {
     longitude: "",
     area: "",
     flag: "",
-    currentTemp: "",
-    currentWeather: "",
+    currentWeather: {},
     // cityDetails: [],
     countryImages: [],
     weather: [],
@@ -299,7 +298,8 @@ function locationData(selectedCountry) {
       .then(() => apiNewsCall())
       .then(() => apiVolcanoesCall())
       .then(() => apiUnsplashCall())
-      .then(() => apiOpenWeatherCall())
+      .then(() => apiOpenWeatherCurrentCall())
+      .then(() => apiOpenWeatherForecastCall())
       .then(() => addToHTML());
 
     function getGeoJSONData(countryCodeISO2) {
@@ -584,10 +584,44 @@ function locationData(selectedCountry) {
       });
     }
 
-    function apiOpenWeatherCall() {
-      console.log("***apiOpenWeatherCall***");
+    function apiOpenWeatherCurrentCall() {
+      console.log("***apiOpenWeatherCurrentCall***");
       return $.ajax({
-        url: "libs/php/api-openweather.php",
+        url: "libs/php/api-openweatherCurrent.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+          latitude: infoStore.latitude,
+          longitude: infoStore.longitude,
+        },
+        success: function (result) {
+          // console.log(result.data);
+          //dateTime - optional
+          infoStore.currentWeather.dayTime = forecastDayAndTime(
+            result.data.current.dt
+          );
+          //description
+          infoStore.currentWeather.description =
+            result.data.current.weather[0].description;
+          //icon
+          infoStore.currentWeather.icon = result.data.current.weather[0].icon;
+          //temp
+          infoStore.currentWeather.temp = result.data.current.temp;
+          console.log(infoStore.currentWeather);
+        },
+
+        error: function (jqXHR, textStatus, errorThrown) {
+          console.log(jqXHR);
+          console.log(textStatus);
+          console.log(errorThrown);
+        },
+      });
+    }
+
+    function apiOpenWeatherForecastCall() {
+      console.log("***apiOpenWeatherForecastCall***");
+      return $.ajax({
+        url: "libs/php/api-openweatherForecast.php",
         type: "POST",
         dataType: "json",
         data: {
@@ -697,8 +731,16 @@ function locationData(selectedCountry) {
       $("#info-image-div").append(
         `<img id='country-image' src=${infoStore.countryImages[0]}/>`
       );
-      $("#current-temp").html(infoStore.currentTemp);
-      $("#current-weather").html(infoStore.currentWeather);
+      //CURRENT WEATHER
+      $("#current-weather-icon").attr(
+        "src",
+        `libs/imgs/${infoStore.currentWeather.icon}@2x.png`
+      );
+      $("#current-weather-icon").attr(
+        "alt",
+        infoStore.currentWeather.description
+      );
+      $("#current-temp").html(infoStore.currentWeather.temp);
 
       // FORECAST
       for (let i = 0; i < 5; i++) {
@@ -834,9 +876,9 @@ document.getElementById("more").onclick = function () {
     row.classList.toggle("hide-row");
   });
   console.log($("#more").html());
-  if ($("#more").html() === "(more...)") {
-    $("#more").html("(less...)");
+  if ($("#more").html() === "(show forecast)") {
+    $("#more").html("(hide forecast)");
   } else {
-    $("#more").html("(more...)");
+    $("#more").html("(show forecast)");
   }
 };
