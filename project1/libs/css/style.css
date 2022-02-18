@@ -91,10 +91,15 @@ div.input-group {
   max-height: 45px;
 }
 
-#more {
+#show-hide-forecast {
   font-size: 0.8rem;
   color: rgb(0, 166, 216);
   cursor: pointer;
+}
+
+#local-time-message {
+  font-size: 0.8rem;
+  color: rgb(112, 112, 112);
 }
 
 .hide-row {
@@ -111,7 +116,8 @@ div.input-group {
 }
 
 .forecast {
-  background-color: rgb(250, 252, 253);
+  /* background-color: rgb(250, 252, 253); */
+  background-color: rgb(251, 253, 242);
 }
 
 .units {

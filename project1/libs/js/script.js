@@ -7,11 +7,6 @@ $(window).on("load", function () {
         $(this).remove();
       });
   }
-
-  //call locationData on change
-  $("#select").change(function () {
-    locationData($("#select").val());
-  });
 });
 
 //SET UP MAP----------------------------------------------------//
@@ -154,6 +149,11 @@ const newsButton = L.easyButton({
   ],
 }).addTo(map);
 
+//call locationData on change
+$("#select").change(function () {
+  locationData($("#select").val());
+});
+
 //CALL FUNCTIONS
 populateSelect();
 locationData();
@@ -187,7 +187,12 @@ function locationData(selectedCountry) {
     // cityDetails: [],
     countryImages: [],
     weather: [],
+    offset_sec: "",
+    localTime: "",
   };
+
+  //this is to stop OpenCage being run a second time on the first run
+  let callOpencage = true;
 
   if (!selectedCountry) {
     //Call functions
@@ -196,13 +201,14 @@ function locationData(selectedCountry) {
         opencageCall(position.coords.latitude, position.coords.longitude)
       )
       .catch((error) => logError(error))
+      .then(() => setCallOpencageToFalse())
       .then(() => getData(infoStore.twoLetterCountryCode))
       .then(() => setSelected())
       .catch((error) => console.log(error));
   } else {
     //destroy featureGroup
     //call getData with userLocation (two letter country code)
-    console.log();
+    // console.log();
     getData(selectedCountry);
   }
 
@@ -212,6 +218,10 @@ function locationData(selectedCountry) {
       "selected",
       true
     );
+  }
+
+  function setCallOpencageToFalse() {
+    callOpencage = false;
   }
 
   //-------------------getLocation() - declared inside locationData()-----------------//
@@ -246,6 +256,7 @@ function locationData(selectedCountry) {
   //success callback
   //on success sets infoStore.twoLetterCountryCode
   function opencageCall(lat, lon) {
+    if (callOpencage === false) return;
     console.log("***opencageCall***");
     console.log({ lat: lat, lon: lon });
     return $.ajax({
@@ -260,6 +271,13 @@ function locationData(selectedCountry) {
         if (result.status.name === "ok") {
           infoStore.twoLetterCountryCode =
             result.data.results[0].components["ISO_3166-1_alpha-2"];
+          //new stuff
+          infoStore.offset_sec =
+            result.data.results[0].annotations.timezone.offset_sec;
+          infoStore.unix = result.data.timestamp.created_unix;
+          infoStore.localTime = currentDayTime(
+            infoStore.unix + infoStore.offset_sec
+          );
         }
       },
       error: function (jqXHR, textStatus, errorThrown) {
@@ -295,6 +313,7 @@ function locationData(selectedCountry) {
       .then(() => geonamesCitiesCall(infoStore.boundingBox, countryCodeISO2))
       .then(() => geonamesEarthquakesCall(infoStore.boundingBox))
       .then(() => restCountriesCall(infoStore.threeLetterCountryCode))
+      .then(() => opencageCall(infoStore.latitude, infoStore.longitude))
       .then(() => geonamesWikiCall())
       .then(() => apiNewsCall())
       .then(() => apiVolcanoesCall())
@@ -418,7 +437,7 @@ function locationData(selectedCountry) {
               }
             }
           });
-          console.log(infoStore.cityDetails);
+          // console.log(infoStore.cityDetails);
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -598,10 +617,9 @@ function locationData(selectedCountry) {
         },
         success: function (result) {
           // console.log(result.data);
-          //dateTime - optional
-          infoStore.currentWeather.dayTime = forecastDayAndTime(
-            result.data.current.dt
-          );
+          // infoStore.currentWeather.dayTime = currentDayTime(
+          //   result.data.current.dt
+          // );
           //description
           infoStore.currentWeather.description =
             result.data.current.weather[0].description;
@@ -633,19 +651,26 @@ function locationData(selectedCountry) {
         success: function (result) {
           // console.log(result.data.list[0]);
           // console.log(result.data.list);
-
+          console.log({ offset_sec: infoStore.offset_sec });
           const forecast = result.data.list;
           for (let i = 0; i < 5; i++) {
             const obj = {};
             if (i === 0) {
-              obj.dateTime = forecastTime(forecast[i].dt);
+              obj.dateTime = forecastDayAndTime(
+                forecast[i].dt + infoStore.offset_sec
+              );
             } else if (
               i > 0 &&
-              forecastDay(forecast[i].dt) === forecastDay(forecast[i - 1].dt)
+              forecastDay(forecast[i].dt + infoStore.offset_sec) ===
+                forecastDay(forecast[i - 1].dt + infoStore.offset_sec)
             ) {
-              obj.dateTime = forecastTime(forecast[i].dt);
+              obj.dateTime = forecastTime(
+                forecast[i].dt + infoStore.offset_sec
+              );
             } else {
-              obj.dateTime = forecastDayAndTime(forecast[i].dt);
+              obj.dateTime = forecastDayAndTime(
+                forecast[i].dt + infoStore.offset_sec
+              );
             }
             obj.description = forecast[i].weather[0].description;
             obj.icon = forecast[i].weather[0].icon;
@@ -734,6 +759,8 @@ function locationData(selectedCountry) {
       $("#info-image-div").append(
         `<img id='country-image' src=${infoStore.countryImages[0]}/>`
       );
+      //LOCAL TIME
+      $("#api-date-time").html(infoStore.localTime);
       //CURRENT WEATHER
       $("#current-weather-icon").attr(
         "src",
@@ -758,6 +785,8 @@ function locationData(selectedCountry) {
     }
   }
 }
+
+//HELPER FUNCTIONS------------------------------------------//
 
 //------populates select tag list of countries--------------//
 function populateSelect(countryCodeISO3) {
@@ -828,23 +857,42 @@ function readableDate(rawDate) {
   return new Intl.DateTimeFormat("en-GB", options).format(date);
 }
 
-function forecastDay(rawDate) {
-  rawDate = rawDate * 1000;
-  let date = new Date(rawDate);
+//DATE AND TIME FOR LOCAL TIME
+
+function currentDayTime(unix) {
+  const date = new Date(unix * 1000);
+  const options = {
+    hour12: true,
+    day: "2-digit",
+    month: "short",
+    weekday: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  };
+  return new Intl.DateTimeFormat("en-GB", options).format(date);
+}
+
+//DATE AND TIME FORMATTING FOR FORECAST
+
+function forecastDay(unix) {
+  unix = unix * 1000;
+  let date = new Date(unix);
   let options = {
     weekday: "long",
   };
   return new Intl.DateTimeFormat("en-GB", options).format(date);
 }
 
-function forecastTime(rawDate) {
-  rawDate = rawDate * 1000;
-  let date = new Date(rawDate);
+function forecastTime(unix) {
+  unix = unix * 1000;
+  let date = new Date(unix);
   let hours = date.getHours();
-
   if (hours === 12) {
     hours = hours + "pm";
-  } else if (hours > 12) {
+  } else if (hours === 0) {
+    hours = "12am";
+  } else if (hours >= 13) {
     hours = hours - 12 + "pm";
   } else {
     hours = hours + "am";
@@ -852,11 +900,13 @@ function forecastTime(rawDate) {
   return hours;
 }
 
-function forecastDayAndTime(rawDate) {
-  rawDate = rawDate * 1000;
-  let date = new Date(rawDate);
+function forecastDayAndTime(unix) {
+  unix = unix * 1000;
+  let date = new Date(unix);
   let options = {
     weekday: "long",
+    // hour12: true,
+    // hour: "numeric",
   };
   let hours = date.getHours();
 
@@ -864,24 +914,24 @@ function forecastDayAndTime(rawDate) {
     hours = hours + "pm";
   } else if (hours === 0) {
     hours = "12am";
-  } else if (hours > 13) {
+  } else if (hours >= 13) {
     hours = hours - 12 + "pm";
   } else {
     hours = hours + "am";
   }
-  return new Intl.DateTimeFormat("en-GB", options).format(date) + " " + hours;
+  return new Intl.DateTimeFormat("en-GB", options).format(date) + ", " + hours;
 }
 
-//SHOW FORECAST ON INFO MODAL
-document.getElementById("more").onclick = function () {
+//SHOW/HIDE FORECAST ON INFO MODAL
+document.getElementById("show-hide-forecast").onclick = function () {
   const collection = document.getElementsByClassName("weather-row");
   Array.from(collection).forEach((row) => {
     row.classList.toggle("hide-row");
   });
-  if ($("#more").html() === "(show forecast)") {
-    $("#more").html("(hide forecast)");
+  if ($("#show-hide-forecast").html() === "(show forecast)") {
+    $("#show-hide-forecast").html("(hide forecast)");
   } else {
-    $("#more").html("(show forecast)");
+    $("#show-hide-forecast").html("(show forecast)");
   }
 };
 

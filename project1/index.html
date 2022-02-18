@@ -67,7 +67,7 @@
                   <td id="api-capital"></td>
                 </tr>
                 <tr>
-                  <td class="text-right font-weight-bold">Pop. size:</td>
+                  <td class="text-right font-weight-bold">Population:</td>
                   <td id="api-population"></td>
                 </tr>
                 <tr>
@@ -82,7 +82,6 @@
                   <td class="text-right font-weight-bold">Currency:</td>
                   <td>
                     <span id="api-currency"></span>
-
                     <span>&nbsp;(</span
                     ><span id="api-currency-symbol" class="units"></span
                     ><span>)</span>
@@ -99,21 +98,33 @@
                 </tr>
 
                 <tr>
-                  <td class="text-right font-weight-bold">Current Weather:</td>
+                  <td class="text-right font-weight-bold">
+                    Local Date and Time:
+                  </td>
+                  <td id="api-date-time"></td>
+                </tr>
+
+                <tr>
+                  <td class="text-right align-middle font-weight-bold">
+                    Current Weather:
+                  </td>
                   <td id="api-current-weather">
                     <img id="current-weather-icon" class="weather-img" />
                     <span id="current-temp"></span
                     ><span class="units">&deg;C </span>
-                    <span id="more">(show forecast)</span>
+                    <span id="show-hide-forecast">(show forecast)</span>
                     <!-- <span id="current-weather"></span> -->
                   </td>
                 </tr>
                 <!-- FORECAST -->
                 <tr class="weather-row hide-row forecast">
-                  <td
-                    id="weather-0-dateTime"
-                    class="text-right font-weight-bold"
-                  ></td>
+                  <td class="text-right align-middle font-weight-bold">
+                    <span id="local-time-message" class="font-weight-normal"
+                      >(local time)</span
+                    >
+                    <span id="weather-0-dateTime"></span>
+                    <span>:</span>
+                  </td>
                   <td>
                     <img id="weather-0-icon" class="weather-img" /><span
                       id="weather-0-temp"
@@ -122,10 +133,10 @@
                   </td>
                 </tr>
                 <tr class="weather-row hide-row forecast">
-                  <td
-                    id="weather-1-dateTime"
-                    class="text-right font-weight-bold"
-                  ></td>
+                  <td class="text-right align-middle font-weight-bold">
+                    <span id="weather-1-dateTime"></span>
+                    <span>:</span>
+                  </td>
                   <td>
                     <img id="weather-1-icon" class="weather-img" /><span
                       id="weather-1-temp"
@@ -133,10 +144,10 @@
                     ><span class="units">&deg;C </span>
                   </td>
                 </tr>
-                <tr class="weather-row hide-row forecast">
+                <tr class="weather-row align-middle hide-row forecast">
                   <td
                     id="weather-2-dateTime"
-                    class="text-right font-weight-bold"
+                    class="text-right align-middle font-weight-bold"
                   ></td>
                   <td>
                     <img id="weather-2-icon" class="weather-img" /><span
@@ -148,7 +159,7 @@
                 <tr class="weather-row hide-row forecast">
                   <td
                     id="weather-3-dateTime"
-                    class="text-right font-weight-bold"
+                    class="text-right align-middle font-weight-bold"
                   ></td>
                   <td>
                     <img id="weather-3-icon" class="weather-img" /><span
@@ -160,7 +171,7 @@
                 <tr class="weather-row hide-row forecast">
                   <td
                     id="weather-4-dateTime"
-                    class="text-right font-weight-bold"
+                    class="text-right align-middle font-weight-bold"
                   ></td>
                   <td>
                     <img id="weather-4-icon" class="weather-img" /><span
