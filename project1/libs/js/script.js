@@ -751,8 +751,10 @@ function locationData(selectedCountry) {
       $("#api-currency-symbol").html(infoStore.currencySymbol);
       $("#api-continent").html(infoStore.continent);
       $("#api-languages").html(infoStore.languages);
-      $("#api-latitude").html(fixLatitude(infoStore.latitude));
-      $("#api-longitude").html(fixLongitude(infoStore.longitude));
+      $("#api-latitude").html(fixLatLon(infoStore.latitude));
+      $("#api-latitude-units").html(getLatitudeUnit(infoStore.latitude));
+      $("#api-longitude").html(fixLatLon(infoStore.longitude));
+      $("#api-longitude-units").html(getLongitudeUnit(infoStore.longitude));
       $("#api-area").html(fixPopulation(infoStore.area));
       $(".api-flag").attr("src", infoStore.flag);
       $(".nav-flag-div").css("background-image", `url(${infoStore.flag})`);
@@ -760,7 +762,8 @@ function locationData(selectedCountry) {
         `<img id='country-image' src=${infoStore.countryImages[0]}/>`
       );
       //LOCAL TIME
-      $("#api-date-time").html(infoStore.localTime);
+      $("#api-date-time").html(infoStore.localTime.slice(0, -3));
+      $("#api-date-time-units").html(infoStore.localTime.slice(-2));
       //CURRENT WEATHER
       $("#current-weather-icon").attr(
         "src",
@@ -935,22 +938,24 @@ document.getElementById("show-hide-forecast").onclick = function () {
   }
 };
 
-function fixLatitude(lat) {
-  lat = parseInt(lat);
+function fixLatLon(num) {
+  return Math.abs(num);
+}
 
+function getLatitudeUnit(lat) {
+  lat = parseInt(lat);
   if (lat < 0) {
-    return Math.abs(lat) + "\u00B0S";
+    return "\u00B0S";
   } else {
-    return lat + "\u00B0N";
+    return "\u00B0N";
   }
 }
 
-function fixLongitude(lon) {
+function getLongitudeUnit(lon) {
   lon = parseInt(lon);
-
   if (lon < 0) {
-    return Math.abs(lon) + "\u00B0W";
+    return "\u00B0W";
   } else {
-    return lon + "\u00B0E";
+    return "\u00B0E";
   }
 }
