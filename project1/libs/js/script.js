@@ -731,8 +731,12 @@ function locationData(selectedCountry) {
           countryname: infoStore.countryName,
         },
         success: function (result) {
-          infoStore.countryImages.push(result.data);
-          console.log(infoStore.countryImages[0]);
+          // infoStore.countryImages.push(result.data);
+          // console.log(infoStore.countryImages[0]);
+          // console.log(result.data[0].urls.small);
+          result.data.forEach((result) =>
+            infoStore.countryImages.push(result.urls.small)
+          );
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -758,9 +762,15 @@ function locationData(selectedCountry) {
       $("#api-area").html(fixPopulation(infoStore.area));
       $(".api-flag").attr("src", infoStore.flag);
       $(".nav-flag-div").css("background-image", `url(${infoStore.flag})`);
-      $("#info-image-div").append(
-        `<img id='country-image' src=${infoStore.countryImages[0]}/>`
-      );
+
+      for (let i = 0; i < 3; i++) {
+        $(`#country-image-${i}`).attr("src", infoStore.countryImages[i]);
+      }
+
+      // infoStore.countryImages.forEach((image) => {
+      //   $("#info-image-div").append(`<img id='country-image' src=${image}/>`);
+      // });
+
       //LOCAL TIME
       $("#api-date-time").html(infoStore.localTime.slice(0, -3));
       $("#api-date-time-units").html(infoStore.localTime.slice(-2));

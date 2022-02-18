@@ -22,7 +22,8 @@
 
 	$decode = json_decode($result,true);	
 
-	$decode= $decode['results'][0]['urls']['small'];
+	// $decode= $decode['results'][0]['urls']['small'];
+	$decode= $decode['results'];
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
