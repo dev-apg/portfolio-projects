@@ -113,7 +113,6 @@
                     <span id="current-temp"></span
                     ><span class="units">&deg;C </span>
                     <span id="show-hide-forecast">(show forecast)</span>
-                    <!-- <span id="current-weather"></span> -->
                   </td>
                 </tr>
                 <!-- FORECAST -->
@@ -122,20 +121,18 @@
                     <span id="local-time-message" class="font-weight-normal"
                       >(local time)</span
                     >
-                    <span id="weather-0-dateTime"></span>
-                    <span>:</span>
+                    <span id="weather-0-dateTime"></span><span>:</span>
+                    <!-- delete line below -->
                   </td>
                   <td>
-                    <img id="weather-0-icon" class="weather-img" /><span
-                      id="weather-0-temp"
-                    ></span
-                    ><span class="units">&deg;C </span>
+                    <img id="weather-0-icon" class="weather-img" />
+                    <span id="weather-0-temp"></span>
+                    <span class="units">&deg;C </span>
                   </td>
                 </tr>
                 <tr class="weather-row hide-row forecast">
                   <td class="text-right align-middle font-weight-bold">
-                    <span id="weather-1-dateTime"></span>
-                    <span>:</span>
+                    <span id="weather-1-dateTime"></span><span>:</span>
                   </td>
                   <td>
                     <img id="weather-1-icon" class="weather-img" /><span
@@ -145,10 +142,9 @@
                   </td>
                 </tr>
                 <tr class="weather-row align-middle hide-row forecast">
-                  <td
-                    id="weather-2-dateTime"
-                    class="text-right align-middle font-weight-bold"
-                  ></td>
+                  <td class="text-right align-middle font-weight-bold">
+                    <span id="weather-2-dateTime"></span><span>:</span>
+                  </td>
                   <td>
                     <img id="weather-2-icon" class="weather-img" /><span
                       id="weather-2-temp"
@@ -157,10 +153,9 @@
                   </td>
                 </tr>
                 <tr class="weather-row hide-row forecast">
-                  <td
-                    id="weather-3-dateTime"
-                    class="text-right align-middle font-weight-bold"
-                  ></td>
+                  <td class="text-right align-middle font-weight-bold">
+                    <span id="weather-3-dateTime"></span><span>:</span>
+                  </td>
                   <td>
                     <img id="weather-3-icon" class="weather-img" /><span
                       id="weather-3-temp"
@@ -169,10 +164,9 @@
                   </td>
                 </tr>
                 <tr class="weather-row hide-row forecast">
-                  <td
-                    id="weather-4-dateTime"
-                    class="text-right align-middle font-weight-bold"
-                  ></td>
+                  <td class="text-right align-middle font-weight-bold">
+                    <span id="weather-4-dateTime"></span><span>:</span>
+                  </td>
                   <td>
                     <img id="weather-4-icon" class="weather-img" /><span
                       id="weather-4-temp"
