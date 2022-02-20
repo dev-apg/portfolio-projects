@@ -399,7 +399,7 @@ function locationData(selectedCountry) {
         success: function (result) {
           console.log({ infoStore: infoStore });
           result.data.forEach((city) => {
-            console.log(city);
+            // console.log(city);
             if (city.countrycode === countryCodeISO2) {
               if (city.toponymName !== infoStore.capital) {
                 // infoStore.cityDetails.push({
@@ -734,9 +734,14 @@ function locationData(selectedCountry) {
           // infoStore.countryImages.push(result.data);
           // console.log(infoStore.countryImages[0]);
           // console.log(result.data[0].urls.small);
-          result.data.forEach((result) =>
-            infoStore.countryImages.push(result.urls.small)
-          );
+          result.data.forEach((result) => {
+            let obj = {};
+            obj.url = result.urls.small;
+            obj.description = result.description;
+            obj.alt_description = result.alt_description;
+            infoStore.countryImages.push(obj);
+          });
+          console.log(infoStore.countryImages);
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -762,15 +767,18 @@ function locationData(selectedCountry) {
       $("#api-area").html(fixPopulation(infoStore.area));
       $(".api-flag").attr("src", infoStore.flag);
       $(".nav-flag-div").css("background-image", `url(${infoStore.flag})`);
-
-      for (let i = 0; i < 3; i++) {
-        $(`#country-image-${i}`).attr("src", infoStore.countryImages[i]);
+      //COUNTRY IMAGES FOR CAROUSEL
+      for (let i = 0; i < 4; i++) {
+        $(`#country-image-${i}`).attr("src", infoStore.countryImages[i].url);
+        $(`#country-image-${i}-description`).html(
+          infoStore.countryImages[i].description
+            ? infoStore.countryImages[i].description
+            : infoStore.countryName
+        );
+        $(`#country-image-${i}-alt-description`).html(
+          infoStore.countryImages[i].alt_description
+        );
       }
-
-      // infoStore.countryImages.forEach((image) => {
-      //   $("#info-image-div").append(`<img id='country-image' src=${image}/>`);
-      // });
-
       //LOCAL TIME
       $("#api-date-time").html(infoStore.localTime.slice(0, -3));
       $("#api-date-time-units").html(infoStore.localTime.slice(-2));

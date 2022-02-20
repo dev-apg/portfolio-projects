@@ -80,6 +80,30 @@ div.input-group {
   border-radius: 3px;
 }
 
+/* modal */
+.img-size {
+  /* 	padding: 0;
+    margin: 0; */
+  /* height: 450px; */
+  /* width: 700px; */
+  width: 100%;
+  background-size: cover;
+  overflow: hidden;
+}
+.modal-content {
+  width: 700px;
+  border: none;
+}
+.modal-body {
+  padding: 0;
+}
+
+.carousel-caption {
+  background-color: #343a4027;
+}
+
+/* modal end */
+
 #info-image-div {
   /* border: red 1px solid; */
   height: 200px;
@@ -112,6 +136,10 @@ div.input-group {
 }
 
 .news-image {
+  width: 100%;
+}
+
+#slider1 img {
   width: 100%;
 }
 
