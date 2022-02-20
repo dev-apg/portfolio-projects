@@ -677,7 +677,6 @@ function locationData(selectedCountry) {
             obj.temp = forecast[i].main.temp;
             infoStore.weather.push(obj);
           }
-          console.log(infoStore.weather);
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -768,7 +767,7 @@ function locationData(selectedCountry) {
       $(".api-flag").attr("src", infoStore.flag);
       $(".nav-flag-div").css("background-image", `url(${infoStore.flag})`);
       //COUNTRY IMAGES FOR CAROUSEL
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 5; i++) {
         $(`#country-image-${i}`).attr("src", infoStore.countryImages[i].url);
         $(`#country-image-${i}-description`).html(
           infoStore.countryImages[i].description

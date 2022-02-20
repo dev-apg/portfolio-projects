@@ -100,6 +100,7 @@ div.input-group {
 
 .carousel-caption {
   background-color: #343a4027;
+  text-transform: capitalize;
 }
 
 /* modal end */
