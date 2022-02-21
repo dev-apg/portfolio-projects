@@ -306,7 +306,7 @@ function locationData(selectedCountry) {
     if (!infoStore.geojsonCountryOutline === "") {
       infoStore.geojsonCountryOutline.remove();
     }
-
+    clearHTML();
     //call functions
     getGeoJSONData(countryCodeISO2)
       .then(() => geonamesCall(countryCodeISO2))
@@ -751,12 +751,50 @@ function locationData(selectedCountry) {
       });
     }
 
+    function clearHTML() {
+      $(".api-country").html("");
+      $("#api-capital").html("");
+      $("#api-population").html("");
+      $("#api-currency").html("");
+      $("#api-currency-symbol").html("");
+      $("#api-continent").html("");
+      $("#api-languages").html("");
+      $("#api-latitude").html("");
+      $("#api-latitude-units").html("");
+      $("#api-longitude").html("");
+      $("#api-longitude-units").html("");
+      $("#api-area").html("");
+      $(".api-flag").attr("src", "");
+      $(".nav-flag-div").css("background-image", "");
+      //COUNTRY IMAGES FOR CAROUSEL
+      for (let i = 0; i < 5; i++) {
+        $(`#country-image-${i}`).attr("src", "");
+        $(`#country-image-${i}-description`).html("");
+        $(`#country-image-${i}-alt-description`).html("");
+      }
+      //LOCAL TIME
+      $("#api-date-time").html("");
+      $("#api-date-time-units").html("");
+      //CURRENT WEATHER
+      $("#current-weather-icon").attr("src", "");
+      $("#current-weather-icon").attr("alt", "");
+      $("#current-temp").html("");
+
+      // FORECAST
+      for (let i = 0; i < 5; i++) {
+        $(`#weather-${i}-dateTime`).html("");
+        $(`#weather-${i}-icon`).attr("src", "");
+        $(`#weather-${i}-icon`).attr("alt", "");
+        $(`#weather-${i}-temp`).html("");
+      }
+    }
+
     function addToHTML() {
       $(".api-country").html(infoStore.countryName);
       $("#api-capital").html(infoStore.capital);
       $("#api-population").html(fixPopulation(infoStore.population));
       $("#api-currency").html(infoStore.currencyName);
-      $("#api-currency-symbol").html(infoStore.currencySymbol);
+      $("#api-currency-symbol").html(` (${infoStore.currencySymbol})`);
       $("#api-continent").html(infoStore.continent);
       $("#api-languages").html(infoStore.languages);
       $("#api-latitude").html(fixLatLon(infoStore.latitude));
