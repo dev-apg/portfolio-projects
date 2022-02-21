@@ -141,8 +141,8 @@ const newsButton = L.easyButton({
       icon: "<span class='fas fa-newspaper' ></span>",
       onClick: function () {
         $("#newsModal").modal("show");
-        $("body").addClass("scroll-disable");
-        $("#map").addClass("scroll-disable");
+        // $("body").addClass("scroll-disable");
+        // $("#map").addClass("scroll-disable");
       },
       id: "myEasyButton",
     },
@@ -154,9 +154,15 @@ $("#select").change(function () {
   locationData($("#select").val());
 });
 
-//CALL FUNCTIONS
+//----------------------------CALL FUNCTIONS----------------------//
 populateSelect();
 locationData();
+
+//--------------------------ERROR MODAL-------------------------//
+
+$("#try-again").on("click", function () {
+  locationData($("#select").val());
+});
 
 //-------------------------locationData()-------------------------------//
 
@@ -444,6 +450,10 @@ function locationData(selectedCountry) {
           console.log(jqXHR);
           console.log(textStatus);
           console.log(errorThrown);
+          $("#errorModal").modal({
+            backdrop: "static",
+            keyboard: false,
+          });
         },
       });
     }
