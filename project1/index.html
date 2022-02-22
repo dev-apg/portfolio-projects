@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Leaflet example" />
     <meta name="author" content="apg" />
-    <link rel="stylesheet" type="text/css" href="libs/css/style.css" />
     <link rel="stylesheet" href="libs/css/bootstrap.min.css" />
     <link rel="stylesheet" href="libs/css/leaflet.css" />
     <link rel="stylesheet" href="libs/css/MarkerCluster.css" />
     <link rel="stylesheet" href="libs/css/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="libs/css/easy-button.css" />
     <link href="libs/css/all.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="libs/css/style.css" />
     <script src="libs/js/leaflet.js"></script>
     <title>Gazetteer</title>
   </head>
@@ -354,29 +354,33 @@
       </div>
     </div>
 
-    <!-- ERROR MODAL -->
-    <div class="modal fade" id="errorModal">
-      <div class="modal-dialog">
+    <!-- PROGRESS/LOADING MODAL -->
+    <div class="modal fade" id="progressModal">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title text-danger" id="">Oh no!</h5>
-            <!-- <button class="close" data-dismiss="modal">&times;</button> -->
-          </div>
+          <!-- <div class="modal-header"> -->
+          <!-- <h5 class="modal-title lead" id="">Loading...</h5> -->
+          <!-- <button class="close" data-dismiss="modal">&times;</button> -->
+          <!-- </div> -->
           <div class="modal-body">
-            <h5 class="modal-title lead text-center" id="">
-              Data for <span id="error-country-name"></span> currently
-              unavailable!
-            </h5>
+            <div id="loading-message" class="alert alert-primary">
+              <h5>Loading: <span id="loading-message-text"></span></h5>
+            </div>
+            <div class="progress">
+              <div
+                class="progress-bar-striped progress-bar-animated bg-dark"
+                id="loading-progress-bar"
+              ></div>
+            </div>
           </div>
           <div
-            id="error-body"
-            class="modal-footer d-flex justify-content-center"
+            id="progress-modal-footer"
+            class="modal-footer border-0 hide-progress-modal-footer"
           >
             <button
               id="try-again"
               class="btn btn-outline-primary"
               type="button"
-              data-dismiss="modal"
             >
               Try Again
             </button>

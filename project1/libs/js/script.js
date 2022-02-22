@@ -159,9 +159,12 @@ locationData();
 //--------------------------ERROR MODAL-------------------------//
 
 $("#try-again").on("click", function () {
+  resetProgressModal();
   locationData($("#select").val());
 });
+
 $("#choose-another").on("click", function () {
+  resetProgressModal();
   $("#select").attr("disabled", false);
 });
 
@@ -170,6 +173,7 @@ $("#choose-another").on("click", function () {
 //GET USERS' LAT LON FROM DEVICE
 //CALLS OPENCAGE WITH THIS INFORMATION
 function locationData(selectedCountry) {
+  progressBar(0);
   //stores country specific data to be added to html once all tasks are run
   infoStore = {
     //set by opencage call or from country select
@@ -197,7 +201,14 @@ function locationData(selectedCountry) {
     offset_sec: "",
     localTime: "",
   };
+  //disable select whilst api data is gathered
   $("#select").attr("disabled", true);
+
+  $("#progressModal").modal({
+    backdrop: "static",
+    keyboard: false,
+  });
+
   //this is to stop OpenCage being run a second time on the first run
   let callOpencage = true;
 
@@ -315,6 +326,7 @@ function locationData(selectedCountry) {
       infoStore.geojsonCountryOutline.remove();
     }
     clearHTML();
+    progressBar(25);
     //call functions
     getGeoJSONData(countryCodeISO2)
       .then(() => geonamesCall(countryCodeISO2))
@@ -323,12 +335,15 @@ function locationData(selectedCountry) {
       .then(() => restCountriesCall(infoStore.threeLetterCountryCode))
       .then(() => opencageCall(infoStore.latitude, infoStore.longitude))
       .then(() => geonamesWikiCall())
+      .then(() => progressBar(50))
       .then(() => apiNewsCall())
       .then(() => apiVolcanoesCall())
+      .then(() => progressBar(75))
       .then(() => apiUnsplashCall())
       .then(() => apiOpenWeatherCurrentCall())
       .then(() => apiOpenWeatherForecastCall())
       .then(() => addToHTML())
+      .then(() => progressBar(100))
       .then(() => reenableSelect());
 
     function getGeoJSONData(countryCodeISO2) {
@@ -865,18 +880,42 @@ function locationData(selectedCountry) {
 
   function reenableSelect() {
     $("#select").attr("disabled", false);
+    $("#progressModal").modal("hide");
   }
+
   //Error function - when API fails error modal is enabled
   function errorRetrievingData() {
-    $("#error-country-name").html($("#select option:selected").text());
-    $("#errorModal").modal({
-      backdrop: "static",
-      keyboard: false,
-    });
+    // $("#error-country-name").html($("#select option:selected").text());
+    const country = $("#select option:selected").text();
+
+    $("#loading-message-text").html(
+      `Data for ${country} not currently available!`
+    );
+
+    $("#progress-modal-footer").removeClass("hide-progress-modal-footer");
+    $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
   }
 }
 
+function resetProgressModal() {
+  $("#progress-modal-footer").addClass("hide-progress-modal-footer");
+  $("#loading-message").removeClass("alert-danger").addClass("alert-primary");
+}
+
 //HELPER FUNCTIONS------------------------------------------//
+
+//adjust width of progress bar - 0, 25, 50, 75, 100
+function progressBar(width) {
+  if (width === 0) {
+    $("#loading-progress-bar")
+      .removeClass(`width25`)
+      .removeClass(`width50`)
+      .removeClass(`width75`)
+      .removeClass(`width100`);
+  }
+  $("#loading-progress-bar").addClass(`width${width}`);
+  $("#loading-progress-bar").html(`${width}%`);
+}
 
 //------populates select tag list of countries--------------//
 function populateSelect(countryCodeISO3) {
