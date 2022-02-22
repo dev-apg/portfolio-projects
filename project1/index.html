@@ -356,32 +356,38 @@
 
     <!-- ERROR MODAL -->
     <div class="modal fade" id="errorModal">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title lead text-center" id="">
-              Country data not currently available
-            </h5>
+            <h5 class="modal-title text-danger" id="">Oh no!</h5>
             <!-- <button class="close" data-dismiss="modal">&times;</button> -->
           </div>
           <div class="modal-body">
-            <div id="error-body">
-              <button
-                id="try-again"
-                class="btn btn-outline-primary"
-                type="button"
-              >
-                Try Again
-              </button>
-              <button
-                id="choose-another"
-                class="btn btn-outline-secondary"
-                type="button"
-                data-dismiss="modal"
-              >
-                Choose Another Country
-              </button>
-            </div>
+            <h5 class="modal-title lead text-center" id="">
+              Data for <span id="error-country-name"></span> currently
+              unavailable!
+            </h5>
+          </div>
+          <div
+            id="error-body"
+            class="modal-footer d-flex justify-content-center"
+          >
+            <button
+              id="try-again"
+              class="btn btn-outline-primary"
+              type="button"
+              data-dismiss="modal"
+            >
+              Try Again
+            </button>
+            <button
+              id="choose-another"
+              class="btn btn-outline-secondary"
+              type="button"
+              data-dismiss="modal"
+            >
+              Choose Another Country
+            </button>
           </div>
         </div>
       </div>

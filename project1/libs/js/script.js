@@ -141,8 +141,6 @@ const newsButton = L.easyButton({
       icon: "<span class='fas fa-newspaper' ></span>",
       onClick: function () {
         $("#newsModal").modal("show");
-        // $("body").addClass("scroll-disable");
-        // $("#map").addClass("scroll-disable");
       },
       id: "myEasyButton",
     },
@@ -162,6 +160,9 @@ locationData();
 
 $("#try-again").on("click", function () {
   locationData($("#select").val());
+});
+$("#choose-another").on("click", function () {
+  $("#select").attr("disabled", false);
 });
 
 //-------------------------locationData()-------------------------------//
@@ -196,7 +197,7 @@ function locationData(selectedCountry) {
     offset_sec: "",
     localTime: "",
   };
-
+  $("#select").attr("disabled", true);
   //this is to stop OpenCage being run a second time on the first run
   let callOpencage = true;
 
@@ -287,9 +288,10 @@ function locationData(selectedCountry) {
         }
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR);
-        console.log(textStatus);
-        console.log(errorThrown);
+        //console.log(jqXHR);
+        //console.log(textStatus);
+        //console.log(errorThrown);
+        errorRetrievingData();
       },
     });
   }
@@ -326,7 +328,8 @@ function locationData(selectedCountry) {
       .then(() => apiUnsplashCall())
       .then(() => apiOpenWeatherCurrentCall())
       .then(() => apiOpenWeatherForecastCall())
-      .then(() => addToHTML());
+      .then(() => addToHTML())
+      .then(() => reenableSelect());
 
     function getGeoJSONData(countryCodeISO2) {
       console.log("***getGeonJSONData*** was called");
@@ -354,9 +357,10 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          console.log(jqXHR);
-          console.log(textStatus);
-          console.log(errorThrown);
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          errorRetrievingData();
         },
       });
     }
@@ -383,9 +387,10 @@ function locationData(selectedCountry) {
         },
         error: function (jqXHR, textStatus, errorThrown) {
           // error code
-          console.log(jqXHR);
-          console.log(textStatus);
-          console.log(errorThrown);
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          errorRetrievingData();
         },
       });
     }
@@ -447,13 +452,10 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          console.log(jqXHR);
-          console.log(textStatus);
-          console.log(errorThrown);
-          $("#errorModal").modal({
-            backdrop: "static",
-            keyboard: false,
-          });
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          errorRetrievingData();
         },
       });
     }
@@ -511,9 +513,10 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          console.log(jqXHR);
-          console.log(textStatus);
-          console.log(errorThrown);
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          errorRetrievingData();
         },
       });
     }
@@ -540,9 +543,10 @@ function locationData(selectedCountry) {
         },
         error: function (jqXHR, textStatus, errorThrown) {
           // error code
-          console.log(jqXHR);
-          console.log(textStatus);
-          console.log(errorThrown);
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          errorRetrievingData();
         },
       });
     }
@@ -570,9 +574,10 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          console.log(jqXHR);
-          console.log(textStatus);
-          console.log(errorThrown);
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          errorRetrievingData();
         },
       });
     }
@@ -608,9 +613,10 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          console.log(jqXHR);
-          console.log(textStatus);
-          console.log(errorThrown);
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          errorRetrievingData();
         },
       });
     }
@@ -641,9 +647,10 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          console.log(jqXHR);
-          console.log(textStatus);
-          console.log(errorThrown);
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          errorRetrievingData();
         },
       });
     }
@@ -690,9 +697,10 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          console.log(jqXHR);
-          console.log(textStatus);
-          console.log(errorThrown);
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          errorRetrievingData();
         },
       });
     }
@@ -723,9 +731,10 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          console.log(jqXHR);
-          console.log(textStatus);
-          console.log(errorThrown);
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          errorRetrievingData();
         },
       });
     }
@@ -754,9 +763,10 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          console.log(jqXHR);
-          console.log(textStatus);
-          console.log(errorThrown);
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          errorRetrievingData();
         },
       });
     }
@@ -851,6 +861,18 @@ function locationData(selectedCountry) {
         $(`#weather-${i}-temp`).html(infoStore.weather[i].temp);
       }
     }
+  }
+
+  function reenableSelect() {
+    $("#select").attr("disabled", false);
+  }
+  //Error function - when API fails error modal is enabled
+  function errorRetrievingData() {
+    $("#error-country-name").html($("#select option:selected").text());
+    $("#errorModal").modal({
+      backdrop: "static",
+      keyboard: false,
+    });
   }
 }
 
