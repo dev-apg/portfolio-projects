@@ -155,14 +155,17 @@ $("#select").change(function () {
 //--------------------------Progress Modal error buttons-------------------------//
 
 $("#try-again").on("click", function () {
-  resetProgressModal();
+  // resetProgressModal();
   locationData($("#select").val());
 });
 
-$("#choose-another").on("click", function () {
-  resetProgressModal();
-  $("#select").attr("disabled", false);
-});
+// $("#choose-another").on("click", function () {
+//   resetProgressModal();
+// });
+
+// $("#choose-another").on("click", function () {
+//   resetProgressModal();
+// });
 
 //----------------------------CALL FUNCTIONS----------------------//
 populateSelect();
@@ -174,6 +177,7 @@ locationData();
 //CALLS OPENCAGE WITH THIS INFORMATION
 function locationData(selectedCountry) {
   progressBar(0);
+  resetProgressModal();
   //stores country specific data to be added to html once all tasks are run
   infoStore = {
     //set by opencage call or from country select
@@ -276,6 +280,8 @@ function locationData(selectedCountry) {
     }
 
     $("#loading-message-text").html(`${errorMessage}`);
+    $("#progress-modal-footer").removeClass("display-none");
+    $("#close-progress-modal").removeClass("display-none");
   }
 
   //success callback
@@ -908,13 +914,18 @@ function locationData(selectedCountry) {
       `Data for ${country} not currently available!`
     );
 
-    $("#progress-modal-footer").removeClass("hide-progress-modal-footer");
+    $("#progress-modal-footer").removeClass("display-none");
+    $("#try-again").removeClass("display-none");
+    $("#choose-another").removeClass("display-none");
     $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
   }
 }
 
 function resetProgressModal() {
-  $("#progress-modal-footer").addClass("hide-progress-modal-footer");
+  $("#progress-modal-footer").addClass("display-none");
+  $("#try-again").addClass("display-none");
+  $("#choose-another").addClass("display-none");
+  $("#close-progress-modal").addClass("display-none");
   $("#loading-message").removeClass("alert-danger").addClass("alert-primary");
 }
 
@@ -930,7 +941,7 @@ function progressBar(width) {
       .removeClass(`width100`);
   }
   $("#loading-progress-bar").addClass(`width${width}`);
-  $("#loading-progress-bar").html(`${width}%`);
+  // $("#loading-progress-bar").html(`${width}%`);
 }
 
 //------populates select tag list of countries--------------//

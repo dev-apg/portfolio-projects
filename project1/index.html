@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Leaflet example" />
     <meta name="author" content="apg" />
-    <link rel="stylesheet" href="libs/css/bootstrap.min.css" />
     <link rel="stylesheet" href="libs/css/leaflet.css" />
     <link rel="stylesheet" href="libs/css/MarkerCluster.css" />
     <link rel="stylesheet" href="libs/css/MarkerCluster.Default.css" />
     <link rel="stylesheet" href="libs/css/easy-button.css" />
     <link href="libs/css/all.css" rel="stylesheet" />
+    <link rel="stylesheet" href="libs/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="libs/css/style.css" />
     <script src="libs/js/leaflet.js"></script>
     <title>Gazetteer</title>
@@ -50,7 +50,7 @@
       aria-labelledby="basicModal"
       aria-hidden="true"
     >
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <img class="api-flag" />
@@ -324,7 +324,7 @@
     </div>
     <!-------- WIKI MODAL ---------------->
     <div class="modal fade" id="wikiModal">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <img class="api-flag" />
@@ -340,7 +340,7 @@
 
     <!-- NEWS MODAL -->
     <div class="modal fade" id="newsModal">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <img class="api-flag" />
@@ -356,7 +356,7 @@
 
     <!-- PROGRESS/LOADING MODAL -->
     <div class="modal fade" id="progressModal">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog">
         <div class="modal-content">
           <!-- <div class="modal-header"> -->
           <!-- <h5 class="modal-title lead" id="">Loading...</h5> -->
@@ -378,22 +378,30 @@
           </div>
           <div
             id="progress-modal-footer"
-            class="modal-footer border-0 hide-progress-modal-footer"
+            class="modal-footer border-0 display-none"
           >
             <button
               id="try-again"
-              class="btn btn-outline-primary"
+              class="btn btn-outline-primary display-none"
               type="button"
             >
               Try Again
             </button>
             <button
               id="choose-another"
-              class="btn btn-outline-secondary"
+              class="btn btn-outline-secondary display-none"
               type="button"
               data-dismiss="modal"
             >
               Choose Another Country
+            </button>
+            <button
+              id="close-progress-modal"
+              class="btn btn-outline-secondary display-none"
+              type="button"
+              data-dismiss="modal"
+            >
+              Close
             </button>
           </div>
         </div>
