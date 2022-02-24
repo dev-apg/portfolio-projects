@@ -1088,10 +1088,10 @@ document.getElementById("show-hide-forecast").onclick = function () {
   Array.from(collection).forEach((row) => {
     row.classList.toggle("hide-row");
   });
-  if ($("#show-hide-forecast").html() === "(show forecast)") {
-    $("#show-hide-forecast").html("(hide forecast)");
+  if ($("#show-hide-forecast").html() === "(more)") {
+    $("#show-hide-forecast").html("(less)");
   } else {
-    $("#show-hide-forecast").html("(show forecast)");
+    $("#show-hide-forecast").html("(more)");
   }
 };
 
