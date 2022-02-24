@@ -365,11 +365,15 @@
           <div class="modal-body">
             <div id="loading-message" class="alert alert-primary">
               <h5>
-                Country selected: <span id="loading-message-country"></span>
+                <span id="country-selected-text">Country selected: </span
+                ><span id="loading-message-country"></span>
               </h5>
-              <p>Retrieving data: <span id="loading-message-text"></span></p>
+              <p>
+                <span id="retrieving-data-text">Retrieving data: </span
+                ><span id="loading-message-text"></span>
+              </p>
             </div>
-            <div class="progress">
+            <div id="loading-progress-bar-container" class="progress">
               <div
                 class="progress-bar-striped progress-bar-animated bg-dark"
                 id="loading-progress-bar"

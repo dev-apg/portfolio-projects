@@ -262,11 +262,11 @@ function locationData(selectedCountry) {
     switch (error.code) {
       case error.PERMISSION_DENIED:
         // alert("Unable User denied the request for Geolocation.");
-        errorMessage = `Geolocation request denied - please select a country`;
+        errorMessage = `Unable to access your location - please select a country to visit.`;
         break;
       case error.POSITION_UNAVAILABLE:
         // alert("Location information is unavailable.");
-        errorMessage = `Geolocation unavailable - please select a country`;
+        errorMessage = `Unable to access your location - please select a country`;
 
         break;
       case error.TIMEOUT:
@@ -275,13 +275,16 @@ function locationData(selectedCountry) {
         break;
       case error.UNKNOWN_ERROR:
         // alert("An unknown error occurred.");
-        errorMessage = `Unable to access Geolocation - please choose a country`;
+        errorMessage = `Unable to access your location - please choose a country`;
         break;
     }
-
     $("#loading-message-text").html(`${errorMessage}`);
     $("#progress-modal-footer").removeClass("display-none");
     $("#close-progress-modal").removeClass("display-none");
+    $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
+    $("#country-selected-text").addClass("display-none");
+    $("#retrieving-data-text").addClass("display-none");
+    $("#loading-progress-bar-container").addClass("display-none");
   }
 
   //success callback
@@ -905,23 +908,24 @@ function locationData(selectedCountry) {
     }
   }
 
-  //Error function - when API fails error modal is enabled
+  //Error function - when API callfails error modal is enabled
   function errorRetrievingData() {
-    // $("#error-country-name").html($("#select option:selected").text());
     const country = $("#select option:selected").text();
-
     $("#loading-message-text").html(
       `Data for ${country} not currently available!`
     );
-
     $("#progress-modal-footer").removeClass("display-none");
     $("#try-again").removeClass("display-none");
     $("#choose-another").removeClass("display-none");
     $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
+    $("#retrieving-data-text").addClass("display-none");
   }
 }
 
 function resetProgressModal() {
+  $("#loading-progress-bar-container").removeClass("display-none");
+  $("#country-selected-text").removeClass("display-none");
+  $("#retrieving-data-text").removeClass("display-none");
   $("#progress-modal-footer").addClass("display-none");
   $("#try-again").addClass("display-none");
   $("#choose-another").addClass("display-none");
