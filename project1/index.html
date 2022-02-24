@@ -17,7 +17,7 @@
     <title>Gazetteer</title>
   </head>
   <body>
-    <div id="preloader">Gazetteer loading...</div>
+    <div id="preloader"></div>
     <div id="map"></div>
 
     <nav>
@@ -364,7 +364,10 @@
           <!-- </div> -->
           <div class="modal-body">
             <div id="loading-message" class="alert alert-primary">
-              <h5>Loading: <span id="loading-message-text"></span></h5>
+              <h5>
+                Country selected: <span id="loading-message-country"></span>
+              </h5>
+              <p>Retrieving data: <span id="loading-message-text"></span></p>
             </div>
             <div class="progress">
               <div

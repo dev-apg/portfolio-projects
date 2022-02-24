@@ -1,3 +1,9 @@
+:root {
+  --primary-color: #75efff;
+  --dark-grey: #495057;
+  --darker-grey: #343a40;
+}
+
 body {
   margin: 0px;
   padding: 0px;
@@ -12,7 +18,57 @@ body,
   height: 100vh;
 }
 
-/* outermost div */
+.leaflet-popup-content-wrapper {
+  border-radius: 3px;
+  background: #343a40;
+  color: var(--primary-color);
+  font-size: 12px;
+}
+
+.leaflet-popup-content {
+  margin: 5px;
+}
+
+.leaflet-popup-tip {
+  background: var(--dark-grey);
+}
+
+.leaflet-bar button,
+.leaflet-bar a {
+  color: var(--primary-color);
+  background-color: var(--dark-grey);
+}
+
+.leaflet-bar button:hover,
+.leaflet-bar a:hover {
+  background-color: var(--primary-color);
+  color: var(--dark-grey);
+}
+
+.leaflet-bar a:active {
+  background: var(--darker-grey);
+}
+
+/* For when the zoom in/out buttons are maximised */
+.leaflet-bar a.leaflet-disabled {
+  color: var(--dark-grey);
+  background: var(--darker-grey);
+}
+
+.input-group-text {
+  background-color: var(--primary-color);
+  color: var(--darker-grey);
+  border: 1px solid var(--primary-color);
+}
+
+.custom-select {
+  /* background-color: var(--darker-grey); */
+  background-color: var(--dark-grey);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+/* outermost nav div */
 #nav-container-all {
   background-color: #343a40;
   position: fixed;
@@ -81,7 +137,6 @@ div.input-group {
 }
 
 /* Loading Modal */
-
 /* loading modal - progress bar */
 .width0 {
   width: 0%;

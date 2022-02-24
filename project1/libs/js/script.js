@@ -152,11 +152,7 @@ $("#select").change(function () {
   locationData($("#select").val());
 });
 
-//----------------------------CALL FUNCTIONS----------------------//
-populateSelect();
-locationData();
-
-//--------------------------ERROR MODAL-------------------------//
+//--------------------------Progress Modal error buttons-------------------------//
 
 $("#try-again").on("click", function () {
   resetProgressModal();
@@ -167,6 +163,10 @@ $("#choose-another").on("click", function () {
   resetProgressModal();
   $("#select").attr("disabled", false);
 });
+
+//----------------------------CALL FUNCTIONS----------------------//
+populateSelect();
+locationData();
 
 //-------------------------locationData()-------------------------------//
 
@@ -201,27 +201,26 @@ function locationData(selectedCountry) {
     offset_sec: "",
     localTime: "",
   };
-  //disable select whilst api data is gathered
-  $("#select").attr("disabled", true);
-
+  //show progress modal
   $("#progressModal").modal({
     backdrop: "static",
     keyboard: false,
   });
 
-  //this is to stop OpenCage being run a second time on the first run
+  //flag to stop OpenCage being run twice on the first run
   let callOpencage = true;
 
   if (!selectedCountry) {
     //Call functions
+    $("#loading-message-text").html(`getting user location`);
     getUserLocation()
       .then((position) =>
         opencageCall(position.coords.latitude, position.coords.longitude)
       )
       .catch((error) => logError(error))
       .then(() => setCallOpencageToFalse())
-      .then(() => getData(infoStore.twoLetterCountryCode))
       .then(() => setSelected())
+      .then(() => getData(infoStore.twoLetterCountryCode))
       .catch((error) => console.log(error));
   } else {
     //destroy featureGroup
@@ -255,20 +254,28 @@ function locationData(selectedCountry) {
 
   //used as error callback
   function logError(error) {
+    let errorMessage = "";
     switch (error.code) {
       case error.PERMISSION_DENIED:
-        alert("Unable User denied the request for Geolocation.");
+        // alert("Unable User denied the request for Geolocation.");
+        errorMessage = `Geolocation request denied - please select a country`;
         break;
       case error.POSITION_UNAVAILABLE:
-        alert("Location information is unavailable.");
+        // alert("Location information is unavailable.");
+        errorMessage = `Geolocation unavailable - please select a country`;
+
         break;
       case error.TIMEOUT:
-        alert("The request to get user location timed out.");
+        // alert("The request to get user location timed out.");
+        errorMessage = `Geolocation request timed out - please choose a country`;
         break;
       case error.UNKNOWN_ERROR:
-        alert("An unknown error occurred.");
+        // alert("An unknown error occurred.");
+        errorMessage = `Unable to access Geolocation - please choose a country`;
         break;
     }
+
+    $("#loading-message-text").html(`${errorMessage}`);
   }
 
   //success callback
@@ -314,6 +321,7 @@ function locationData(selectedCountry) {
   function getData(countryCodeISO2) {
     console.log("***getData call***");
     console.log(countryCodeISO2); // check country code received
+    $("#loading-message-country").html($("#select option:selected").text());
 
     //remove previous layers
     featureGroup1.eachLayer((layer) => layer.clearLayers());
@@ -337,18 +345,18 @@ function locationData(selectedCountry) {
       .then(() => geonamesWikiCall())
       .then(() => progressBar(50))
       .then(() => apiNewsCall())
-      .then(() => apiVolcanoesCall())
+      // .then(() => apiVolcanoesCall())
       .then(() => progressBar(75))
       .then(() => apiUnsplashCall())
       .then(() => apiOpenWeatherCurrentCall())
       .then(() => apiOpenWeatherForecastCall())
       .then(() => addToHTML())
-      .then(() => progressBar(100))
-      .then(() => reenableSelect());
+      .then(() => progressBar(100));
 
     function getGeoJSONData(countryCodeISO2) {
-      console.log("***getGeonJSONData*** was called");
+      console.log("***getGeoJSONData*** was called");
       console.log({ countryCode: countryCodeISO2 });
+      $("#loading-message-text").html(`geoJSON data`);
       return $.ajax({
         url: "libs/php/countryBorders-geoJSON.php",
         type: "GET",
@@ -382,6 +390,7 @@ function locationData(selectedCountry) {
 
     function geonamesCall(countryCodeISO2) {
       console.log("***geonamesCall***");
+      $("#loading-message-text").html(`country details`);
       return $.ajax({
         url: "libs/php/api-geonames.php",
         type: "POST",
@@ -412,6 +421,7 @@ function locationData(selectedCountry) {
 
     function geonamesCitiesCall(boundingBox, countryCodeISO2) {
       console.log("***geonamesCitiesCall*** was called");
+      $("#loading-message-text").html(`cities`);
       return $.ajax({
         url: "libs/php/api-geonames-cities.php",
         type: "POST",
@@ -439,7 +449,9 @@ function locationData(selectedCountry) {
                 })
                   .addTo(citiesMCG)
                   .bindPopup(
-                    `${city.name}<br>Population: ${fixPopulation(
+                    `<strong><span id="purple">${
+                      city.name
+                    }</span></strong><br>Population: ${fixPopulation(
                       city.population
                     )}`
                   );
@@ -455,7 +467,7 @@ function locationData(selectedCountry) {
                 })
                   .addTo(capitalMCG)
                   .bindPopup(
-                    `${city.name}<br class="pop-up-title">${
+                    `<strong>${city.name}</strong><br class="pop-up-title">${
                       infoStore.countryName
                     } capital<br>Population: ${fixPopulation(city.population)}`
                   )
@@ -477,6 +489,7 @@ function locationData(selectedCountry) {
 
     function geonamesEarthquakesCall() {
       console.log("***geonamesEarthquakesCall*** was called");
+      $("#loading-message-text").html(`earthquakes`);
       return $.ajax({
         url: "libs/php/api-geonames-earthquakes.php",
         type: "POST",
@@ -522,7 +535,7 @@ function locationData(selectedCountry) {
             })
               .addTo(earthquakesMCG)
               .bindPopup(
-                `Earthquake<br> ${date}<br>Magnitude: ${earthquake.magnitude}`
+                `<strong>Earthquake location</strong><br><strong>Date:</strong> ${date}<br><strong>Magnitude:</strong> ${earthquake.magnitude}`
               );
           });
         },
@@ -538,6 +551,7 @@ function locationData(selectedCountry) {
 
     function restCountriesCall(countryCodeISO3) {
       console.log("***restCountriesCall***");
+      $("#loading-message-text").html(`country details`);
       return $.ajax({
         url: "libs/php/api-restcountries.php",
         type: "POST",
@@ -567,6 +581,7 @@ function locationData(selectedCountry) {
     }
 
     function geonamesWikiCall() {
+      $("#loading-message-text").html(`wikipedia articles`);
       return $.ajax({
         url: "libs/php/api-geonames-wikipedia.php",
         type: "POST",
@@ -599,6 +614,7 @@ function locationData(selectedCountry) {
 
     function apiNewsCall() {
       console.log("***apiNewsCall***");
+      $("#loading-message-text").html(`news articles`);
       // console.log(infoStore.countryName);
       return $.ajax({
         url: "libs/php/api-apinews.php",
@@ -638,6 +654,7 @@ function locationData(selectedCountry) {
 
     function apiOpenWeatherCurrentCall() {
       console.log("***apiOpenWeatherCurrentCall***");
+      $("#loading-message-text").html(`current weather`);
       return $.ajax({
         url: "libs/php/api-openweatherCurrent.php",
         type: "POST",
@@ -672,6 +689,7 @@ function locationData(selectedCountry) {
 
     function apiOpenWeatherForecastCall() {
       console.log("***apiOpenWeatherForecastCall***");
+      $("#loading-message-text").html(`weather forecast`);
       return $.ajax({
         url: "libs/php/api-openweatherForecast.php",
         type: "POST",
@@ -722,6 +740,7 @@ function locationData(selectedCountry) {
 
     function apiVolcanoesCall() {
       console.log("***apiVolcanoesCall***");
+      $("#loading-message-text").html(`volcanoes`);
       return $.ajax({
         url: "libs/php/api-volcanoes.php",
         type: "POST",
@@ -756,6 +775,7 @@ function locationData(selectedCountry) {
 
     function apiUnsplashCall() {
       console.log("***apiUnsplashCall***");
+      $("#loading-message-text").html(`country images`);
       return $.ajax({
         url: "libs/php/api-unsplash.php",
         type: "POST",
@@ -875,12 +895,8 @@ function locationData(selectedCountry) {
         $(`#weather-${i}-icon`).attr("alt", infoStore.weather[i].description);
         $(`#weather-${i}-temp`).html(infoStore.weather[i].temp);
       }
+      $("#progressModal").modal("hide");
     }
-  }
-
-  function reenableSelect() {
-    $("#select").attr("disabled", false);
-    $("#progressModal").modal("hide");
   }
 
   //Error function - when API fails error modal is enabled
