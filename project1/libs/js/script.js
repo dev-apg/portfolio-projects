@@ -377,7 +377,8 @@ function locationData(selectedCountry) {
             // 1. create map layer for Leaflet bounding box
             infoStore.geojsonCountryOutline = L.geoJSON(result, {
               style: function (feature) {
-                return { color: "rgba(35, 161, 192, 0.548)" };
+                // return { color: "rgba(35, 161, 192, 0.548)" };
+                return { color: "rgba(15, 188, 249, 0.548)" };
               },
             }).addTo(featureGroup1);
             map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
