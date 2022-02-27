@@ -360,12 +360,12 @@ caption {
 }
 
 div.leaflet-control-zoom.leaflet-bar.leaflet-control {
-  top: calc(100vh - 110px);
+  top: calc(100vh - 150px);
 }
 
 div.leaflet-control-layers.leaflet-control {
   /* top: calc(75vh - 98px); */
-  top: calc(100vh - 172px);
+  top: calc(100vh - 200px);
   color: var(--primary-color);
   background-color: #1e272ed2;
   position: absolute;
