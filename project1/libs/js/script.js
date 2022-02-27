@@ -106,7 +106,7 @@ const overlays = {
 };
 
 // test
-// L.control.layers(baseLayers, overlays, { collapsed: false }).addTo(map);
+L.control.layers(baseLayers, overlays, { collapsed: false }).addTo(map);
 
 // EASY BUTTONS
 //general info button
