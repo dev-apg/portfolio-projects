@@ -350,13 +350,21 @@ caption {
 }
 
 div.leaflet-control-zoom.leaflet-bar.leaflet-control {
-  top: 75vh;
+  /* test */
+  /* top: 75vh;  */
 }
 
 div.leaflet-control-layers.leaflet-control {
-  top: calc(75vh - 98px);
+  /* top: calc(75vh - 98px); */
+  top: calc(75vh - 10px);
   color: var(--primary-color);
   background-color: #1e272ed2;
+  position: absolute;
+  /* bottom: 10px; */
+}
+
+div.leaflet-control-layers-overlays {
+  width: 90px;
 }
 
 /* .modal-dialog {
