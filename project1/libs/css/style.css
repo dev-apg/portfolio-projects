@@ -102,7 +102,7 @@ body,
   max-height: 37px;
   position: absolute;
   top: 3px;
-  left: 0px;
+  left: calc(24% - 119px);
   /* border: green 1px solid; */
 }
 
@@ -129,23 +129,10 @@ body,
   border-top-left-radius: 4px;
 }
 
-.nav-spacer-div {
-  /* background: no-repeat url("/imgs/gb.png") center center/cover; */
-  background-color: var(--darker-grey);
-  height: 37px;
-  width: 74px;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
 div.input-group {
   margin: 3px;
   max-width: 14.5rem;
   max-height: 37px;
-}
-
-.input-group-text {
-  z-index: -1;
 }
 
 #gazetteer-small {
@@ -187,14 +174,11 @@ div.input-group {
 }
 
 .alert-danger {
-  /* color: #f53b57; */
   color: #882121;
   background-color: #ffcccc;
-  /* background-color: rgba(239, 87, 120, 0.438); */
 }
 
 .alert-primary {
-  /* color: var(--dark-grey); */
   color: #30336b;
   background-color: #dff9fb;
 }
@@ -270,7 +254,6 @@ a.leaflet-popup-close-button {
 /* modal end */
 
 #info-image-div {
-  /* border: red 1px solid; */
   height: 200px;
   margin-top: -10px;
   margin-bottom: 5px;
@@ -296,7 +279,6 @@ a.leaflet-popup-close-button {
 }
 
 #country-image {
-  /* border-radius: 5px; */
   width: 100%;
 }
 
@@ -309,12 +291,10 @@ a.leaflet-popup-close-button {
 }
 
 .forecast {
-  /* background-color: rgb(250, 252, 253); */
   background-color: rgb(251, 253, 242);
 }
 
 .units {
-  /* color: rgb(112, 112, 112); */
   color: var(--dark-grey);
 }
 
