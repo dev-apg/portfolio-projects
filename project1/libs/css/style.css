@@ -326,10 +326,10 @@ a.leaflet-popup-close-button {
 
 @media only screen and (max-width: 394px) {
   .nav-flag-div {
-    display: none;
+    /* display: none; */
   }
   .nav-spacer-div {
-    display: none;
+    /* display: none; */
   }
 }
 
