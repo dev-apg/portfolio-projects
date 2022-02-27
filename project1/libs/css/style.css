@@ -354,7 +354,9 @@ div.leaflet-control-zoom.leaflet-bar.leaflet-control {
 }
 
 div.leaflet-control-layers.leaflet-control {
-  top: 75vh;
+  top: calc(75vh - 98px);
+  color: var(--primary-color);
+  background-color: #1e272ed2;
 }
 
 /* .modal-dialog {

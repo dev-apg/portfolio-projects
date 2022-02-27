@@ -445,14 +445,8 @@ function locationData(selectedCountry) {
         success: function (result) {
           console.log({ infoStore: infoStore });
           result.data.forEach((city) => {
-            // console.log(city);
             if (city.countrycode === countryCodeISO2) {
               if (city.toponymName !== infoStore.capital) {
-                // infoStore.cityDetails.push({
-                //   toponymName: city.toponymName,
-                //   lat: city.lat,
-                //   lng: city.lng,
-                // });
                 L.marker([city.lat, city.lng], {
                   icon: cityIcon,
                   riseOnHover: true,
@@ -466,11 +460,6 @@ function locationData(selectedCountry) {
                     )}`
                   );
               } else {
-                // infoStore.cityDetails.push({
-                //   toponymName: city.toponymName,
-                //   lat: city.lat,
-                //   lng: city.lng,
-                // });
                 L.marker([city.lat, city.lng], {
                   icon: capitalCityIcon,
                   riseOnHover: true,
@@ -485,7 +474,6 @@ function locationData(selectedCountry) {
               }
             }
           });
-          // console.log(infoStore.cityDetails);
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -530,7 +518,6 @@ function locationData(selectedCountry) {
               "November",
               "December",
             ];
-
             let date =
               thedate.getDate().toString() +
               " " +
