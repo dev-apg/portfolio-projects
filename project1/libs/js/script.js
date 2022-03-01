@@ -860,6 +860,18 @@ function locationData(selectedCountry) {
       //COUNTRY IMAGES FOR CAROUSEL
       for (let i = 0; i < 5; i++) {
         $(`#country-image-${i}`).attr("src", infoStore.countryImages[i].url);
+        $(`#country-image-${i}`).attr(
+          "title",
+          `${
+            infoStore.countryImages[i].description
+              ? infoStore.countryImages[i].description + ": "
+              : infoStore.countryName + ": "
+          }${
+            infoStore.countryImages[i].alt_description
+              ? infoStore.countryImages[i].alt_description
+              : ""
+          }`
+        );
         $(`#country-image-${i}-description`).html(
           infoStore.countryImages[i].description
             ? reduceText(infoStore.countryImages[i].description)
