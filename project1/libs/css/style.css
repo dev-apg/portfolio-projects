@@ -1,21 +1,18 @@
 :root {
   /* --primary-color: #34e7e4; */
   --primary-color: #00d8d6;
-  --light-blue: #4bcffa;
-  --blue: #0fbcf9;
+  /* --light-blue: #4bcffa; */
+  /* --blue: #0fbcf9; */
   --light-grey: #d2dae2;
+  --grey: #9fa6af;
   --dark-grey: #485460;
   --darker-grey: #1e272e;
+  --slightly-less-darker-grey: #262f36;
   --darker-grey-reduced-opacity: #1e272ed2;
   --orange: #ff5e57;
-  --red: #ff3f34;
+  /* --red: #ff3f34; */
   --pink: #ef5777;
 }
-
-/* body {
-  margin: 0px;
-  padding: 0px;
-} */
 
 html,
 body {
@@ -128,11 +125,8 @@ body {
 .nav-flag-div {
   background: no-repeat url("") center center/cover;
   background-color: var(--dark-grey);
-  /* height: 37px; */
   height: 38px;
-  /* width: 74px; */
   width: 75px;
-  /* border-radius: 5px; */
   margin-top: auto;
   margin-bottom: auto;
   border: 1px solid var(--light-grey);
@@ -212,6 +206,11 @@ div.modal-footer,
   border-top: var(--primary-color);
 }
 
+.forecast td {
+  background-color: var(--slightly-less-darker-grey);
+  border-bottom: 1px solid var(--dark-grey);
+}
+
 .table td {
   padding: 0.37rem;
 }
@@ -222,7 +221,7 @@ td.key {
 
 button.close {
   text-shadow: none;
-  color: var(--orange);
+  color: var(--light-grey);
   opacity: 0.9;
 }
 
@@ -287,7 +286,7 @@ a.leaflet-popup-close-button {
 
 #local-time-message {
   font-size: 0.8rem;
-  color: rgb(112, 112, 112);
+  color: var(--grey);
 }
 
 .hide-row {
@@ -306,12 +305,8 @@ a.leaflet-popup-close-button {
   width: 100%;
 }
 
-.forecast {
-  background-color: rgb(251, 253, 242);
-}
-
 .units {
-  color: var(--dark-grey);
+  color: var(--grey);
 }
 
 @media only screen and (max-width: 495px) {

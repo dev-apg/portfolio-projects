@@ -500,10 +500,10 @@ function locationData(selectedCountry) {
           west: infoStore.boundingBox._southWest.lng,
         },
         success: function (result) {
-          console.log(result.data);
+          // console.log(result.data);
 
           result.data.forEach((earthquake) => {
-            console.log(earthquake);
+            // console.log(earthquake);
             const thedate = new Date(earthquake.datetime);
             const months = [
               "January",
@@ -882,7 +882,8 @@ function locationData(selectedCountry) {
         );
       }
       //LOCAL TIME
-      $("#api-date-time").html(infoStore.localTime.slice(0, -3));
+      $("#api-date-time").html(infoStore.localTime.replace(/am|pm/, ""));
+      // $("#api-date-time").html(infoStore.localTime.replace("pm", ""));
       $("#api-date-time-units").html(infoStore.localTime.slice(-2));
       //CURRENT WEATHER
       $("#current-weather-icon").attr(
@@ -1021,17 +1022,42 @@ function readableDate(rawDate) {
 //DATE AND TIME FOR LOCAL TIME
 
 function currentDayTime(unix) {
-  const date = new Date(unix * 1000);
+  unix = unix * 1000;
+  const date = new Date(unix);
   const options = {
-    hour12: true,
     day: "2-digit",
     month: "short",
     weekday: "short",
     year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
   };
-  return new Intl.DateTimeFormat("en-GB", options).format(date);
+  let minutes = String(date.getMinutes());
+  let hours = date.getHours();
+  let amOrPm = "";
+
+  if (hours === 12) {
+    amOrPm = "pm";
+  } else if (hours === 0) {
+    hours = 12;
+    amOrPm = "am";
+  } else if (hours >= 13) {
+    hours = hours - 12;
+    amOrPm = "pm";
+  } else {
+    amOrPm = "am";
+  }
+
+  if (minutes.length < 2) {
+    minutes = "0" + minutes;
+  }
+
+  return (
+    new Intl.DateTimeFormat("en-GB", options).format(date) +
+    ", " +
+    hours +
+    ":" +
+    minutes +
+    amOrPm
+  );
 }
 
 //DATE AND TIME FORMATTING FOR FORECAST
