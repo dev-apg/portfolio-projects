@@ -862,11 +862,11 @@ function locationData(selectedCountry) {
         $(`#country-image-${i}`).attr("src", infoStore.countryImages[i].url);
         $(`#country-image-${i}-description`).html(
           infoStore.countryImages[i].description
-            ? infoStore.countryImages[i].description
+            ? reduceText(infoStore.countryImages[i].description)
             : infoStore.countryName
         );
         $(`#country-image-${i}-alt-description`).html(
-          infoStore.countryImages[i].alt_description
+          reduceText(infoStore.countryImages[i].alt_description)
         );
       }
       //LOCAL TIME
@@ -1104,4 +1104,18 @@ function getLongitudeUnit(lon) {
   } else {
     return "\u00B0E";
   }
+}
+
+function reduceText(text) {
+  if (text.length > 30) {
+    let words = 10;
+    let newText = text;
+    while (newText.length > 30) {
+      newText = newText.split(" ").slice(0, words).join(" ");
+      words--;
+    }
+
+    return newText + "...";
+  }
+  return text;
 }
