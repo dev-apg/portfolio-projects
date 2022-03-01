@@ -14,7 +14,7 @@ $(window).on("load", function () {
 
 const map = L.map("map", {
   center: [51.505, -0.09],
-  zoom: 4,
+  // zoom: 4,
 });
 
 const streetTiles = L.tileLayer(
@@ -22,8 +22,8 @@ const streetTiles = L.tileLayer(
   {
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    minZoom: 3,
-    maxZoom: 18,
+    minZoom: 2,
+    maxZoom: 15,
   }
 ).addTo(map);
 
@@ -383,7 +383,7 @@ function locationData(selectedCountry) {
               },
             }).addTo(featureGroup1);
             map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
-              padding: [18, 18],
+              padding: [9, 9],
             });
             //2. create bounding box co-ordinates
             infoStore.boundingBox = infoStore.geojsonCountryOutline.getBounds();
