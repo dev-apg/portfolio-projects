@@ -6,6 +6,7 @@
   --light-grey: #d2dae2;
   --dark-grey: #485460;
   --darker-grey: #1e272e;
+  --darker-grey-reduced-opacity: #1e272ed2;
   --orange: #ff5e57;
   --red: #ff3f34;
   --pink: #ef5777;
@@ -37,7 +38,7 @@ body {
 
 .leaflet-popup-content-wrapper {
   border-radius: 3px;
-  background: var(--darker-grey);
+  background: var(--darker-grey-reduced-opacity);
   color: var(--primary-color);
   font-size: 12px;
 }
@@ -47,7 +48,7 @@ body {
 }
 
 .leaflet-popup-tip {
-  background: var(--darker-grey);
+  background: var(--darker-grey-reduced-opacity);
 }
 
 .leaflet-bar button {
