@@ -333,6 +333,14 @@ function locationData(selectedCountry) {
     console.log(countryCodeISO2); // check country code received
     $("#loading-message-country").html($("#select option:selected").text());
 
+    if ($("#show-hide-forecast").html() === "(less)") {
+      $("#show-hide-forecast").html("(more)");
+      const collection = document.getElementsByClassName("weather-row");
+      Array.from(collection).forEach((row) => {
+        row.classList.toggle("hide-row");
+      });
+    }
+
     //remove previous layers
     featureGroup1.eachLayer((layer) => layer.clearLayers());
     //clear modal data
