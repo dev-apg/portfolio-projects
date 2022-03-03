@@ -175,9 +175,9 @@ $("#try-again").on("click", function () {
   locationData($("#select").val());
 });
 
-// $("#choose-another").on("click", function () {
-//   resetProgressModal();
-// });
+$("#choose-another").on("click", function () {
+  $("#select");
+});
 
 // $("#choose-another").on("click", function () {
 //   resetProgressModal();
@@ -1167,6 +1167,8 @@ function getLongitudeUnit(lon) {
 }
 
 function reduceText(text) {
+  console.log(text);
+  if (text === null) text = "";
   if (text.length > 30) {
     let words = 10;
     let newText = text;
