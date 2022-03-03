@@ -1167,8 +1167,7 @@ function getLongitudeUnit(lon) {
 }
 
 function reduceText(text) {
-  console.log(text);
-  if (text === null) text = "";
+  if (text === null) return (text = "");
   if (text.length > 30) {
     let words = 10;
     let newText = text;
