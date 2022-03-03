@@ -2,7 +2,7 @@
   /* --primary-color: #34e7e4; */
   --primary-color: #00d8d6;
   /* --light-blue: #4bcffa; */
-  /* --blue: #0fbcf9; */
+  --blue: #0fbcf9;
   --light-grey: #d2dae2;
   --grey: #9fa6af;
   --dark-grey: #485460;
@@ -188,6 +188,18 @@ div.input-group {
   background-color: #dff9fb;
 }
 
+/* #try-again {
+  color: var(--darker-grey);
+  background-color: var(--light-grey);
+  border-color: var(--light-grey);
+} */
+
+/* #choose-another {
+  color: var(--darker-grey);
+  background-color: var(--light-grey);
+  border-color: var(--light-grey);
+} */
+
 .modal-title {
   color: var(--orange);
   font-weight: bold;
@@ -201,9 +213,14 @@ div.modal-footer,
   padding: 0.5rem;
   background: var(--darker-grey);
   color: var(--light-grey);
-  border: var(--primary-color);
+  /* border-color: var(--primary-color); */
+  border: none;
   border-top: var(--darker-grey);
   border-top: var(--primary-color);
+}
+
+#modal-close {
+  /* color: pink; */
 }
 
 .forecast td {
