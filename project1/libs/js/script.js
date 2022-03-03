@@ -148,6 +148,21 @@ const newsButton = L.easyButton({
   ],
 }).addTo(map);
 
+//recenter
+const recenterButton = L.easyButton({
+  states: [
+    {
+      icon: "<span class='fas fa-compass' ></span>",
+      onClick: function () {
+        map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
+          padding: [9, 9],
+        });
+      },
+      id: "myEasyButton",
+    },
+  ],
+}).addTo(map);
+
 //call locationData on change
 $("#select").change(function () {
   locationData($("#select").val());
@@ -386,7 +401,6 @@ function locationData(selectedCountry) {
             // 1. create map layer for Leaflet bounding box
             infoStore.geojsonCountryOutline = L.geoJSON(result, {
               style: function (feature) {
-                // return { color: "rgba(35, 161, 192, 0.548)" };
                 return { color: "rgba(15, 188, 249, 0.548)" };
               },
             }).addTo(featureGroup1);
