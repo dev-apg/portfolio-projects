@@ -154,6 +154,11 @@ div.input-group {
 
 /* Loading Modal */
 /* loading modal - progress bar */
+
+.progress {
+  height: 3px;
+}
+
 .width0 {
   width: 0%;
 }
