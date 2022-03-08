@@ -416,7 +416,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
-          errorRetrievingData();
+          fatalError();
         },
       });
     }
@@ -447,7 +447,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
-          errorRetrievingData();
+          fatalError();
         },
       });
     }
@@ -466,8 +466,12 @@ function locationData(selectedCountry) {
           west: infoStore.boundingBox._southWest.lng,
         },
         success: function (result) {
-          console.log({ infoStore: infoStore });
-          result.data.forEach((city) => {
+          console.log(result);
+          if (result.data.status) {
+            errorRetrievingData();
+            return;
+          }
+          result.data.geonames.forEach((city) => {
             if (city.countrycode === countryCodeISO2) {
               if (city.toponymName !== infoStore.capital) {
                 L.marker([city.lat, city.lng], {
@@ -503,7 +507,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
-          errorRetrievingData();
+          fatalError();
         },
       });
     }
@@ -564,7 +568,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
-          errorRetrievingData();
+          fatalError();
         },
       });
     }
@@ -595,12 +599,13 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
-          errorRetrievingData();
+          fatalError();
         },
       });
     }
 
     function geonamesWikiCall() {
+      console.log("***geonamesWikiCall***");
       $("#loading-message-text").html(`wikipedia articles`);
       return $.ajax({
         url: "libs/php/api-geonames-wikipedia.php",
@@ -627,7 +632,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
-          errorRetrievingData();
+          fatalError();
         },
       });
     }
@@ -667,7 +672,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
-          errorRetrievingData();
+          fatalError();
         },
       });
     }
@@ -702,7 +707,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
-          errorRetrievingData();
+          fatalError();
         },
       });
     }
@@ -753,7 +758,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
-          errorRetrievingData();
+          fatalError();
         },
       });
     }
@@ -788,7 +793,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
-          errorRetrievingData();
+          fatalError();
         },
       });
     }
@@ -821,7 +826,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
-          errorRetrievingData();
+          fatalError();
         },
       });
     }
@@ -932,8 +937,7 @@ function locationData(selectedCountry) {
     }
   }
 
-  //Error function - when API callfails error modal is enabled
-  function errorRetrievingData() {
+  function fatalError() {
     const country = $("#select option:selected").text();
     $("#loading-message-text").html(
       `Data for ${country} not currently available!`
@@ -943,6 +947,20 @@ function locationData(selectedCountry) {
     $("#choose-another").removeClass("display-none");
     $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
     $("#retrieving-data-text").addClass("display-none");
+  }
+
+  //Error function - when API callfails error modal is enabled
+  function errorRetrievingData() {
+    // const country = $("#select option:selected").text();
+    // $("#loading-message-text").html(
+    // `Data for ${country} not currently available!`
+    // );
+    // $("#progress-modal-footer").removeClass("display-none");
+    // $("#try-again").removeClass("display-none");
+    // $("#choose-another").removeClass("display-none");
+    $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
+    // $("#retrieving-data-text").addClass("display-none");
+    $("#error-retrieving-cities").append(`<p>Error: unable to load cities</p>`);
   }
 }
 
