@@ -197,6 +197,7 @@ function locationData(selectedCountry) {
   //stores country specific data to be added to html once all tasks are run
   infoStore = {
     //set by opencage call or from country select
+    errors: false,
     twoLetterCountryCode: "",
     threeLetterCountryCode: "",
     geojsonCountryOutline: "",
@@ -306,6 +307,9 @@ function locationData(selectedCountry) {
   //success callback
   //on success sets infoStore.twoLetterCountryCode
   function opencageCall(lat, lon) {
+    console.log("***opencageCall***");
+    $("#loading-message-text").html(`country details
+    `);
     if (callOpencage === false) return;
     console.log("***opencageCall***");
     console.log({ lat: lat, lon: lon });
@@ -318,23 +322,27 @@ function locationData(selectedCountry) {
         lon: lon,
       },
       success: function (result) {
-        if (result.status.name === "ok") {
-          infoStore.twoLetterCountryCode =
-            result.data.results[0].components["ISO_3166-1_alpha-2"];
-          //new stuff
-          infoStore.offset_sec =
-            result.data.results[0].annotations.timezone.offset_sec;
-          infoStore.unix = result.data.timestamp.created_unix;
-          infoStore.localTime = currentDayTime(
-            infoStore.unix + infoStore.offset_sec
-          );
+        console.log(result.data.status.message);
+        if (result.data.status.message === "ok") {
+          errorRetrievingData("error-country-details");
+          return;
         }
+
+        infoStore.twoLetterCountryCode =
+          result.data.results[0].components["ISO_3166-1_alpha-2"];
+        //utc time
+        infoStore.offset_sec =
+          result.data.results[0].annotations.timezone.offset_sec;
+        infoStore.unix = result.data.timestamp.created_unix;
+        infoStore.localTime = currentDayTime(
+          infoStore.unix + infoStore.offset_sec
+        );
       },
       error: function (jqXHR, textStatus, errorThrown) {
         //console.log(jqXHR);
         //console.log(textStatus);
         //console.log(errorThrown);
-        errorRetrievingData();
+        fatalError();
       },
     });
   }
@@ -371,24 +379,24 @@ function locationData(selectedCountry) {
     //call functions
     getGeoJSONData(countryCodeISO2)
       .then(() => geonamesCall(countryCodeISO2))
-      .then(() => geonamesCitiesCall(infoStore.boundingBox, countryCodeISO2))
-      .then(() => geonamesEarthquakesCall(infoStore.boundingBox))
       .then(() => restCountriesCall(infoStore.threeLetterCountryCode))
       .then(() => opencageCall(infoStore.latitude, infoStore.longitude))
+      .then(() => geonamesCitiesCall(infoStore.boundingBox, countryCodeISO2))
+      .then(() => geonamesEarthquakesCall(infoStore.boundingBox))
       .then(() => geonamesWikiCall())
       .then(() => progressBar(50))
       .then(() => apiNewsCall())
-      // .then(() => apiVolcanoesCall())
+      .then(() => apiVolcanoesCall())
       .then(() => progressBar(75))
       .then(() => apiUnsplashCall())
       .then(() => apiOpenWeatherCurrentCall())
       .then(() => apiOpenWeatherForecastCall())
       .then(() => addToHTML())
-      .then(() => progressBar(100));
+      .then(() => progressBar(100))
+      .then(() => closeProgressModal());
 
     function getGeoJSONData(countryCodeISO2) {
       console.log("***getGeoJSONData*** was called");
-      console.log({ countryCode: countryCodeISO2 });
       $("#loading-message-text").html(`geoJSON data`);
       return $.ajax({
         url: "libs/php/countryBorders-geoJSON.php",
@@ -396,20 +404,22 @@ function locationData(selectedCountry) {
         dataType: "json",
         data: { countryCode: countryCodeISO2 },
         success: function (result) {
-          console.log(result);
-          if (result) {
-            // 1. create map layer for Leaflet bounding box
-            infoStore.geojsonCountryOutline = L.geoJSON(result, {
-              style: function (feature) {
-                return { color: "rgba(15, 188, 249, 0.548)" };
-              },
-            }).addTo(featureGroup1);
-            map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
-              padding: [9, 9],
-            });
-            //2. create bounding box co-ordinates
-            infoStore.boundingBox = infoStore.geojsonCountryOutline.getBounds();
+          // console.log(result);
+          if (!result) {
+            errorRetrievingData("error-geoJSON");
+            return;
           }
+          // 1. create map layer for Leaflet bounding box
+          infoStore.geojsonCountryOutline = L.geoJSON(result, {
+            style: function (feature) {
+              return { color: "rgba(15, 188, 249, 0.548)" };
+            },
+          }).addTo(featureGroup1);
+          map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
+            padding: [9, 9],
+          });
+          //2. create bounding box co-ordinates
+          infoStore.boundingBox = infoStore.geojsonCountryOutline.getBounds();
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -432,15 +442,50 @@ function locationData(selectedCountry) {
           countryCodeISO2: countryCodeISO2,
         },
         success: function (result) {
-          if (result.status.name == "ok") {
-            infoStore.countryName = result.data[0].countryName;
-            infoStore.capital = result.data[0].capital;
-            infoStore.population = result.data[0].population;
-            infoStore.currencyISO3Code = result.data[0].currencyCode;
-            infoStore.threeLetterCountryCode = result.data[0].isoAlpha3;
-            infoStore.continent = result.data[0].continentName;
-            infoStore.geonameId = result.data[0].geonameId;
+          if (result.data.length !== 1) {
+            errorRetrievingData("error-country-details");
+            return;
           }
+          infoStore.countryName = result.data[0].countryName;
+          infoStore.capital = result.data[0].capital;
+          infoStore.population = result.data[0].population;
+          infoStore.currencyISO3Code = result.data[0].currencyCode;
+          infoStore.threeLetterCountryCode = result.data[0].isoAlpha3;
+          infoStore.continent = result.data[0].continentName;
+          infoStore.geonameId = result.data[0].geonameId;
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          // error code
+          // console.log(jqXHR);
+          // console.log(textStatus);
+          // console.log(errorThrown);
+          fatalError();
+        },
+      });
+    }
+
+    function restCountriesCall(countryCodeISO3) {
+      console.log("***restCountriesCall***");
+      $("#loading-message-text").html(`country details`);
+      return $.ajax({
+        url: "libs/php/api-restcountries.php",
+        type: "POST",
+        dataType: "json",
+        data: { countryCodeISO3: countryCodeISO3 },
+        success: function (result) {
+          // console.log(JSON.stringify(result));
+          if (result.data.status === 400) {
+            errorRetrievingData("error-country-details");
+            return;
+          }
+          // console.log(result.data);
+          infoStore.languages = result.data.languages[0].name;
+          infoStore.latitude = result.data.latlng[0];
+          infoStore.longitude = result.data.latlng[1];
+          infoStore.area = result.data.area;
+          infoStore.flag = result.data.flags.png;
+          infoStore.currencyName = result.data.currencies[0].name;
+          infoStore.currencySymbol = result.data.currencies[0].symbol;
         },
         error: function (jqXHR, textStatus, errorThrown) {
           // error code
@@ -468,7 +513,7 @@ function locationData(selectedCountry) {
         success: function (result) {
           console.log(result);
           if (result.data.status) {
-            errorRetrievingData();
+            errorRetrievingData("error-cities");
             return;
           }
           result.data.geonames.forEach((city) => {
@@ -527,7 +572,9 @@ function locationData(selectedCountry) {
         },
         success: function (result) {
           // console.log(result.data);
-
+          if (result.data === null) {
+            errorRetrievingData("error-volcanoes");
+          }
           result.data.forEach((earthquake) => {
             // console.log(earthquake);
             const thedate = new Date(earthquake.datetime);
@@ -573,37 +620,6 @@ function locationData(selectedCountry) {
       });
     }
 
-    function restCountriesCall(countryCodeISO3) {
-      console.log("***restCountriesCall***");
-      $("#loading-message-text").html(`country details`);
-      return $.ajax({
-        url: "libs/php/api-restcountries.php",
-        type: "POST",
-        dataType: "json",
-        data: { countryCodeISO3: countryCodeISO3 },
-        success: function (result) {
-          // console.log(JSON.stringify(result));
-          if (result.status.name == "ok") {
-            console.log(result.data);
-            infoStore.languages = result.data.languages[0].name;
-            infoStore.latitude = result.data.latlng[0];
-            infoStore.longitude = result.data.latlng[1];
-            infoStore.area = result.data.area;
-            infoStore.flag = result.data.flags.png;
-            infoStore.currencyName = result.data.currencies[0].name;
-            infoStore.currencySymbol = result.data.currencies[0].symbol;
-          }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-          // error code
-          // console.log(jqXHR);
-          // console.log(textStatus);
-          // console.log(errorThrown);
-          fatalError();
-        },
-      });
-    }
-
     function geonamesWikiCall() {
       console.log("***geonamesWikiCall***");
       $("#loading-message-text").html(`wikipedia articles`);
@@ -618,7 +634,11 @@ function locationData(selectedCountry) {
           west: infoStore.boundingBox._southWest.lng,
         },
         success: function (result) {
-          // console.log(result.data);
+          console.log(result);
+          if (result.data.length === 1) {
+            errorRetrievingData("error-wikipedia");
+            return;
+          }
           const articles = JSON.parse(result.data);
           articles.forEach((story) => {
             $("#wiki-data").append(
@@ -640,7 +660,6 @@ function locationData(selectedCountry) {
     function apiNewsCall() {
       console.log("***apiNewsCall***");
       $("#loading-message-text").html(`news articles`);
-      // console.log(infoStore.countryName);
       return $.ajax({
         url: "libs/php/api-apinews.php",
         type: "POST",
@@ -650,22 +669,26 @@ function locationData(selectedCountry) {
         },
         success: function (result) {
           console.log(result);
-          // const articles = JSON.parse(result.data);
-          result.data.articles.forEach((story) => {
-            // console.log(story);
-            $("#news-data").append(
-              `<p class="lead">${
-                story.title
-              }</p><p class="font-italic">${readableDate(
-                story.publishedAt
-              )}</p><img class="news-image" src=${story.urlToImage}><p>${
-                story.description
-              }</p>
-               <p><a href=${story.url} target="_blank">${
-                story.url
-              }</a></p><hr/>`
-            );
-          });
+          if (result.data.articles && result.data.articles.length > 0) {
+            result.data.articles.forEach((story) => {
+              // console.log(story);
+              $("#news-data").append(
+                `<p class="lead">${
+                  story.title
+                }</p><p class="font-italic">${readableDate(
+                  story.publishedAt
+                )}</p><img class="news-image" src=${story.urlToImage}><p>${
+                  story.description
+                }</p>
+                  <p><a href=${story.url} target="_blank">${
+                  story.url
+                }</a></p><hr/>`
+              );
+            });
+          } else {
+            errorRetrievingData("error-news");
+            return;
+          }
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -689,10 +712,10 @@ function locationData(selectedCountry) {
           longitude: infoStore.longitude,
         },
         success: function (result) {
-          // console.log(result.data);
-          // infoStore.currentWeather.dayTime = currentDayTime(
-          //   result.data.current.dt
-          // );
+          if (result.data.cod) {
+            errorRetrievingData("error-current-weather");
+            return;
+          }
           //description
           infoStore.currentWeather.description =
             result.data.current.weather[0].description;
@@ -714,6 +737,7 @@ function locationData(selectedCountry) {
 
     function apiOpenWeatherForecastCall() {
       console.log("***apiOpenWeatherForecastCall***");
+
       $("#loading-message-text").html(`weather forecast`);
       return $.ajax({
         url: "libs/php/api-openweatherForecast.php",
@@ -724,9 +748,11 @@ function locationData(selectedCountry) {
           longitude: infoStore.longitude,
         },
         success: function (result) {
-          // console.log(result.data.list[0]);
-          // console.log(result.data.list);
-          console.log({ offset_sec: infoStore.offset_sec });
+          if (result.data.cod !== "200") {
+            errorRetrievingData("error-weather-forecast");
+            return;
+          }
+
           const forecast = result.data.list;
           for (let i = 0; i < 5; i++) {
             const obj = {};
@@ -765,6 +791,7 @@ function locationData(selectedCountry) {
 
     function apiVolcanoesCall() {
       console.log("***apiVolcanoesCall***");
+      // console.log(infoStore.countryName);
       $("#loading-message-text").html(`volcanoes`);
       return $.ajax({
         url: "libs/php/api-volcanoes.php",
@@ -774,7 +801,11 @@ function locationData(selectedCountry) {
           countryname: infoStore.countryName,
         },
         success: function (result) {
-          console.log(result);
+          // if (result.data.length === 0) {
+          //   errorRetrievingData("error-volcanoes");
+          //   return;
+          // }
+          console.log({ volcanoes: result });
           result.data.forEach((volcano) => {
             console.log(volcano.properties);
             L.marker(
@@ -809,9 +840,11 @@ function locationData(selectedCountry) {
           countryname: infoStore.countryName,
         },
         success: function (result) {
-          // infoStore.countryImages.push(result.data);
-          // console.log(infoStore.countryImages[0]);
-          // console.log(result.data[0].urls.small);
+          if (result.data.length === 0) {
+            errorRetrievingData("error-volcanoes");
+            return;
+          }
+          console.log(result);
           result.data.forEach((result) => {
             let obj = {};
             obj.url = result.urls.small;
@@ -867,6 +900,16 @@ function locationData(selectedCountry) {
         $(`#weather-${i}-icon`).attr("alt", "");
         $(`#weather-${i}-temp`).html("");
       }
+      //ERRORS ON PROGRESS MODAL
+      $("#error-geoJSON").addClass("display-none");
+      $("#error-country-details").addClass("display-none");
+      $("#error-cities").addClass("display-none");
+      $("#error-wikipedia").addClass("display-none");
+      $("#error-news").addClass("display-none");
+      $("#error-current-weather").addClass("display-none");
+      $("#error-weather-forecast").addClass("display-none");
+      $("#error-volcanoes").addClass("display-none");
+      $("#error-country-images").addClass("display-none");
     }
 
     function addToHTML() {
@@ -933,7 +976,6 @@ function locationData(selectedCountry) {
         $(`#weather-${i}-icon`).attr("alt", infoStore.weather[i].description);
         $(`#weather-${i}-temp`).html(infoStore.weather[i].temp);
       }
-      $("#progressModal").modal("hide");
     }
   }
 
@@ -950,17 +992,23 @@ function locationData(selectedCountry) {
   }
 
   //Error function - when API callfails error modal is enabled
-  function errorRetrievingData() {
-    // const country = $("#select option:selected").text();
-    // $("#loading-message-text").html(
-    // `Data for ${country} not currently available!`
-    // );
-    // $("#progress-modal-footer").removeClass("display-none");
-    // $("#try-again").removeClass("display-none");
-    // $("#choose-another").removeClass("display-none");
+  function errorRetrievingData(id) {
     $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
-    // $("#retrieving-data-text").addClass("display-none");
-    $("#error-retrieving-cities").append(`<p>Error: unable to load cities</p>`);
+    // $("#error-retrieving-messages").append(`<p>${message}</p>`);
+    $(`#${id}`).removeClass("display-none");
+    infoStore.errors = true;
+  }
+
+  function closeProgressModal() {
+    if (infoStore.errors === false) {
+      $("#progressModal").modal("hide");
+    } else {
+      $("#progress-modal-footer").removeClass("display-none");
+      $("#close-progress-modal").removeClass("display-none");
+      $("#loading-progress-bar-container").addClass("display-none");
+      $("#retrieving-data-text").addClass("display-none");
+      $("#loading-message-text").html("");
+    }
   }
 }
 
@@ -973,6 +1021,10 @@ function resetProgressModal() {
   $("#choose-another").addClass("display-none");
   $("#close-progress-modal").addClass("display-none");
   $("#loading-message").removeClass("alert-danger").addClass("alert-primary");
+  //error messages:
+  $("#error-country-details").addClass("display-none");
+  $("#error-cities").addClass("display-none");
+  $("#loading-progress-bar-container").removeClass("display-none");
 }
 
 //HELPER FUNCTIONS------------------------------------------//
@@ -987,7 +1039,6 @@ function progressBar(width) {
       .removeClass(`width100`);
   }
   $("#loading-progress-bar").addClass(`width${width}`);
-  // $("#loading-progress-bar").html(`${width}%`);
 }
 
 //------populates select tag list of countries--------------//

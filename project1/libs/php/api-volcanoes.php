@@ -7,7 +7,7 @@
 
 	$executionStartTime = microtime(true);
     
-$url = "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GVP-VOTW:Smithsonian_VOTW_Pleistocene_Volcanoes&maxFeatures=1000&outputFormat=application%2Fjson";
+	$url = "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=GVP-VOTW:Smithsonian_VOTW_Pleistocene_Volcanoes&maxFeatures=1000&outputFormat=application%2Fjson";
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -33,6 +33,8 @@ foreach($json_data['features'] as $volcano) {
    }
 }
 
+// json_encode($array,JSON_FORCE_OBJECT);
+
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
@@ -42,4 +44,5 @@ foreach($json_data['features'] as $volcano) {
 	header('Content-Type: application/json; charset=UTF-8');
 
 	echo json_encode($output); 
+
 ?>
