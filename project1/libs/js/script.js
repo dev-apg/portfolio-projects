@@ -221,6 +221,7 @@ function locationData(selectedCountry) {
     weather: [],
     offset_sec: "",
     localTime: "",
+    exchangeRate: "",
   };
   //show progress modal
   $("#progressModal").modal({
@@ -387,6 +388,7 @@ function locationData(selectedCountry) {
       .then(() => opencageCall(infoStore.latitude, infoStore.longitude))
       .then(() => geonamesCitiesCall(infoStore.boundingBox, countryCodeISO2))
       .then(() => geonamesEarthquakesCall(infoStore.boundingBox))
+      .then(() => openExchangeRatesCall(infoStore.currencyISO3Code))
       .then(() => geonamesWikiCall(infoStore.boundingBox))
       .then(() => progressBar(50))
       .then(() => apiNewsCall(infoStore.countryName))
@@ -472,6 +474,28 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
+          fatalError();
+        },
+      });
+    }
+
+    function openExchangeRatesCall(currencyISO3Code) {
+      console.log("***openExchangeRatesCall***");
+      console.log({ currencyISO3Code: currencyISO3Code });
+      $("#loading-message-text").html(`exchange rate`);
+      return $.ajax({
+        url: "libs/php/api-openexchangerates.php",
+        type: "POST",
+        dataType: "json",
+        success: function (result) {
+          if (!result.data) {
+            errorRetrievingData("error-country-details");
+            return;
+          }
+          infoStore.exchangeRate = result.data[currencyISO3Code];
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          // error code
           fatalError();
         },
       });
@@ -962,6 +986,8 @@ function locationData(selectedCountry) {
       $("#api-population").html(fixPopulation(infoStore.population));
       $("#api-currency").html(infoStore.currencyName);
       $("#api-currency-symbol").html(` (${infoStore.currencySymbol})`);
+      $("#api-currency-symbol-for-exchange").html(infoStore.currencySymbol);
+      $("#api-exchange-rate").html(infoStore.exchangeRate.toFixed(2));
       $("#api-continent").html(infoStore.continent);
       $("#api-languages").html(infoStore.languages);
       $("#api-latitude").html(fixLatLon(infoStore.latitude));
