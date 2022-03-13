@@ -871,7 +871,7 @@ function locationData(selectedCountry) {
 
     function apiUnsplashCall(countryName) {
       if (!countryName) {
-        errorRetrievingData("error-volcanoes");
+        errorRetrievingData("country-images");
         return;
       }
       console.log("***apiUnsplashCall***");
@@ -885,7 +885,7 @@ function locationData(selectedCountry) {
         },
         success: function (result) {
           if (result.data.length === 0) {
-            errorRetrievingData("error-volcanoes");
+            errorRetrievingData("country-images");
             return;
           }
           console.log(result);
@@ -971,30 +971,34 @@ function locationData(selectedCountry) {
       $("#api-area").html(fixPopulation(infoStore.area));
       $(".api-flag").attr("src", infoStore.flag);
       $(".nav-flag-div").css("background-image", `url(${infoStore.flag})`);
+
       //COUNTRY IMAGES FOR CAROUSEL
-      for (let i = 0; i < 5; i++) {
-        $(`#country-image-${i}`).attr("src", infoStore.countryImages[i].url);
-        $(`#country-image-${i}`).attr(
-          "title",
-          `${
+      if (infoStore.countryImages !== []) {
+        for (let i = 0; i < 5; i++) {
+          $(`#country-image-${i}`).attr("src", infoStore.countryImages[i].url);
+          $(`#country-image-${i}`).attr(
+            "title",
+            `${
+              infoStore.countryImages[i].description
+                ? infoStore.countryImages[i].description + ": "
+                : infoStore.countryName + ": "
+            }${
+              infoStore.countryImages[i].alt_description
+                ? infoStore.countryImages[i].alt_description
+                : ""
+            }`
+          );
+          $(`#country-image-${i}-description`).html(
             infoStore.countryImages[i].description
-              ? infoStore.countryImages[i].description + ": "
-              : infoStore.countryName + ": "
-          }${
-            infoStore.countryImages[i].alt_description
-              ? infoStore.countryImages[i].alt_description
-              : ""
-          }`
-        );
-        $(`#country-image-${i}-description`).html(
-          infoStore.countryImages[i].description
-            ? reduceText(infoStore.countryImages[i].description)
-            : infoStore.countryName
-        );
-        $(`#country-image-${i}-alt-description`).html(
-          reduceText(infoStore.countryImages[i].alt_description)
-        );
+              ? reduceText(infoStore.countryImages[i].description)
+              : infoStore.countryName
+          );
+          $(`#country-image-${i}-alt-description`).html(
+            reduceText(infoStore.countryImages[i].alt_description)
+          );
+        }
       }
+
       //LOCAL TIME
       $("#api-date-time").html(infoStore.localTime.replace(/am|pm/, ""));
       // $("#api-date-time").html(infoStore.localTime.replace("pm", ""));
@@ -1011,14 +1015,18 @@ function locationData(selectedCountry) {
       $("#current-temp").html(infoStore.currentWeather.temp);
 
       // FORECAST
-      for (let i = 0; i < 5; i++) {
-        $(`#weather-${i}-dateTime`).html(infoStore.weather[i].dateTime);
-        $(`#weather-${i}-icon`).attr(
-          "src",
-          `libs/imgs/${infoStore.weather[i].icon}@2x.png`
-        );
-        $(`#weather-${i}-icon`).attr("alt", infoStore.weather[i].description);
-        $(`#weather-${i}-temp`).html(infoStore.weather[i].temp);
+
+      console.log(infoStore.weather);
+      if (infoStore.weather.length !== 0) {
+        for (let i = 0; i < 5; i++) {
+          $(`#weather-${i}-dateTime`).html(infoStore.weather[i].dateTime);
+          $(`#weather-${i}-icon`).attr(
+            "src",
+            `libs/imgs/${infoStore.weather[i].icon}@2x.png`
+          );
+          $(`#weather-${i}-icon`).attr("alt", infoStore.weather[i].description);
+          $(`#weather-${i}-temp`).html(infoStore.weather[i].temp);
+        }
       }
     }
   }
