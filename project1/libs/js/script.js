@@ -1156,7 +1156,11 @@ function fixPopulation(num) {
     return "n/a";
   } else {
     num = num.toString();
-    if (num.length <= 6) {
+    if (num === "0") {
+      return "n/a";
+    } else if (num.length < 4) {
+      return num;
+    } else if (num.length <= 6) {
       num = num.slice(0, -1);
       num = num / 100;
       num = num.toFixed(0);
