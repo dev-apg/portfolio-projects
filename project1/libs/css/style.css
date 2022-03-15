@@ -70,15 +70,31 @@ body {
   background: var(--darker-grey-reduced-opacity);
 }
 
+/* easy buttons with hover fix for mobile */
+
 .leaflet-bar button {
   color: var(--primary-color);
   background-color: var(--darker-grey);
 }
 
 .leaflet-bar button:hover {
-  background-color: var(--primary-color);
-  color: var(--darker-grey);
+  color: var(--primary-color);
+  background-color: var(--darker-grey);
 }
+
+@media (hover: hover) {
+  .leaflet-bar button:hover {
+    color: var(--darker-grey);
+    background-color: var(--primary-color);
+  }
+}
+
+.leaflet-bar button:active {
+  background: var(--light-grey);
+  background: #fff;
+}
+
+/* zoom buttons with hover fix for mobiles */
 
 .leaflet-bar a {
   color: var(--orange);
@@ -86,12 +102,21 @@ body {
 }
 
 .leaflet-bar a:hover {
-  background-color: var(--orange);
-  color: var(--darker-grey);
+  color: var(--orange);
+  background-color: var(--darker-grey);
+}
+
+@media (hover: hover) {
+  .leaflet-bar a:hover {
+    color: var(--darker-grey);
+    background-color: var(--orange);
+  }
 }
 
 .leaflet-bar a:active {
-  background: var(--darker-grey);
+  /* background: var(--darker-grey); */
+  background: var(--light-grey);
+  background: #fff;
 }
 
 /* For when the zoom in/out buttons are maximised */
