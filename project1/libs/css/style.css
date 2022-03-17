@@ -461,6 +461,17 @@ caption {
   caption-side: top;
 }
 
+div#wiki-data hr,
+div#news-data hr {
+  /* border: 1px solid var(--light-grey); */
+  border: 1px solid var(--dark-grey);
+}
+
+div#wiki-data .lead,
+div#news-data .lead {
+  font-weight: bold;
+}
+
 /* Preloader */
 
 #preloader {
