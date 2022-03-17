@@ -168,6 +168,10 @@ $("#select").change(function () {
   locationData($("#select").val());
 });
 
+$(".nav-flag-div").on("click", function () {
+  locationData($("#select").val());
+});
+
 //--------------------------Progress Modal error buttons-------------------------//
 
 $("#try-again").on("click", function () {
