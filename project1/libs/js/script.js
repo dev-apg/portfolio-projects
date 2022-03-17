@@ -375,7 +375,8 @@ function locationData(selectedCountry) {
 
     if ($("#show-hide-forecast").html() === "(less)") {
       $("#show-hide-forecast").html("(more)");
-      const collection = document.getElementsByClassName("weather-row");
+      // const collection = document.getElementsByClassName("weather-row");
+      const collection = $(".weather-row");
       Array.from(collection).forEach((row) => {
         row.classList.toggle("hide-row");
       });
@@ -1295,8 +1296,9 @@ function forecastDayAndTime(unix) {
 }
 
 //SHOW/HIDE FORECAST ON INFO MODAL
-document.getElementById("show-hide-forecast").onclick = function () {
-  const collection = document.getElementsByClassName("weather-row");
+$("#show-hide-forecast").on("click", function () {
+  // const collection = document.getElementsByClassName("weather-row");
+  const collection = $(".weather-row");
   Array.from(collection).forEach((row) => {
     row.classList.toggle("hide-row");
   });
@@ -1305,7 +1307,7 @@ document.getElementById("show-hide-forecast").onclick = function () {
   } else {
     $("#show-hide-forecast").html("(more)");
   }
-};
+});
 
 function fixLatLon(num) {
   return Math.abs(num);
