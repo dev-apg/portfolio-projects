@@ -169,6 +169,7 @@ body {
   /* left: calc(24% - 153px); */
   left: 15px;
   font-size: 30px;
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 333px) {
@@ -187,6 +188,7 @@ body {
   /* left: calc(24% - 119px); */
   left: 48px;
   /* border: green 1px solid; */
+  cursor: pointer;
 }
 
 #logo-small {

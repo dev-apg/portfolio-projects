@@ -168,8 +168,17 @@ $("#select").change(function () {
   locationData($("#select").val());
 });
 
+//click on flag to refresh
 $(".nav-flag-div").on("click", function () {
   locationData($("#select").val());
+});
+
+$("#globe-icon").on("click", function () {
+  $("#aboutModal").modal("show");
+});
+
+$("#logo").on("click", function () {
+  $("#aboutModal").modal("show");
 });
 
 //--------------------------Progress Modal error buttons-------------------------//
