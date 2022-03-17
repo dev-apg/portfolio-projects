@@ -175,7 +175,6 @@ $(".nav-flag-div").on("click", function () {
 //--------------------------Progress Modal error buttons-------------------------//
 
 $("#try-again").on("click", function () {
-  // resetProgressModal();
   locationData($("#select").val());
 });
 
