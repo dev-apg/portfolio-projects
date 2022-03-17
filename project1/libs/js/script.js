@@ -375,7 +375,6 @@ function locationData(selectedCountry) {
 
     if ($("#show-hide-forecast").html() === "(less)") {
       $("#show-hide-forecast").html("(more)");
-      // const collection = document.getElementsByClassName("weather-row");
       const collection = $(".weather-row");
       Array.from(collection).forEach((row) => {
         row.classList.toggle("hide-row");
@@ -1297,7 +1296,6 @@ function forecastDayAndTime(unix) {
 
 //SHOW/HIDE FORECAST ON INFO MODAL
 $("#show-hide-forecast").on("click", function () {
-  // const collection = document.getElementsByClassName("weather-row");
   const collection = $(".weather-row");
   Array.from(collection).forEach((row) => {
     row.classList.toggle("hide-row");
@@ -1310,7 +1308,8 @@ $("#show-hide-forecast").on("click", function () {
 });
 
 function fixLatLon(num) {
-  return Math.abs(num);
+  num = Math.abs(num);
+  return num.toFixed(0);
 }
 
 function getLatitudeUnit(lat) {
