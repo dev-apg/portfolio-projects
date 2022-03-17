@@ -191,18 +191,6 @@ body {
   cursor: pointer;
 }
 
-#logo-small {
-  display: none;
-  /* max-height: 37px; */
-  height: 49px;
-  position: absolute;
-  /* top: 3px; */
-  top: -3px;
-  /* left: calc(24% - 119px); */
-  left: 48px;
-  /* border: green 1px solid; */
-}
-
 @media only screen and (max-width: 660px) {
   #logo {
     height: 35px;
@@ -220,15 +208,6 @@ body {
 
 @media only screen and (max-width: 530px) {
   #logo {
-    display: none;
-  }
-  #logo-small {
-    display: inline;
-  }
-}
-
-@media only screen and (max-width: 385px) {
-  #logo-small {
     display: none;
   }
 }
