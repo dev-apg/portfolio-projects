@@ -33,6 +33,13 @@ body {
   position: relative;
 }
 
+/* buttons */
+
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+  border: none;
+}
+
 /* easy buttons */
 
 .leaflet-touch .leaflet-bar button,
@@ -159,16 +166,69 @@ body {
   color: var(--primary-color);
   position: absolute;
   top: 7px;
-  left: calc(24% - 153px);
+  /* left: calc(24% - 153px); */
+  left: 15px;
   font-size: 30px;
 }
 
-#gazetteer-large {
-  max-height: 37px;
+@media only screen and (max-width: 333px) {
+  #globe-icon {
+    display: none;
+  }
+}
+
+#logo {
+  /* max-height: 37px; */
+  /* height: 37px; */
+  height: 49px;
   position: absolute;
-  top: 3px;
-  left: calc(24% - 119px);
+  /* top: 3px; */
+  top: -3px;
+  /* left: calc(24% - 119px); */
+  left: 48px;
   /* border: green 1px solid; */
+}
+
+#logo-small {
+  display: none;
+  /* max-height: 37px; */
+  height: 49px;
+  position: absolute;
+  /* top: 3px; */
+  top: -3px;
+  /* left: calc(24% - 119px); */
+  left: 48px;
+  /* border: green 1px solid; */
+}
+
+@media only screen and (max-width: 660px) {
+  #logo {
+    height: 35px;
+    top: 4px;
+    /* left: calc(20%); */
+  }
+}
+
+@media only screen and (max-width: 570px) {
+  #logo {
+    height: 30px;
+    top: 6px;
+  }
+}
+
+@media only screen and (max-width: 530px) {
+  #logo {
+    display: none;
+  }
+  #logo-small {
+    display: inline;
+  }
+}
+
+@media only screen and (max-width: 385px) {
+  #logo-small {
+    display: none;
+  }
 }
 
 #flag-select-container {
@@ -197,9 +257,12 @@ div.input-group {
   max-height: 37px;
 }
 
-#gazetteer-small {
-  /* position: absolute; */
-  display: none;
+@media only screen and (max-width: 328px) {
+  div.input-group {
+    max-width: 100%;
+    /* width: 97vw; */
+    width: 97vw;
+  }
 }
 
 .api-flag {
@@ -390,21 +453,6 @@ a.leaflet-popup-close-button {
 
 .units {
   color: var(--grey);
-}
-
-@media only screen and (max-width: 495px) {
-  #gazetteer-large {
-    display: none;
-  }
-}
-
-@media only screen and (max-width: 394px) {
-  .nav-flag-div {
-    /* display: none; */
-  }
-  .nav-spacer-div {
-    /* display: none; */
-  }
 }
 
 caption {
