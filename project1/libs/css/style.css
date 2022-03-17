@@ -153,6 +153,16 @@ body {
   align-items: center;
 }
 
+#globe-icon {
+  /* color: var(--primary-color); */
+  /* color: #14bbb8; */
+  color: var(--primary-color);
+  position: absolute;
+  top: 7px;
+  left: calc(24% - 153px);
+  font-size: 30px;
+}
+
 #gazetteer-large {
   max-height: 37px;
   position: absolute;

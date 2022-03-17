@@ -152,7 +152,7 @@ const newsButton = L.easyButton({
 const recenterButton = L.easyButton({
   states: [
     {
-      icon: "<span class='fas fa-compass' ></span>",
+      icon: "<span class='fa-solid fa-location-crosshairs' ></span>",
       onClick: function () {
         map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
           padding: [9, 9],
