@@ -238,11 +238,15 @@ div.input-group {
   max-height: 37px;
 }
 
+/* Galaxy Fold */
 @media only screen and (max-width: 328px) {
   div.input-group {
-    max-width: 100%;
+    /* max-width: 100%; */
     /* width: 97vw; */
-    width: 97vw;
+    /* width: 97vw; */
+    /* border: solid var(--blue) 1px; */
+    position: relative;
+    right: 6px;
   }
 }
 
@@ -251,6 +255,38 @@ div.input-group {
   margin-left: 5px;
   margin-right: 10px;
   border-radius: 3px;
+}
+
+/* change this back to an ID */
+#nav-icons {
+  /* color: var(--primary-color); */
+  /* color: #14bbb8; */
+  color: var(--dark-grey);
+  position: absolute;
+  /* top: 3px; */
+  left: calc(50% + 125px);
+  /* left: 473px; */
+  font-size: 30px;
+  /* cursor: pointer; */
+}
+
+/* Galaxy Fold */
+@media only screen and (max-width: 328px) {
+  #nav-icons {
+    color: var(--dark-grey);
+    color: var(--primary-color);
+    position: relative;
+    left: auto;
+    /* right: 1%; */
+    /* left: 473px; */
+    font-size: 25px;
+    /* cursor: pointer; */
+  }
+}
+
+.active-nav-icon {
+  color: var(--light-grey);
+  cursor: pointer;
 }
 
 /* Loading Modal */

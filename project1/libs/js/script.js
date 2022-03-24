@@ -1046,7 +1046,7 @@ function locationData(selectedCountry) {
       $("#api-currency").html(infoStore.currencyName);
       $("#api-currency-symbol").html(` (${infoStore.currencySymbol})`);
       $("#api-currency-symbol-for-exchange").html(infoStore.currencySymbol);
-      // $("#api-exchange-rate").html(infoStore.exchangeRate.toFixed(2));
+      $("#api-exchange-rate").html(infoStore.exchangeRate.toFixed(2));
       $("#api-continent").html(infoStore.continent);
       $("#api-languages").html(infoStore.languages);
       $("#api-latitude").html(fixLatLon(infoStore.latitude));
