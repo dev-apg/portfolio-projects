@@ -256,7 +256,11 @@ div.input-group {
 /* Loading Modal */
 /* loading modal - progress bar */
 
-.progress {
+/* #loading-progress-bar {
+  width: 77%;
+} */
+
+/* .progress {
   height: 3px;
 }
 
@@ -278,7 +282,7 @@ div.input-group {
 
 .width100 {
   width: 100%;
-}
+} */
 
 .display-none {
   display: none;

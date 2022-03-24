@@ -497,13 +497,14 @@
           <div class="modal-body">
             <div id="loading-message" class="alert alert-primary">
               <h5>
-                <span id="country-selected-text">Country selected: </span
+                <span id="country-selected-text">Loading data for: </span
                 ><span id="loading-message-country"></span>
               </h5>
-              <p>
+              <p id="loading-message-text"></p>
+              <!-- <p>
                 <span id="retrieving-data-text">Retrieving data: </span
                 ><span id="loading-message-text"></span>
-              </p>
+              </p> -->
               <!-- api data error messages -->
               <div id="error-retrieving-messages">
                 <p id="error-geoJSON" class="display-none">
@@ -590,6 +591,5 @@
     ></script>
     <script type="application/javascript" src="libs/js/easy-button.js"></script>
     <script type="application/javascript" src="libs/js/script.js"></script>
-    <script type="application/javascript" src="libs/js/getDator.js"></script>
   </body>
 </html>

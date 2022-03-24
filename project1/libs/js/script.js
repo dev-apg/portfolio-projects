@@ -11,6 +11,9 @@ $(window).on("load", function () {
   }
 });
 
+// GLOBAL VARIABLES
+let progressBarWidth = 0;
+
 //SET UP MAP----------------------------------------------------//
 // const map = L.map("map").setView([50, 0], 14);
 
@@ -206,7 +209,6 @@ locationData();
 //GET USERS' LAT LON FROM DEVICE
 //CALLS OPENCAGE WITH THIS INFORMATION
 function locationData(selectedCountry) {
-  progressBar(0);
   resetProgressModal();
   //stores country specific data to be added to html once all tasks are run
   infoStore = {
@@ -249,7 +251,7 @@ function locationData(selectedCountry) {
 
   if (!selectedCountry) {
     //Call functions
-    $("#loading-message-text").html(`getting user location`);
+    // $("#loading-message-text").html(`getting user location`);
     getUserLocation()
       .then((position) =>
         opencageCall(position.coords.latitude, position.coords.longitude)
@@ -316,7 +318,7 @@ function locationData(selectedCountry) {
     $("#close-progress-modal").removeClass("display-none");
     $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
     $("#country-selected-text").addClass("display-none");
-    $("#retrieving-data-text").addClass("display-none");
+    // $("#retrieving-data-text").addClass("display-none");
     $("#loading-progress-bar-container").addClass("display-none");
   }
   //success callback
@@ -329,8 +331,7 @@ function locationData(selectedCountry) {
       errorRetrievingData("error-country-details");
       return;
     }
-    $("#loading-message-text").html(`country details
-    `);
+    // $("#loading-message-text").html(`country details`);
     if (callOpencage === false) return;
     // console.log("***opencageCall***");
     return $.ajax({
@@ -342,6 +343,7 @@ function locationData(selectedCountry) {
         lon: lon,
       },
       success: function (result) {
+        progressBar(8, "opencage");
         console.log(result.data.status.message);
         if (result.data.status.message === "ok") {
           errorRetrievingData("error-country-details");
@@ -363,6 +365,7 @@ function locationData(selectedCountry) {
         //console.log(textStatus);
         //console.log(errorThrown);
         fatalError();
+        progressBar(8, "opencage");
       },
     });
   }
@@ -395,7 +398,6 @@ function locationData(selectedCountry) {
       infoStore.geojsonCountryOutline.remove();
     }
     clearHTML();
-    progressBar(25);
     //call functions
     console.time();
 
@@ -429,13 +431,14 @@ function locationData(selectedCountry) {
       //   fatalError();
       //   return;
       // }
-      $("#loading-message-text").html(`geoJSON data`);
+      // $("#loading-message-text").html(`geoJSON data`);
       return $.ajax({
         url: "libs/php/countryBorders-geoJSON.php",
         type: "GET",
         dataType: "json",
         data: { countryCode: countryCodeISO2 },
         success: function (result) {
+          progressBar(7, "getGeoJSONData");
           // console.log(result);
           if (!result) {
             errorRetrievingData("error-geoJSON");
@@ -459,6 +462,7 @@ function locationData(selectedCountry) {
           // console.log(textStatus);
           // console.log(errorThrown);
           fatalError();
+          progressBar(7, "getGeoJSONData");
         },
       });
     }
@@ -466,7 +470,7 @@ function locationData(selectedCountry) {
     function geonamesCall(countryCodeISO2) {
       console.log("***geonamesCall***");
       console.log({ countryCodeISO2: countryCodeISO2 });
-      $("#loading-message-text").html(`country details`);
+      // $("#loading-message-text").html(`country details`);
       return $.ajax({
         url: "libs/php/api-geonames.php",
         type: "POST",
@@ -475,6 +479,8 @@ function locationData(selectedCountry) {
           countryCodeISO2: countryCodeISO2,
         },
         success: function (result) {
+          progressBar(7, "geonamesCall");
+
           if (result.data.length !== 1) {
             errorRetrievingData("error-country-details");
             return;
@@ -492,6 +498,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
+          progressBar(7, "geonamesCall");
           fatalError();
         },
       });
@@ -500,12 +507,13 @@ function locationData(selectedCountry) {
     function openExchangeRatesCall(currencyISO3Code) {
       console.log("***openExchangeRatesCall***");
       console.log({ currencyISO3Code: currencyISO3Code });
-      $("#loading-message-text").html(`exchange rate`);
+      // $("#loading-message-text").html(`exchange rate`);
       return $.ajax({
         url: "libs/php/api-openexchangerates.php",
         type: "POST",
         dataType: "json",
         success: function (result) {
+          progressBar(7, "openexchangerates");
           if (!result.data) {
             errorRetrievingData("error-country-details");
             return;
@@ -514,6 +522,7 @@ function locationData(selectedCountry) {
         },
         error: function (jqXHR, textStatus, errorThrown) {
           // error code
+
           fatalError();
         },
       });
@@ -526,7 +535,7 @@ function locationData(selectedCountry) {
         errorRetrievingData("error-country-details");
         return;
       }
-      $("#loading-message-text").html(`country details`);
+      // $("#loading-message-text").html(`country details`);
       return $.ajax({
         url: "libs/php/api-restcountries.php",
         type: "POST",
@@ -534,6 +543,8 @@ function locationData(selectedCountry) {
         data: { countryCodeISO3: countryCodeISO3 },
         success: function (result) {
           // console.log(JSON.stringify(result));
+          progressBar(7, "restcountries");
+
           if (result.data.status === 400) {
             errorRetrievingData("error-country-details");
             return;
@@ -552,6 +563,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
+          progressBar(7, "restcountries");
           fatalError();
         },
       });
@@ -567,7 +579,7 @@ function locationData(selectedCountry) {
         return;
       }
       console.log("***geonamesCitiesCall*** was called");
-      $("#loading-message-text").html(`cities`);
+      // $("#loading-message-text").html(`cities`);
       console.log({ countryCodeISO2: countryCodeISO2 });
       return $.ajax({
         url: "libs/php/api-geonames-cities.php",
@@ -580,6 +592,7 @@ function locationData(selectedCountry) {
           west: boundingBox._southWest.lng,
         },
         success: function (result) {
+          progressBar(8, "geonamesCities");
           console.log(result);
           if (result.data.status) {
             errorRetrievingData("error-cities");
@@ -621,6 +634,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
+          progressBar(8, "geonamesCities");
           fatalError();
         },
       });
@@ -633,7 +647,7 @@ function locationData(selectedCountry) {
         return;
       }
       console.log("***geonamesEarthquakesCall*** was called");
-      $("#loading-message-text").html(`earthquakes`);
+      // $("#loading-message-text").html(`earthquakes`);
       return $.ajax({
         url: "libs/php/api-geonames-earthquakes.php",
         type: "POST",
@@ -645,6 +659,7 @@ function locationData(selectedCountry) {
           west: boundingBox._southWest.lng,
         },
         success: function (result) {
+          progressBar(8, "earthquakes");
           // console.log(result.data);
           if (result.data === null) {
             errorRetrievingData("error-volcanoes");
@@ -689,6 +704,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
+          progressBar(8, "earthquakes");
           fatalError();
         },
       });
@@ -701,7 +717,7 @@ function locationData(selectedCountry) {
         errorRetrievingData("error-wikipedia");
         return;
       }
-      $("#loading-message-text").html(`wikipedia articles`);
+      // $("#loading-message-text").html(`wikipedia articles`);
       return $.ajax({
         url: "libs/php/api-geonames-wikipedia.php",
         type: "POST",
@@ -713,6 +729,7 @@ function locationData(selectedCountry) {
           west: boundingBox._southWest.lng,
         },
         success: function (result) {
+          progressBar(8, "geonameswikipedia");
           console.log(result);
           if (result.data.length === 1) {
             errorRetrievingData("error-wikipedia");
@@ -731,6 +748,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
+          progressBar(8, "geonameswikipedia");
           fatalError();
         },
       });
@@ -743,7 +761,7 @@ function locationData(selectedCountry) {
         errorRetrievingData("error-news");
         return;
       }
-      $("#loading-message-text").html(`news articles`);
+      // $("#loading-message-text").html(`news articles`);
       return $.ajax({
         url: "libs/php/api-apinews.php",
         type: "POST",
@@ -752,6 +770,7 @@ function locationData(selectedCountry) {
           countryname: countryName,
         },
         success: function (result) {
+          progressBar(8, "news");
           console.log(result);
           if (result.data.articles && result.data.articles.length > 0) {
             result.data.articles.forEach((story) => {
@@ -779,6 +798,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
+          progressBar(8, "news");
           fatalError();
         },
       });
@@ -791,7 +811,7 @@ function locationData(selectedCountry) {
         errorRetrievingData("error-current-weather");
         return;
       }
-      $("#loading-message-text").html(`current weather`);
+      // $("#loading-message-text").html(`current weather`);
       return $.ajax({
         url: "libs/php/api-openweatherCurrent.php",
         type: "POST",
@@ -801,6 +821,7 @@ function locationData(selectedCountry) {
           longitude: longitude,
         },
         success: function (result) {
+          progressBar(8, "current-weather");
           if (result.data.cod) {
             errorRetrievingData("error-current-weather");
             return;
@@ -819,6 +840,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
+          progressBar(8, "current-weather");
           fatalError();
         },
       });
@@ -831,7 +853,7 @@ function locationData(selectedCountry) {
         errorRetrievingData("error-weather-forecast");
         return;
       }
-      $("#loading-message-text").html(`weather forecast`);
+      // $("#loading-message-text").html(`weather forecast`);
       return $.ajax({
         url: "libs/php/api-openweatherForecast.php",
         type: "POST",
@@ -841,6 +863,7 @@ function locationData(selectedCountry) {
           longitude: infoStore.longitude,
         },
         success: function (result) {
+          progressBar(8, "openweatherForecast");
           if (result.data.cod !== "200") {
             errorRetrievingData("error-weather-forecast");
             return;
@@ -877,6 +900,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
+          progressBar(8, "openweatherForecast");
           fatalError();
         },
       });
@@ -890,7 +914,7 @@ function locationData(selectedCountry) {
         return;
       }
 
-      $("#loading-message-text").html(`volcanoes`);
+      // $("#loading-message-text").html(`volcanoes`);
       return $.ajax({
         url: "libs/php/api-volcanoes.php",
         type: "POST",
@@ -899,6 +923,7 @@ function locationData(selectedCountry) {
           countryname: countryName,
         },
         success: function (result) {
+          progressBar(8, "volcanoes");
           console.log({ volcanoes: result });
           result.data.forEach((volcano) => {
             console.log(volcano.properties);
@@ -918,6 +943,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
+          progressBar(8, "volcanoes");
           fatalError();
         },
       });
@@ -930,7 +956,7 @@ function locationData(selectedCountry) {
         errorRetrievingData("country-images");
         return;
       }
-      $("#loading-message-text").html(`country images`);
+      // $("#loading-message-text").html(`country images`);
       return $.ajax({
         url: "libs/php/api-unsplash.php",
         type: "POST",
@@ -939,6 +965,7 @@ function locationData(selectedCountry) {
           countryname: infoStore.countryName,
         },
         success: function (result) {
+          progressBar(8, "unsplash");
           if (result.data.length === 0) {
             errorRetrievingData("country-images");
             return;
@@ -958,6 +985,7 @@ function locationData(selectedCountry) {
           // console.log(jqXHR);
           // console.log(textStatus);
           // console.log(errorThrown);
+          progressBar(8, "unsplash");
           fatalError();
         },
       });
@@ -1018,7 +1046,7 @@ function locationData(selectedCountry) {
       $("#api-currency").html(infoStore.currencyName);
       $("#api-currency-symbol").html(` (${infoStore.currencySymbol})`);
       $("#api-currency-symbol-for-exchange").html(infoStore.currencySymbol);
-      $("#api-exchange-rate").html(infoStore.exchangeRate.toFixed(2));
+      // $("#api-exchange-rate").html(infoStore.exchangeRate.toFixed(2));
       $("#api-continent").html(infoStore.continent);
       $("#api-languages").html(infoStore.languages);
       $("#api-latitude").html(fixLatLon(infoStore.latitude));
@@ -1097,7 +1125,7 @@ function locationData(selectedCountry) {
     $("#try-again").removeClass("display-none");
     $("#choose-another").removeClass("display-none");
     $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
-    $("#retrieving-data-text").addClass("display-none");
+    // $("#retrieving-data-text").addClass("display-none");
   }
 
   //Error function - when API callfails error modal is enabled
@@ -1116,7 +1144,7 @@ function locationData(selectedCountry) {
       $("#progress-modal-footer").removeClass("display-none");
       $("#close-progress-modal").removeClass("display-none");
       $("#loading-progress-bar-container").addClass("display-none");
-      $("#retrieving-data-text").addClass("display-none");
+      // $("#retrieving-data-text").addClass("display-none");
       $("#loading-message-text").html("");
       console.log(infoStore.errors);
     }
@@ -1126,7 +1154,7 @@ function locationData(selectedCountry) {
 function resetProgressModal() {
   $("#loading-progress-bar-container").removeClass("display-none");
   $("#country-selected-text").removeClass("display-none");
-  $("#retrieving-data-text").removeClass("display-none");
+  // $("#retrieving-data-text").removeClass("display-none");
   $("#progress-modal-footer").addClass("display-none");
   $("#try-again").addClass("display-none");
   $("#choose-another").addClass("display-none");
@@ -1136,20 +1164,16 @@ function resetProgressModal() {
   $("#error-country-details").addClass("display-none");
   $("#error-cities").addClass("display-none");
   $("#loading-progress-bar-container").removeClass("display-none");
+  progressBarWidth = 0;
+  progressBar(0, "reset to zero");
 }
 
 //HELPER FUNCTIONS------------------------------------------//
 
-//adjust width of progress bar - 0, 25, 50, 75, 100
-function progressBar(width) {
-  if (width === 0) {
-    $("#loading-progress-bar")
-      .removeClass(`width25`)
-      .removeClass(`width50`)
-      .removeClass(`width75`)
-      .removeClass(`width100`);
-  }
-  $("#loading-progress-bar").addClass(`width${width}`);
+function progressBar(widthIncrease, functionName) {
+  progressBarWidth += widthIncrease;
+  console.log({ progressBarWidth, functionName: functionName });
+  $("#loading-progress-bar").css({ width: `${progressBarWidth}%` });
 }
 
 //------populates select tag list of countries--------------//
