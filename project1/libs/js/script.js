@@ -1,3 +1,5 @@
+// import getDator from "./getDator";
+
 $(window).on("load", function () {
   //preload handler
   if ($("#preloader").length) {
@@ -235,6 +237,7 @@ function locationData(selectedCountry) {
     localTime: "",
     exchangeRate: "",
   };
+
   //show progress modal
   $("#progressModal").modal({
     backdrop: "static",
@@ -316,11 +319,12 @@ function locationData(selectedCountry) {
     $("#retrieving-data-text").addClass("display-none");
     $("#loading-progress-bar-container").addClass("display-none");
   }
-
   //success callback
   //on success sets infoStore.twoLetterCountryCode
   function opencageCall(lat, lon) {
     console.log("***opencageCall***");
+    console.log({ lat: lat, lon: lon });
+    console.log(infoStore);
     if (!lat || !lon) {
       errorRetrievingData("error-country-details");
       return;
@@ -328,8 +332,7 @@ function locationData(selectedCountry) {
     $("#loading-message-text").html(`country details
     `);
     if (callOpencage === false) return;
-    console.log("***opencageCall***");
-    console.log({ lat: lat, lon: lon });
+    // console.log("***opencageCall***");
     return $.ajax({
       url: "libs/php/api-opencage.php",
       type: "POST",
@@ -370,7 +373,7 @@ function locationData(selectedCountry) {
 
   function getData(countryCodeISO2) {
     console.log("***getData call***");
-    // console.log(countryCodeISO2);
+    // add country to progress modal whilst data is loading
     $("#loading-message-country").html($("#select option:selected").text());
 
     if ($("#show-hide-forecast").html() === "(less)") {
@@ -394,35 +397,38 @@ function locationData(selectedCountry) {
     clearHTML();
     progressBar(25);
     //call functions
-    getGeoJSONData(countryCodeISO2)
-      .then(() => geonamesCall(countryCodeISO2))
+    console.time();
+
+    Promise.all([
+      getGeoJSONData(countryCodeISO2),
+      geonamesCall(countryCodeISO2),
+    ])
       .then(() => restCountriesCall(infoStore.threeLetterCountryCode))
-      .then(() => opencageCall(infoStore.latitude, infoStore.longitude))
-      .then(() => geonamesCitiesCall(infoStore.boundingBox, countryCodeISO2))
-      // .then(() => geonamesEarthquakesCall(infoStore.boundingBox))
-      // .then(() => openExchangeRatesCall(infoStore.currencyISO3Code))
-      .then(() => geonamesWikiCall(infoStore.boundingBox))
-      .then(() => progressBar(50))
-      .then(() => apiNewsCall(infoStore.countryName))
-      // .then(() => apiVolcanoesCall(infoStore.countryName))
-      .then(() => progressBar(75))
-      .then(() => apiUnsplashCall(infoStore.countryName))
+      .then(() => console.log(infoStore))
       .then(() =>
-        apiOpenWeatherCurrentCall(infoStore.latitude, infoStore.longitude)
+        Promise.all([
+          apiVolcanoesCall(infoStore.countryName),
+          openExchangeRatesCall(infoStore.currencyISO3Code),
+          geonamesCitiesCall(infoStore.boundingBox, countryCodeISO2),
+          geonamesEarthquakesCall(infoStore.boundingBox),
+          geonamesWikiCall(infoStore.boundingBox),
+          opencageCall(infoStore.latitude, infoStore.longitude),
+          apiOpenWeatherCurrentCall(infoStore.latitude, infoStore.longitude),
+          apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude),
+          apiNewsCall(infoStore.countryName),
+          apiUnsplashCall(infoStore.countryName),
+        ])
       )
-      .then(() =>
-        apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude)
-      )
+      .then(() => console.log("all done"))
       .then(() => addToHTML())
-      .then(() => progressBar(100))
       .then(() => closeProgressModal());
 
-    function getGeoJSONData(countryCodeISO2) {
+    function getGeoJSONData() {
       console.log("***getGeoJSONData*** was called");
-      if (!countryCodeISO2) {
-        fatalError();
-        return;
-      }
+      // if (!countryCodeISO2) {
+      //   fatalError();
+      //   return;
+      // }
       $("#loading-message-text").html(`geoJSON data`);
       return $.ajax({
         url: "libs/php/countryBorders-geoJSON.php",
@@ -514,11 +520,12 @@ function locationData(selectedCountry) {
     }
 
     function restCountriesCall(countryCodeISO3) {
+      console.log("***restCountriesCall***");
+      console.log({ countryCodeISO3: countryCodeISO3 });
       if (!countryCodeISO3) {
         errorRetrievingData("error-country-details");
         return;
       }
-      console.log("***restCountriesCall***");
       $("#loading-message-text").html(`country details`);
       return $.ajax({
         url: "libs/php/api-restcountries.php",
@@ -551,6 +558,10 @@ function locationData(selectedCountry) {
     }
 
     function geonamesCitiesCall(boundingBox, countryCodeISO2) {
+      console.log({
+        boundingBox: boundingBox,
+        countryCodeISO2: countryCodeISO2,
+      });
       if (!boundingBox || !countryCodeISO2) {
         errorRetrievingData("error-cities");
         return;
@@ -616,6 +627,7 @@ function locationData(selectedCountry) {
     }
 
     function geonamesEarthquakesCall(boundingBox) {
+      console.log({ boundingBox: boundingBox });
       if (!boundingBox) {
         errorRetrievingData("error-volcanoes");
         return;
@@ -683,6 +695,7 @@ function locationData(selectedCountry) {
     }
 
     function geonamesWikiCall(boundingBox) {
+      console.log({ boundingBox: boundingBox });
       console.log("***geonamesWikiCall***");
       if (!boundingBox) {
         errorRetrievingData("error-wikipedia");
@@ -724,6 +737,7 @@ function locationData(selectedCountry) {
     }
 
     function apiNewsCall(countryName) {
+      console.log({ countryName: countryName });
       console.log("***apiNewsCall***");
       if (!countryName) {
         errorRetrievingData("error-news");
@@ -772,6 +786,7 @@ function locationData(selectedCountry) {
 
     function apiOpenWeatherCurrentCall(latitude, longitude) {
       console.log("***apiOpenWeatherCurrentCall***");
+      console.log({ latitude: latitude, longitude: longitude });
       if (!latitude || !longitude) {
         errorRetrievingData("error-current-weather");
         return;
@@ -811,6 +826,7 @@ function locationData(selectedCountry) {
 
     function apiOpenWeatherForecastCall(latitude, longitude) {
       console.log("***apiOpenWeatherForecastCall***");
+      console.log({ latitude: latitude, longitude: longitude });
       if (!latitude || !longitude) {
         errorRetrievingData("error-weather-forecast");
         return;
@@ -867,11 +883,13 @@ function locationData(selectedCountry) {
     }
 
     function apiVolcanoesCall(countryName) {
+      console.log("***apiVolcanoesCall***");
+      console.log({ countryName: countryName });
       if (!countryName) {
         errorRetrievingData("error-volcanoes");
         return;
       }
-      console.log("***apiVolcanoesCall***");
+
       $("#loading-message-text").html(`volcanoes`);
       return $.ajax({
         url: "libs/php/api-volcanoes.php",
@@ -906,11 +924,12 @@ function locationData(selectedCountry) {
     }
 
     function apiUnsplashCall(countryName) {
+      console.log("***apiUnsplashCall***");
+      console.log({ countryName: countryName });
       if (!countryName) {
         errorRetrievingData("country-images");
         return;
       }
-      console.log("***apiUnsplashCall***");
       $("#loading-message-text").html(`country images`);
       return $.ajax({
         url: "libs/php/api-unsplash.php",
@@ -999,7 +1018,7 @@ function locationData(selectedCountry) {
       $("#api-currency").html(infoStore.currencyName);
       $("#api-currency-symbol").html(` (${infoStore.currencySymbol})`);
       $("#api-currency-symbol-for-exchange").html(infoStore.currencySymbol);
-      // $("#api-exchange-rate").html(infoStore.exchangeRate.toFixed(2));
+      $("#api-exchange-rate").html(infoStore.exchangeRate.toFixed(2));
       $("#api-continent").html(infoStore.continent);
       $("#api-languages").html(infoStore.languages);
       $("#api-latitude").html(fixLatLon(infoStore.latitude));
@@ -1092,12 +1111,14 @@ function locationData(selectedCountry) {
   function closeProgressModal() {
     if (infoStore.errors === false) {
       $("#progressModal").modal("hide");
+      console.log(infoStore.errors);
     } else {
       $("#progress-modal-footer").removeClass("display-none");
       $("#close-progress-modal").removeClass("display-none");
       $("#loading-progress-bar-container").addClass("display-none");
       $("#retrieving-data-text").addClass("display-none");
       $("#loading-message-text").html("");
+      console.log(infoStore.errors);
     }
   }
 }
