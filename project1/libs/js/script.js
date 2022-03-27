@@ -211,7 +211,7 @@ locationData();
 function locationData(selectedCountry) {
   resetProgressModal();
   //stores country specific data to be added to html once all tasks are run
-  infoStore = {
+  let infoStore = {
     //set by opencage call or from country select
     errors: false,
     twoLetterCountryCode: "",
@@ -232,12 +232,16 @@ function locationData(selectedCountry) {
     area: "",
     flag: "",
     currentWeather: {},
-    // cityDetails: [],
+    cities: "",
     countryImages: [],
     weather: [],
     offset_sec: "",
     localTime: "",
     exchangeRate: "",
+    earthquakes: "",
+    wikipediaArticles: "",
+    newsArticles: "",
+    volcanoes: "",
   };
 
   //show progress modal
@@ -409,8 +413,8 @@ function locationData(selectedCountry) {
       .then(() => console.log(infoStore))
       .then(() =>
         Promise.all([
-          apiVolcanoesCall(infoStore.countryName),
-          openExchangeRatesCall(infoStore.currencyISO3Code),
+          // apiVolcanoesCall(infoStore.countryName),
+          // openExchangeRatesCall(infoStore.currencyISO3Code),
           geonamesCitiesCall(infoStore.boundingBox, countryCodeISO2),
           geonamesEarthquakesCall(infoStore.boundingBox),
           geonamesWikiCall(infoStore.boundingBox),
@@ -449,11 +453,12 @@ function locationData(selectedCountry) {
             style: function (feature) {
               return { color: "rgba(15, 188, 249, 0.548)" };
             },
-          }).addTo(featureGroup1);
-          map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
-            padding: [9, 9],
           });
-          //2. create bounding box co-ordinates
+          //2. zoom to country on map
+          // map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
+          //   padding: [9, 9],
+          // });
+          //3. create bounding box co-ordinates
           infoStore.boundingBox = infoStore.geojsonCountryOutline.getBounds();
         },
 
@@ -598,36 +603,37 @@ function locationData(selectedCountry) {
             errorRetrievingData("error-cities");
             return;
           }
-          result.data.geonames.forEach((city) => {
-            if (city.countrycode === countryCodeISO2) {
-              if (city.toponymName !== infoStore.capital) {
-                L.marker([city.lat, city.lng], {
-                  icon: cityIcon,
-                  riseOnHover: true,
-                })
-                  .addTo(citiesMCG)
-                  .bindPopup(
-                    `<strong><span id="purple">${
-                      city.name
-                    }</span></strong><br>Population: ${fixPopulation(
-                      city.population
-                    )}`
-                  );
-              } else {
-                L.marker([city.lat, city.lng], {
-                  icon: capitalCityIcon,
-                  riseOnHover: true,
-                })
-                  .addTo(capitalMCG)
-                  .bindPopup(
-                    `<strong>${city.name}</strong><br class="pop-up-title">${
-                      infoStore.countryName
-                    } capital<br>Population: ${fixPopulation(city.population)}`
-                  )
-                  .openPopup();
-              }
-            }
-          });
+          infoStore.cities = result.data.geonames;
+          // result.data.geonames.forEach((city) => {
+          //   if (city.countrycode === countryCodeISO2) {
+          //     if (city.toponymName !== infoStore.capital) {
+          //       L.marker([city.lat, city.lng], {
+          //         icon: cityIcon,
+          //         riseOnHover: true,
+          //       })
+          //         .addTo(citiesMCG)
+          //         .bindPopup(
+          //           `<strong><span id="purple">${
+          //             city.name
+          //           }</span></strong><br>Population: ${fixPopulation(
+          //             city.population
+          //           )}`
+          //         );
+          //     } else {
+          //       L.marker([city.lat, city.lng], {
+          //         icon: capitalCityIcon,
+          //         riseOnHover: true,
+          //       })
+          //         .addTo(capitalMCG)
+          //         .bindPopup(
+          //           `<strong>${city.name}</strong><br class="pop-up-title">${
+          //             infoStore.countryName
+          //           } capital<br>Population: ${fixPopulation(city.population)}`
+          //         )
+          //         .openPopup();
+          //     }
+          //   }
+          // });
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -664,40 +670,41 @@ function locationData(selectedCountry) {
           if (result.data === null) {
             errorRetrievingData("error-volcanoes");
           }
-          result.data.forEach((earthquake) => {
-            // console.log(earthquake);
-            const thedate = new Date(earthquake.datetime);
-            const months = [
-              "January",
-              "February",
-              "March",
-              "April",
-              "May",
-              "June",
-              "July",
-              "August",
-              "September",
-              "October",
-              "November",
-              "December",
-            ];
-            let date =
-              thedate.getDate().toString() +
-              " " +
-              months[thedate.getMonth()] +
-              " " +
-              thedate.getFullYear();
+          infoStore.earthquakes = result.data;
+          // result.data.forEach((earthquake) => {
+          //   // console.log(earthquake);
+          //   const thedate = new Date(earthquake.datetime);
+          //   const months = [
+          //     "January",
+          //     "February",
+          //     "March",
+          //     "April",
+          //     "May",
+          //     "June",
+          //     "July",
+          //     "August",
+          //     "September",
+          //     "October",
+          //     "November",
+          //     "December",
+          //   ];
+          //   let date =
+          //     thedate.getDate().toString() +
+          //     " " +
+          //     months[thedate.getMonth()] +
+          //     " " +
+          //     thedate.getFullYear();
 
-            L.marker([earthquake.lat, earthquake.lng], {
-              color: "#f8b02b",
-              icon: earthquakeIcon,
-              riseOnHover: true,
-            })
-              .addTo(earthquakesMCG)
-              .bindPopup(
-                `<strong>Earthquake location</strong><br><strong>Date:</strong> ${date}<br><strong>Magnitude:</strong> ${earthquake.magnitude}`
-              );
-          });
+          //   L.marker([earthquake.lat, earthquake.lng], {
+          //     color: "#f8b02b",
+          //     icon: earthquakeIcon,
+          //     riseOnHover: true,
+          //   })
+          //     .addTo(earthquakesMCG)
+          //     .bindPopup(
+          //       `<strong>Earthquake location</strong><br><strong>Date:</strong> ${date}<br><strong>Magnitude:</strong> ${earthquake.magnitude}`
+          //     );
+          // });
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -730,18 +737,12 @@ function locationData(selectedCountry) {
         },
         success: function (result) {
           progressBar(8, "geonameswikipedia");
-          console.log(result);
+          // console.log(result);
           if (result.data.length === 1) {
             errorRetrievingData("error-wikipedia");
             return;
           }
-          const articles = JSON.parse(result.data);
-          articles.forEach((story) => {
-            $("#wiki-data").append(
-              `<p class="lead">${story[0][0]}</p><p>${story[1][0]}</p>
-              <p><a href=${story[2][0]} target="_blank">${story[2][0]}</a></p><hr/>`
-            );
-          });
+          infoStore.wikipediaArticles = JSON.parse(result.data);
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -773,21 +774,7 @@ function locationData(selectedCountry) {
           progressBar(8, "news");
           console.log(result);
           if (result.data.articles && result.data.articles.length > 0) {
-            result.data.articles.forEach((story) => {
-              // console.log(story);
-              $("#news-data").append(
-                `<p class="lead">${
-                  story.title
-                }</p><p class="font-italic">${readableDate(
-                  story.publishedAt
-                )}</p><img class="news-image" src=${story.urlToImage}><p>${
-                  story.description
-                }</p>
-                  <p><a href=${story.url} target="_blank">${
-                  story.url
-                }</a></p><hr/>`
-              );
-            });
+            infoStore.newsArticles = result.data.articles;
           } else {
             errorRetrievingData("error-news");
             return;
@@ -833,7 +820,7 @@ function locationData(selectedCountry) {
           infoStore.currentWeather.icon = result.data.current.weather[0].icon;
           //temp
           infoStore.currentWeather.temp = result.data.current.temp;
-          console.log(infoStore.currentWeather);
+          // console.log(infoStore.currentWeather);
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -925,18 +912,7 @@ function locationData(selectedCountry) {
         success: function (result) {
           progressBar(8, "volcanoes");
           console.log({ volcanoes: result });
-          result.data.forEach((volcano) => {
-            console.log(volcano.properties);
-            L.marker(
-              [volcano.properties.Latitude, volcano.properties.Longitude],
-              {
-                icon: volcanoIcon,
-                riseOnHover: true,
-              }
-            )
-              .addTo(volcanoesMCG)
-              .bindPopup(`${volcano.properties.Volcano_Name}<br>Volcano`);
-          });
+          infoStore.volcanoes = result.data;
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -970,7 +946,7 @@ function locationData(selectedCountry) {
             errorRetrievingData("country-images");
             return;
           }
-          console.log(result);
+          // console.log(result);
           result.data.forEach((result) => {
             let obj = {};
             obj.url = result.urls.small;
@@ -978,7 +954,7 @@ function locationData(selectedCountry) {
             obj.alt_description = result.alt_description;
             infoStore.countryImages.push(obj);
           });
-          console.log(infoStore.countryImages);
+          // console.log(infoStore.countryImages);
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
@@ -1040,13 +1016,123 @@ function locationData(selectedCountry) {
     }
 
     function addToHTML() {
+      //add geojson country outline in blue
+      infoStore.geojsonCountryOutline.addTo(featureGroup1);
+      //zoom to country on map
+      map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
+        padding: [9, 9],
+      });
+      infoStore.cities.forEach((city) => {
+        if (city.countrycode === countryCodeISO2) {
+          if (city.toponymName !== infoStore.capital) {
+            L.marker([city.lat, city.lng], {
+              icon: cityIcon,
+              riseOnHover: true,
+            })
+              .addTo(citiesMCG)
+              .bindPopup(
+                `<strong><span id="purple">${
+                  city.name
+                }</span></strong><br>Population: ${fixPopulation(
+                  city.population
+                )}`
+              );
+          } else {
+            L.marker([city.lat, city.lng], {
+              icon: capitalCityIcon,
+              riseOnHover: true,
+            })
+              .addTo(capitalMCG)
+              .bindPopup(
+                `<strong>${city.name}</strong><br class="pop-up-title">${
+                  infoStore.countryName
+                } capital<br>Population: ${fixPopulation(city.population)}`
+              )
+              .openPopup();
+          }
+        }
+      });
+
+      // earthquakes
+      infoStore.earthquakes.forEach((earthquake) => {
+        const thedate = new Date(earthquake.datetime);
+        const months = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        let date =
+          thedate.getDate().toString() +
+          " " +
+          months[thedate.getMonth()] +
+          " " +
+          thedate.getFullYear();
+
+        L.marker([earthquake.lat, earthquake.lng], {
+          color: "#f8b02b",
+          icon: earthquakeIcon,
+          riseOnHover: true,
+        })
+          .addTo(earthquakesMCG)
+          .bindPopup(
+            `<strong>Earthquake location</strong><br><strong>Date:</strong> ${date}<br><strong>Magnitude:</strong> ${earthquake.magnitude}`
+          );
+      });
+
+      if (infoStore.volcanoes) {
+        infoStore.volcanoes.forEach((volcano) => {
+          console.log(volcano.properties);
+          L.marker(
+            [volcano.properties.Latitude, volcano.properties.Longitude],
+            {
+              icon: volcanoIcon,
+              riseOnHover: true,
+            }
+          )
+            .addTo(volcanoesMCG)
+            .bindPopup(`${volcano.properties.Volcano_Name}<br>Volcano`);
+        });
+      }
+      // wikipedia articles
+      infoStore.wikipediaArticles.forEach((story) => {
+        $("#wiki-data").append(
+          `<p class="lead">${story[0][0]}</p><p>${story[1][0]}</p>
+          <p><a href=${story[2][0]} target="_blank">${story[2][0]}</a></p><hr/>`
+        );
+      });
+
+      // news articles
+      infoStore.newsArticles.forEach((story) => {
+        // console.log(story);
+        $("#news-data").append(
+          `<p class="lead">${
+            story.title
+          }</p><p class="font-italic">${readableDate(
+            story.publishedAt
+          )}</p><img class="news-image" src=${story.urlToImage}><p>${
+            story.description
+          }</p>
+            <p><a href=${story.url} target="_blank">${story.url}</a></p><hr/>`
+        );
+      });
+
+      // general info
       $(".api-country").html(infoStore.countryName);
       $("#api-capital").html(infoStore.capital);
       $("#api-population").html(fixPopulation(infoStore.population));
       $("#api-currency").html(infoStore.currencyName);
       $("#api-currency-symbol").html(` (${infoStore.currencySymbol})`);
       $("#api-currency-symbol-for-exchange").html(infoStore.currencySymbol);
-      $("#api-exchange-rate").html(infoStore.exchangeRate.toFixed(2));
+      // $("#api-exchange-rate").html(infoStore.exchangeRate.toFixed(2));
       $("#api-continent").html(infoStore.continent);
       $("#api-languages").html(infoStore.languages);
       $("#api-latitude").html(fixLatLon(infoStore.latitude));
@@ -1057,7 +1143,37 @@ function locationData(selectedCountry) {
       $(".api-flag").attr("src", infoStore.flag);
       $(".nav-flag-div").css("background-image", `url(${infoStore.flag})`);
 
-      //COUNTRY IMAGES FOR CAROUSEL
+      //LOCAL TIME
+      $("#api-date-time").html(infoStore.localTime.replace(/am|pm/, ""));
+      // $("#api-date-time").html(infoStore.localTime.replace("pm", ""));
+      $("#api-date-time-units").html(infoStore.localTime.slice(-2));
+      //CURRENT WEATHER
+      $("#current-weather-icon").attr(
+        "src",
+        `libs/imgs/${infoStore.currentWeather.icon}@2x.png`
+      );
+      $("#current-weather-icon").attr(
+        "alt",
+        infoStore.currentWeather.description
+      );
+      $("#current-temp").html(infoStore.currentWeather.temp);
+
+      // FORECAST
+
+      // console.log(infoStore.weather);
+      if (infoStore.weather.length !== 0) {
+        for (let i = 0; i < 5; i++) {
+          $(`#weather-${i}-dateTime`).html(infoStore.weather[i].dateTime);
+          $(`#weather-${i}-icon`).attr(
+            "src",
+            `libs/imgs/${infoStore.weather[i].icon}@2x.png`
+          );
+          $(`#weather-${i}-icon`).attr("alt", infoStore.weather[i].description);
+          $(`#weather-${i}-temp`).html(infoStore.weather[i].temp);
+        }
+      }
+
+      //COUNTRY IMAGES FOR GENERAL INFO CAROUSEL
       if (infoStore.countryImages !== []) {
         for (let i = 0; i < 5; i++) {
           $(`#country-image-${i}`).attr("src", infoStore.countryImages[i].url);
@@ -1081,36 +1197,6 @@ function locationData(selectedCountry) {
           $(`#country-image-${i}-alt-description`).html(
             reduceText(infoStore.countryImages[i].alt_description)
           );
-        }
-      }
-
-      //LOCAL TIME
-      $("#api-date-time").html(infoStore.localTime.replace(/am|pm/, ""));
-      // $("#api-date-time").html(infoStore.localTime.replace("pm", ""));
-      $("#api-date-time-units").html(infoStore.localTime.slice(-2));
-      //CURRENT WEATHER
-      $("#current-weather-icon").attr(
-        "src",
-        `libs/imgs/${infoStore.currentWeather.icon}@2x.png`
-      );
-      $("#current-weather-icon").attr(
-        "alt",
-        infoStore.currentWeather.description
-      );
-      $("#current-temp").html(infoStore.currentWeather.temp);
-
-      // FORECAST
-
-      console.log(infoStore.weather);
-      if (infoStore.weather.length !== 0) {
-        for (let i = 0; i < 5; i++) {
-          $(`#weather-${i}-dateTime`).html(infoStore.weather[i].dateTime);
-          $(`#weather-${i}-icon`).attr(
-            "src",
-            `libs/imgs/${infoStore.weather[i].icon}@2x.png`
-          );
-          $(`#weather-${i}-icon`).attr("alt", infoStore.weather[i].description);
-          $(`#weather-${i}-temp`).html(infoStore.weather[i].temp);
         }
       }
     }
