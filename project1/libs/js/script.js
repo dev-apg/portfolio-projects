@@ -1,5 +1,3 @@
-// import getDator from "./getDator";
-
 $(window).on("load", function () {
   //preload handler
   if ($("#preloader").length) {
@@ -9,6 +7,134 @@ $(window).on("load", function () {
         $(this).remove();
       });
   }
+});
+
+// Node that forms part of linked list
+class CountryDataNode {
+  constructor(data, next = null, previous = null) {
+    this.data = data;
+    this.next = next;
+    this.previous = previous;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.current = null;
+  }
+
+  newCountryDataNode(data) {
+    console.log("new node added");
+    let node = new CountryDataNode(data);
+    console.log(node);
+    //if there's no head add one
+    if (!this.head) {
+      console.log("there is no head");
+      this.head = node;
+      this.tail = node;
+      this.current = node;
+      console.log("head added");
+      // otherwise add as new tail...
+    } else {
+      let current = this.head;
+      console.log({ "current.next": [current.next] });
+      //... if there's no existing node for that country
+      while (current) {
+        console.log("there is a current.next");
+        console.log(`${current.data.countryName}`);
+        if (current.data.countryName === node.data.countryName) {
+          current.data = node.data;
+          console.log("they matched");
+          clearHTML(this.current.data);
+          addToHTML(current.data);
+          this.current = current;
+          setNavButtons(this.current);
+          this.recenter();
+          return;
+        }
+        current = current.next;
+      }
+      //new node links to tail node
+      node.previous = this.tail;
+      //tail node links to new node
+      this.tail.next = node;
+      //new node becomes current node
+      this.current = node;
+      this.tail = node;
+      setNavButtons(this.current);
+    }
+    if (this.current.previous) {
+      clearHTML(this.current.previous.data);
+    }
+    addToHTML(this.current.data);
+    this.recenter();
+  }
+
+  back() {
+    //if there's a back to go back to, go back
+    if (!this.current.previous) {
+      return;
+    }
+    clearHTML(this.current.data);
+
+    this.current = this.current.previous;
+
+    addToHTML(this.current.data);
+    setSelected(this.current.data.twoLetterCountryCode);
+    setNavButtons(this.current);
+    this.recenter();
+  }
+
+  forward() {
+    //if there's a forward to go to, go forward
+    if (!this.current.next) {
+      return;
+    }
+    clearHTML(this.current.data);
+    this.current = this.current.next;
+    setSelected(this.current.data.twoLetterCountryCode);
+    addToHTML(this.current.data);
+    setNavButtons(this.current);
+    this.recenter();
+  }
+
+  printCurrent() {
+    console.log(this.current);
+  }
+
+  recenter() {
+    map.fitBounds(this.current.data.geojsonCountryOutline.getBounds(), {
+      padding: [9, 9],
+    });
+  }
+}
+
+const backButton = $("#left-bracket");
+const forwardButton = $("#right-bracket");
+
+function setNavButtons(current) {
+  if (!current.previous) {
+    backButton.removeClass("active-icon");
+  } else {
+    backButton.addClass("active-icon");
+  }
+  if (!current.next) {
+    forwardButton.removeClass("active-icon");
+  } else {
+    forwardButton.addClass("active-icon");
+  }
+}
+
+const ll = new LinkedList();
+
+backButton.on("click", () => {
+  ll.back();
+});
+
+forwardButton.on("click", () => {
+  ll.forward();
 });
 
 // GLOBAL VARIABLES
@@ -159,9 +285,11 @@ const recenterButton = L.easyButton({
     {
       icon: "<span class='fa-solid fa-location-crosshairs' ></span>",
       onClick: function () {
-        map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
-          padding: [9, 9],
-        });
+        // map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
+        //   padding: [9, 9],
+        // });
+        ll.recenter();
+        ll.printCurrent();
       },
       id: "myEasyButton",
     },
@@ -196,6 +324,11 @@ $("#choose-another").on("click", function () {
   $("#select");
 });
 
+//setSelected
+function setSelected(twoLetterCountryCode) {
+  $(`#select option[value=${twoLetterCountryCode}]`).prop("selected", true);
+}
+
 // $("#choose-another").on("click", function () {
 //   resetProgressModal();
 // });
@@ -217,6 +350,7 @@ function locationData(selectedCountry) {
     twoLetterCountryCode: "",
     threeLetterCountryCode: "",
     geojsonCountryOutline: "",
+    geoJSON: "",
     boundingBox: "",
     countryName: "",
     capital: "",
@@ -232,7 +366,7 @@ function locationData(selectedCountry) {
     area: "",
     flag: "",
     currentWeather: {},
-    cities: "",
+    cities: null,
     countryImages: [],
     weather: [],
     offset_sec: "",
@@ -242,6 +376,7 @@ function locationData(selectedCountry) {
     wikipediaArticles: "",
     newsArticles: "",
     volcanoes: "",
+    dataCapturedAt: "",
   };
 
   //show progress modal
@@ -262,7 +397,7 @@ function locationData(selectedCountry) {
       )
       .catch((error) => logError(error))
       .then(() => setCallOpencageToFalse())
-      .then(() => setSelected())
+      .then(() => setSelected(infoStore.twoLetterCountryCode))
       .then(() => getData(infoStore.twoLetterCountryCode))
       .catch((error) => console.log(error));
   } else {
@@ -270,14 +405,6 @@ function locationData(selectedCountry) {
     //call getData with userLocation (two letter country code)
     // console.log();
     getData(selectedCountry);
-  }
-
-  //setSelected
-  function setSelected() {
-    $(`#select option[value=${infoStore.twoLetterCountryCode}]`).prop(
-      "selected",
-      true
-    );
   }
 
   function setCallOpencageToFalse() {
@@ -383,28 +510,9 @@ function locationData(selectedCountry) {
     // add country to progress modal whilst data is loading
     $("#loading-message-country").html($("#select option:selected").text());
 
-    if ($("#show-hide-forecast").html() === "(less)") {
-      $("#show-hide-forecast").html("(more)");
-      const collection = $(".weather-row");
-      Array.from(collection).forEach((row) => {
-        row.classList.toggle("hide-row");
-      });
-    }
+    // clearHTML();
 
-    //remove previous layers
-    featureGroup1.eachLayer((layer) => layer.clearLayers());
-    //clear modal data
-    $("#wiki-data").empty();
-    $("#news-data").empty();
-    //clear unsplash country image
-    $("#info-image-div").empty();
-    if (!infoStore.geojsonCountryOutline === "") {
-      infoStore.geojsonCountryOutline.remove();
-    }
-    clearHTML();
     //call functions
-    console.time();
-
     Promise.all([
       getGeoJSONData(countryCodeISO2),
       geonamesCall(countryCodeISO2),
@@ -423,10 +531,11 @@ function locationData(selectedCountry) {
           apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude),
           apiNewsCall(infoStore.countryName),
           apiUnsplashCall(infoStore.countryName),
+          getDateTime(),
         ])
       )
       .then(() => console.log("all done"))
-      .then(() => addToHTML())
+      .then(() => ll.newCountryDataNode(infoStore))
       .then(() => closeProgressModal());
 
     function getGeoJSONData() {
@@ -443,25 +552,20 @@ function locationData(selectedCountry) {
         data: { countryCode: countryCodeISO2 },
         success: function (result) {
           progressBar(7, "getGeoJSONData");
-          // console.log(result);
+          console.log(result);
           if (!result) {
             errorRetrievingData("error-geoJSON");
             return;
           }
-          // 1. create map layer for Leaflet bounding box
+          infoStore.geoJSON = result;
+
           infoStore.geojsonCountryOutline = L.geoJSON(result, {
             style: function (feature) {
               return { color: "rgba(15, 188, 249, 0.548)" };
             },
           });
-          //2. zoom to country on map
-          // map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
-          //   padding: [9, 9],
-          // });
-          //3. create bounding box co-ordinates
           infoStore.boundingBox = infoStore.geojsonCountryOutline.getBounds();
         },
-
         error: function (jqXHR, textStatus, errorThrown) {
           // console.log(jqXHR);
           // console.log(textStatus);
@@ -649,7 +753,7 @@ function locationData(selectedCountry) {
     function geonamesEarthquakesCall(boundingBox) {
       console.log({ boundingBox: boundingBox });
       if (!boundingBox) {
-        errorRetrievingData("error-volcanoes");
+        errorRetrievingData("error-earthquakes");
         return;
       }
       console.log("***geonamesEarthquakesCall*** was called");
@@ -967,272 +1071,48 @@ function locationData(selectedCountry) {
       });
     }
 
-    function clearHTML() {
-      $(".api-country").html("");
-      $("#api-capital").html("");
-      $("#api-population").html("");
-      $("#api-currency").html("");
-      $("#api-currency-symbol").html("");
-      $("#api-continent").html("");
-      $("#api-languages").html("");
-      $("#api-latitude").html("");
-      $("#api-latitude-units").html("");
-      $("#api-longitude").html("");
-      $("#api-longitude-units").html("");
-      $("#api-area").html("");
-      $(".api-flag").attr("src", "");
-      $(".nav-flag-div").css("background-image", "");
-      //COUNTRY IMAGES FOR CAROUSEL
-      for (let i = 0; i < 5; i++) {
-        $(`#country-image-${i}`).attr("src", "");
-        $(`#country-image-${i}-description`).html("");
-        $(`#country-image-${i}-alt-description`).html("");
-      }
-      //LOCAL TIME
-      $("#api-date-time").html("");
-      $("#api-date-time-units").html("");
-      //CURRENT WEATHER
-      $("#current-weather-icon").attr("src", "");
-      $("#current-weather-icon").attr("alt", "");
-      $("#current-temp").html("");
-
-      // FORECAST
-      for (let i = 0; i < 5; i++) {
-        $(`#weather-${i}-dateTime`).html("");
-        $(`#weather-${i}-icon`).attr("src", "");
-        $(`#weather-${i}-icon`).attr("alt", "");
-        $(`#weather-${i}-temp`).html("");
-      }
-      //ERRORS ON PROGRESS MODAL
-      $("#error-geoJSON").addClass("display-none");
-      $("#error-country-details").addClass("display-none");
-      $("#error-cities").addClass("display-none");
-      $("#error-wikipedia").addClass("display-none");
-      $("#error-news").addClass("display-none");
-      $("#error-current-weather").addClass("display-none");
-      $("#error-weather-forecast").addClass("display-none");
-      $("#error-volcanoes").addClass("display-none");
-      $("#error-country-images").addClass("display-none");
+    function getDateTime() {
+      let date = Date();
+      const printDate = date.split(" ").slice(0, 5).join(" ");
+      infoStore.dataCapturedAt = printDate;
     }
 
-    function addToHTML() {
-      //add geojson country outline in blue
-      infoStore.geojsonCountryOutline.addTo(featureGroup1);
-      //zoom to country on map
-      map.fitBounds(infoStore.geojsonCountryOutline.getBounds(), {
-        padding: [9, 9],
-      });
-      infoStore.cities.forEach((city) => {
-        if (city.countrycode === countryCodeISO2) {
-          if (city.toponymName !== infoStore.capital) {
-            L.marker([city.lat, city.lng], {
-              icon: cityIcon,
-              riseOnHover: true,
-            })
-              .addTo(citiesMCG)
-              .bindPopup(
-                `<strong><span id="purple">${
-                  city.name
-                }</span></strong><br>Population: ${fixPopulation(
-                  city.population
-                )}`
-              );
-          } else {
-            L.marker([city.lat, city.lng], {
-              icon: capitalCityIcon,
-              riseOnHover: true,
-            })
-              .addTo(capitalMCG)
-              .bindPopup(
-                `<strong>${city.name}</strong><br class="pop-up-title">${
-                  infoStore.countryName
-                } capital<br>Population: ${fixPopulation(city.population)}`
-              )
-              .openPopup();
-          }
-        }
-      });
-
-      // earthquakes
-      infoStore.earthquakes.forEach((earthquake) => {
-        const thedate = new Date(earthquake.datetime);
-        const months = [
-          "January",
-          "February",
-          "March",
-          "April",
-          "May",
-          "June",
-          "July",
-          "August",
-          "September",
-          "October",
-          "November",
-          "December",
-        ];
-        let date =
-          thedate.getDate().toString() +
-          " " +
-          months[thedate.getMonth()] +
-          " " +
-          thedate.getFullYear();
-
-        L.marker([earthquake.lat, earthquake.lng], {
-          color: "#f8b02b",
-          icon: earthquakeIcon,
-          riseOnHover: true,
-        })
-          .addTo(earthquakesMCG)
-          .bindPopup(
-            `<strong>Earthquake location</strong><br><strong>Date:</strong> ${date}<br><strong>Magnitude:</strong> ${earthquake.magnitude}`
-          );
-      });
-
-      if (infoStore.volcanoes) {
-        infoStore.volcanoes.forEach((volcano) => {
-          console.log(volcano.properties);
-          L.marker(
-            [volcano.properties.Latitude, volcano.properties.Longitude],
-            {
-              icon: volcanoIcon,
-              riseOnHover: true,
-            }
-          )
-            .addTo(volcanoesMCG)
-            .bindPopup(`${volcano.properties.Volcano_Name}<br>Volcano`);
-        });
-      }
-      // wikipedia articles
-      infoStore.wikipediaArticles.forEach((story) => {
-        $("#wiki-data").append(
-          `<p class="lead">${story[0][0]}</p><p>${story[1][0]}</p>
-          <p><a href=${story[2][0]} target="_blank">${story[2][0]}</a></p><hr/>`
-        );
-      });
-
-      // news articles
-      infoStore.newsArticles.forEach((story) => {
-        // console.log(story);
-        $("#news-data").append(
-          `<p class="lead">${
-            story.title
-          }</p><p class="font-italic">${readableDate(
-            story.publishedAt
-          )}</p><img class="news-image" src=${story.urlToImage}><p>${
-            story.description
-          }</p>
-            <p><a href=${story.url} target="_blank">${story.url}</a></p><hr/>`
-        );
-      });
-
-      // general info
-      $(".api-country").html(infoStore.countryName);
-      $("#api-capital").html(infoStore.capital);
-      $("#api-population").html(fixPopulation(infoStore.population));
-      $("#api-currency").html(infoStore.currencyName);
-      $("#api-currency-symbol").html(` (${infoStore.currencySymbol})`);
-      $("#api-currency-symbol-for-exchange").html(infoStore.currencySymbol);
-      // $("#api-exchange-rate").html(infoStore.exchangeRate.toFixed(2));
-      $("#api-continent").html(infoStore.continent);
-      $("#api-languages").html(infoStore.languages);
-      $("#api-latitude").html(fixLatLon(infoStore.latitude));
-      $("#api-latitude-units").html(getLatitudeUnit(infoStore.latitude));
-      $("#api-longitude").html(fixLatLon(infoStore.longitude));
-      $("#api-longitude-units").html(getLongitudeUnit(infoStore.longitude));
-      $("#api-area").html(fixPopulation(infoStore.area));
-      $(".api-flag").attr("src", infoStore.flag);
-      $(".nav-flag-div").css("background-image", `url(${infoStore.flag})`);
-
-      //LOCAL TIME
-      $("#api-date-time").html(infoStore.localTime.replace(/am|pm/, ""));
-      // $("#api-date-time").html(infoStore.localTime.replace("pm", ""));
-      $("#api-date-time-units").html(infoStore.localTime.slice(-2));
-      //CURRENT WEATHER
-      $("#current-weather-icon").attr(
-        "src",
-        `libs/imgs/${infoStore.currentWeather.icon}@2x.png`
+    function fatalError() {
+      const country = $("#select option:selected").text();
+      $("#loading-message-text").html(
+        `Data for ${country} not currently available!`
       );
-      $("#current-weather-icon").attr(
-        "alt",
-        infoStore.currentWeather.description
-      );
-      $("#current-temp").html(infoStore.currentWeather.temp);
-
-      // FORECAST
-
-      // console.log(infoStore.weather);
-      if (infoStore.weather.length !== 0) {
-        for (let i = 0; i < 5; i++) {
-          $(`#weather-${i}-dateTime`).html(infoStore.weather[i].dateTime);
-          $(`#weather-${i}-icon`).attr(
-            "src",
-            `libs/imgs/${infoStore.weather[i].icon}@2x.png`
-          );
-          $(`#weather-${i}-icon`).attr("alt", infoStore.weather[i].description);
-          $(`#weather-${i}-temp`).html(infoStore.weather[i].temp);
-        }
-      }
-
-      //COUNTRY IMAGES FOR GENERAL INFO CAROUSEL
-      if (infoStore.countryImages !== []) {
-        for (let i = 0; i < 5; i++) {
-          $(`#country-image-${i}`).attr("src", infoStore.countryImages[i].url);
-          $(`#country-image-${i}`).attr(
-            "title",
-            `${
-              infoStore.countryImages[i].description
-                ? infoStore.countryImages[i].description + ": "
-                : infoStore.countryName + ": "
-            }${
-              infoStore.countryImages[i].alt_description
-                ? infoStore.countryImages[i].alt_description
-                : ""
-            }`
-          );
-          $(`#country-image-${i}-description`).html(
-            infoStore.countryImages[i].description
-              ? reduceText(infoStore.countryImages[i].description)
-              : infoStore.countryName
-          );
-          $(`#country-image-${i}-alt-description`).html(
-            reduceText(infoStore.countryImages[i].alt_description)
-          );
-        }
-      }
-    }
-  }
-
-  function fatalError() {
-    const country = $("#select option:selected").text();
-    $("#loading-message-text").html(
-      `Data for ${country} not currently available!`
-    );
-    $("#progress-modal-footer").removeClass("display-none");
-    $("#try-again").removeClass("display-none");
-    $("#choose-another").removeClass("display-none");
-    $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
-    // $("#retrieving-data-text").addClass("display-none");
-  }
-
-  //Error function - when API callfails error modal is enabled
-  function errorRetrievingData(id) {
-    $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
-    // $("#error-retrieving-messages").append(`<p>${message}</p>`);
-    $(`#${id}`).removeClass("display-none");
-    infoStore.errors = true;
-  }
-
-  function closeProgressModal() {
-    if (infoStore.errors === false) {
-      $("#progressModal").modal("hide");
-      console.log(infoStore.errors);
-    } else {
       $("#progress-modal-footer").removeClass("display-none");
-      $("#close-progress-modal").removeClass("display-none");
-      $("#loading-progress-bar-container").addClass("display-none");
+      $("#try-again").removeClass("display-none");
+      $("#choose-another").removeClass("display-none");
+      $("#loading-message")
+        .removeClass("alert-primary")
+        .addClass("alert-danger");
       // $("#retrieving-data-text").addClass("display-none");
-      $("#loading-message-text").html("");
-      console.log(infoStore.errors);
+    }
+
+    //Error function - when API callfails error modal is enabled
+    function errorRetrievingData(id) {
+      $("#loading-message")
+        .removeClass("alert-primary")
+        .addClass("alert-danger");
+      // $("#error-retrieving-messages").append(`<p>${message}</p>`);
+      $(`#${id}`).removeClass("display-none");
+      infoStore.errors = true;
+    }
+
+    function closeProgressModal() {
+      if (infoStore.errors === false) {
+        $("#progressModal").modal("hide");
+        console.log(infoStore.errors);
+      } else {
+        $("#progress-modal-footer").removeClass("display-none");
+        $("#close-progress-modal").removeClass("display-none");
+        $("#loading-progress-bar-container").addClass("display-none");
+        // $("#retrieving-data-text").addClass("display-none");
+        $("#loading-message-text").html("");
+        console.log(infoStore.errors);
+      }
     }
   }
 }
@@ -1254,11 +1134,264 @@ function resetProgressModal() {
   progressBar(0, "reset to zero");
 }
 
+function clearHTML(data) {
+  if ($("#show-hide-forecast").html() === "(less)") {
+    $("#show-hide-forecast").html("(more)");
+    const collection = $(".weather-row");
+    Array.from(collection).forEach((row) => {
+      row.classList.toggle("hide-row");
+    });
+  }
+
+  //remove previous layers
+  featureGroup1.eachLayer((layer) => layer.clearLayers());
+  //clear modal data
+  $("#wiki-data").empty();
+  $("#news-data").empty();
+  //clear unsplash country image
+  $("#info-image-div").empty();
+  if (!data.geojsonCountryOutline === "") {
+    data.geojsonCountryOutline.remove();
+  }
+  $(".api-country").html("");
+  $("#api-capital").html("");
+  $("#api-population").html("");
+  $("#api-currency").html("");
+  $("#api-currency-symbol").html("");
+  $("#api-continent").html("");
+  $("#api-languages").html("");
+  $("#api-latitude").html("");
+  $("#api-latitude-units").html("");
+  $("#api-longitude").html("");
+  $("#api-longitude-units").html("");
+  $("#api-area").html("");
+  $(".api-flag").attr("src", "");
+  $(".nav-flag-div").css("background-image", "");
+  //COUNTRY IMAGES FOR CAROUSEL
+  for (let i = 0; i < 5; i++) {
+    $(`#country-image-${i}`).attr("src", "");
+    $(`#country-image-${i}-description`).html("");
+    $(`#country-image-${i}-alt-description`).html("");
+  }
+  //LOCAL TIME
+  $("#api-date-time").html("");
+  $("#api-date-time-units").html("");
+  //CURRENT WEATHER
+  $("#current-weather-icon").attr("src", "");
+  $("#current-weather-icon").attr("alt", "");
+  $("#current-temp").html("");
+
+  // FORECAST
+  for (let i = 0; i < 5; i++) {
+    $(`#weather-${i}-dateTime`).html("");
+    $(`#weather-${i}-icon`).attr("src", "");
+    $(`#weather-${i}-icon`).attr("alt", "");
+    $(`#weather-${i}-temp`).html("");
+  }
+  //ERRORS ON PROGRESS MODAL
+  $("#error-geoJSON").addClass("display-none");
+  $("#error-country-details").addClass("display-none");
+  $("#error-cities").addClass("display-none");
+  $("#error-wikipedia").addClass("display-none");
+  $("#error-news").addClass("display-none");
+  $("#error-current-weather").addClass("display-none");
+  $("#error-weather-forecast").addClass("display-none");
+  $("#error-volcanoes").addClass("display-none");
+  $("#error-country-images").addClass("display-none");
+}
+
+function addToHTML(data) {
+  // 1. create map layer for Leaflet bounding box
+  const outline = L.geoJSON(data.geoJSON, {
+    style: function (feature) {
+      return { color: "rgba(15, 188, 249, 0.548)" };
+    },
+  }).addTo(featureGroup1);
+  // 2. zoom to place on map
+  // map.fitBounds(outline.getBounds(), {
+  //   padding: [9, 9],
+  // });
+  //2. create bounding box co-ordinates
+  const boundingBox = outline.getBounds();
+  if (data.cities) {
+    data.cities.forEach((city) => {
+      if (city.countrycode === data.twoLetterCountryCode) {
+        if (city.toponymName !== data.capital) {
+          L.marker([city.lat, city.lng], {
+            icon: cityIcon,
+            riseOnHover: true,
+          })
+            .addTo(citiesMCG)
+            .bindPopup(
+              `<strong><span id="purple">${
+                city.name
+              }</span></strong><br>Population: ${fixPopulation(
+                city.population
+              )}`
+            );
+        } else {
+          L.marker([city.lat, city.lng], {
+            icon: capitalCityIcon,
+            riseOnHover: true,
+          })
+            .addTo(capitalMCG)
+            .bindPopup(
+              `<strong>${city.name}</strong><br class="pop-up-title">${
+                data.countryName
+              } capital<br>Population: ${fixPopulation(city.population)}`
+            )
+            .openPopup();
+        }
+      }
+    });
+  }
+  // earthquakes
+  data.earthquakes.forEach((earthquake) => {
+    const thedate = new Date(earthquake.datetime);
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    let date =
+      thedate.getDate().toString() +
+      " " +
+      months[thedate.getMonth()] +
+      " " +
+      thedate.getFullYear();
+
+    L.marker([earthquake.lat, earthquake.lng], {
+      color: "#f8b02b",
+      icon: earthquakeIcon,
+      riseOnHover: true,
+    })
+      .addTo(earthquakesMCG)
+      .bindPopup(
+        `<strong>Earthquake location</strong><br><strong>Date:</strong> ${date}<br><strong>Magnitude:</strong> ${earthquake.magnitude}`
+      );
+  });
+
+  if (data.volcanoes) {
+    data.volcanoes.forEach((volcano) => {
+      console.log(volcano.properties);
+      L.marker([volcano.properties.Latitude, volcano.properties.Longitude], {
+        icon: volcanoIcon,
+        riseOnHover: true,
+      })
+        .addTo(volcanoesMCG)
+        .bindPopup(`${volcano.properties.Volcano_Name}<br>Volcano`);
+    });
+  }
+  // wikipedia articles
+  data.wikipediaArticles.forEach((story) => {
+    $("#wiki-data").append(
+      `<p class="lead">${story[0][0]}</p><p>${story[1][0]}</p>
+    <p><a href=${story[2][0]} target="_blank">${story[2][0]}</a></p><hr/>`
+    );
+  });
+
+  // news articles
+  data.newsArticles.forEach((story) => {
+    // console.log(story);
+    $("#news-data").append(
+      `<p class="lead">${story.title}</p><p class="font-italic">${readableDate(
+        story.publishedAt
+      )}</p><img class="news-image" src=${story.urlToImage}><p>${
+        story.description
+      }</p>
+      <p><a href=${story.url} target="_blank">${story.url}</a></p><hr/>`
+    );
+  });
+
+  // general info
+  $(".api-country").html(data.countryName);
+  $("#api-capital").html(data.capital);
+  $("#api-population").html(fixPopulation(data.population));
+  $("#api-currency").html(data.currencyName);
+  $("#api-currency-symbol").html(` (${data.currencySymbol})`);
+  $("#api-currency-symbol-for-exchange").html(data.currencySymbol);
+  // $("#api-exchange-rate").html(data.exchangeRate.toFixed(2));
+  $("#api-continent").html(data.continent);
+  $("#api-languages").html(data.languages);
+  $("#api-latitude").html(fixLatLon(data.latitude));
+  $("#api-latitude-units").html(getLatitudeUnit(data.latitude));
+  $("#api-longitude").html(fixLatLon(data.longitude));
+  $("#api-longitude-units").html(getLongitudeUnit(data.longitude));
+  $("#api-area").html(fixPopulation(data.area));
+  $(".api-flag").attr("src", data.flag);
+  $(".nav-flag-div").css("background-image", `url(${data.flag})`);
+
+  //LOCAL TIME
+  $("#api-date-time").html(data.localTime.replace(/am|pm/, ""));
+  // $("#api-date-time").html(data.localTime.replace("pm", ""));
+  $("#api-date-time-units").html(data.localTime.slice(-2));
+  //CURRENT WEATHER
+  $("#current-weather-icon").attr(
+    "src",
+    `libs/imgs/${data.currentWeather.icon}@2x.png`
+  );
+  $("#current-weather-icon").attr("alt", data.currentWeather.description);
+  $("#current-temp").html(data.currentWeather.temp);
+
+  // FORECAST
+
+  // console.log(infoStore.weather);
+  if (data.weather.length !== 0) {
+    for (let i = 0; i < 5; i++) {
+      $(`#weather-${i}-dateTime`).html(data.weather[i].dateTime);
+      $(`#weather-${i}-icon`).attr(
+        "src",
+        `libs/imgs/${data.weather[i].icon}@2x.png`
+      );
+      $(`#weather-${i}-icon`).attr("alt", data.weather[i].description);
+      $(`#weather-${i}-temp`).html(data.weather[i].temp);
+    }
+  }
+
+  //COUNTRY IMAGES FOR GENERAL INFO CAROUSEL
+  if (data.countryImages !== []) {
+    for (let i = 0; i < 5; i++) {
+      $(`#country-image-${i}`).attr("src", data.countryImages[i].url);
+      $(`#country-image-${i}`).attr(
+        "title",
+        `${
+          data.countryImages[i].description
+            ? data.countryImages[i].description + ": "
+            : data.countryName + ": "
+        }${
+          data.countryImages[i].alt_description
+            ? data.countryImages[i].alt_description
+            : ""
+        }`
+      );
+      $(`#country-image-${i}-description`).html(
+        data.countryImages[i].description
+          ? reduceText(data.countryImages[i].description)
+          : data.countryName
+      );
+      $(`#country-image-${i}-alt-description`).html(
+        reduceText(data.countryImages[i].alt_description)
+      );
+    }
+  }
+
+  $("#data-captured-at-text").html(data.dataCapturedAt);
+}
+
 //HELPER FUNCTIONS------------------------------------------//
 
 function progressBar(widthIncrease, functionName) {
   progressBarWidth += widthIncrease;
-  console.log({ progressBarWidth, functionName: functionName });
+  // console.log({ progressBarWidth, functionName: functionName });
   $("#loading-progress-bar").css({ width: `${progressBarWidth}%` });
 }
 
@@ -1275,7 +1408,7 @@ function populateSelect(countryCodeISO3) {
         // console.log(result);
         // console.log(Array.isArray(result));
         result.forEach((country) => {
-          // console.log(country);
+          console.log(country);
           $("#select").append(
             $("<option>", {
               value: [country[1]],

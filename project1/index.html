@@ -331,6 +331,12 @@
                   ><span id="api-longitude-units" class="units"></span>
                 </td>
               </tr>
+              <tr>
+                <td colspan="2" id="data-captured-at-style" class="text-right">
+                  Data captured at:
+                  <span id="data-captured-at-text"></span>
+                </td>
+              </tr>
             </table>
           </div>
 
@@ -406,15 +412,12 @@
         <div class="modal-content">
           <div class="modal-header">
             <!-- <img class="api-flag" /> -->
-            <h5 class="modal-title lead" id="">About</h5>
+            <h5 class="modal-title lead" id="about-modal-title">About</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
             <div id="">
-              <p>
-                This Gazetteer app returns information on any selected country
-                and uses the following:
-              </p>
+              <p>Thank you for visiting the Gazetteer app.</p>
               <p>
                 Front end:<br />
                 HTML<br />CSS<br />Javascript
@@ -441,6 +444,10 @@
                   target="_blank"
                   >https://github.com/Leaflet/Leaflet.markercluster</a
                 >
+                <a href="https://mapicons.mapsmarker.com/"
+                  >https://mapicons.mapsmarker.com/</a
+                >
+                <a href="https://fontawesome.com/">https://fontawesome.com/</a>
               </p>
               <p>
                 Country Information:<br />
@@ -501,7 +508,7 @@
           <div class="modal-body">
             <div id="loading-message" class="alert alert-primary">
               <h5>
-                <span id="country-selected-text">Loading data for: </span
+                <span id="country-selected-text">Country selected: </span
                 ><span id="loading-message-country"></span>
               </h5>
               <p id="loading-message-text"></p>
