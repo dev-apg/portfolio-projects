@@ -172,7 +172,7 @@ body {
   cursor: pointer;
 }
 
-@media only screen and (max-width: 333px) {
+@media only screen and (max-width: 345px) {
   #globe-icon {
     display: none;
   }
@@ -272,21 +272,18 @@ div.input-group {
 }
 
 .active-icon {
-  color: var(--light-grey);
   color: var(--primary-color);
+  cursor: pointer;
 }
 
 /* Galaxy Fold */
-@media only screen and (max-width: 328px) {
+/* max-width: 328px */
+@media only screen and (max-width: 345px) {
   #nav-icons {
-    /* color: var(--dark-grey); */
-    /* color: var(--primary-color); */
-    position: relative;
-    left: auto;
-    /* right: 1%; */
-    /* left: 473px; */
-    font-size: 25px;
-    /* cursor: pointer; */
+    /* position: relative; */
+    /* left: auto; */
+    left: calc(50% + 105px);
+    font-size: 22px;
   }
 }
 
