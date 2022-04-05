@@ -240,14 +240,14 @@ div.input-group {
 }
 
 /* Galaxy Fold */
-@media only screen and (max-width: 328px) {
+@media only screen and (max-width: 345px) {
   div.input-group {
     /* max-width: 100%; */
     /* width: 97vw; */
     /* width: 97vw; */
     /* border: solid var(--blue) 1px; */
     position: relative;
-    right: 6px;
+    right: 16px;
   }
 }
 
@@ -282,7 +282,7 @@ div.input-group {
   #nav-icons {
     /* position: relative; */
     /* left: auto; */
-    left: calc(50% + 105px);
+    left: calc(50% + 106px);
     font-size: 22px;
   }
 }
