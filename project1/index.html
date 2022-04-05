@@ -433,12 +433,12 @@
                 Map and interface: <br />
                 <a href="https://leafletjs.com/" target="_blank"
                   >https://leafletjs.com/</a
-                >
+                ><br />
                 <a
                   href="http://danielmontague.com/projects/easyButton.js"
                   target="_blank"
                   >http://danielmontague.com/projects/easyButton.js</a
-                >
+                ><br />
                 <a
                   href="https://github.com/Leaflet/Leaflet.markercluster"
                   target="_blank"
@@ -446,7 +446,7 @@
                 >
                 <a href="https://mapicons.mapsmarker.com/"
                   >https://mapicons.mapsmarker.com/</a
-                >
+                ><br />
                 <a href="https://fontawesome.com/">https://fontawesome.com/</a>
               </p>
               <p>
@@ -507,10 +507,10 @@
         <div class="modal-content">
           <div class="modal-body">
             <div id="loading-message" class="alert alert-primary">
-              <h5>
+              <p>
                 <span id="country-selected-text">Country selected: </span
                 ><span id="loading-message-country"></span>
-              </h5>
+              </p>
               <p id="loading-message-text"></p>
               <!-- <p>
                 <span id="retrieving-data-text">Retrieving data: </span
@@ -518,16 +518,15 @@
               </p> -->
               <!-- api data error messages -->
               <div id="error-retrieving-messages">
+                <p id="error-cities" class="display-none">
+                  Unable to retrieve cities for this location
+                </p>
                 <p id="error-geoJSON" class="display-none">
                   Unable to retrieve country outline
                 </p>
-                <p id="error-country-details" class="display-none">
+                <p id="error-country-details" class="">
                   Unable to retrieve all country information
                 </p>
-                <p id="error-cities" class="display-none">
-                  Unable to retrieve cities
-                </p>
-
                 <p id="error-wikipedia" class="display-none">
                   Unable to retrieve Wikipedia articles
                 </p>
@@ -545,6 +544,9 @@
                 </p>
                 <p id="error-country-images" class="display-none">
                   Unable to retrieve country images
+                </p>
+                <p id="error-earthquakes" class="display-none">
+                  Unable to retrieve earthquakes for this location
                 </p>
               </div>
             </div>

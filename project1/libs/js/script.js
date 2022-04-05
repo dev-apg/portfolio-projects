@@ -26,23 +26,19 @@ class LinkedList {
   }
 
   newCountryDataNode(data) {
-    console.log("new node added");
     let node = new CountryDataNode(data);
-    console.log(node);
-    //if there's no head add one
+    //if there's no existing country data node add as head, tail and current
     if (!this.head) {
-      console.log("there is no head");
       this.head = node;
       this.tail = node;
       this.current = node;
-      console.log("head added");
-      // otherwise add as new tail...
+      // otherwise add as current and new tail
     } else {
+      //loop through to find if there's an existing data node for selected country
+      //if there's an existing node for that country then add new data to that node
+      //otherwise new node added to linked list as this.current and this.tail
       let current = this.head;
-      console.log({ "current.next": [current.next] });
-      //... if there's no existing node for that country
       while (current) {
-        console.log("there is a current.next");
         console.log(`${current.data.countryName}`);
         if (current.data.countryName === node.data.countryName) {
           current.data = node.data;
@@ -56,18 +52,19 @@ class LinkedList {
         }
         current = current.next;
       }
-      //new node links to tail node
+      //if there isn't an existing data node for this country:
+      // clear existing HTML
+      clearHTML(this.current.data);
+      //link new node to tail node
       node.previous = this.tail;
-      //tail node links to new node
+      //link tail node to new node
       this.tail.next = node;
-      //new node becomes current node
+      //new node becomes current node and tail node
       this.current = node;
       this.tail = node;
       setNavButtons(this.current);
     }
-    if (this.current.previous) {
-      clearHTML(this.current.previous.data);
-    }
+
     addToHTML(this.current.data);
     this.recenter();
   }
@@ -374,7 +371,7 @@ function locationData(selectedCountry) {
     exchangeRate: "",
     earthquakes: "",
     wikipediaArticles: "",
-    newsArticles: "",
+    newsArticles: null,
     volcanoes: "",
     dataCapturedAt: "",
   };
@@ -457,9 +454,8 @@ function locationData(selectedCountry) {
   function opencageCall(lat, lon) {
     console.log("***opencageCall***");
     console.log({ lat: lat, lon: lon });
-    console.log(infoStore);
     if (!lat || !lon) {
-      errorRetrievingData("error-country-details");
+      errorRetrievingData("error-country-details", infoStore);
       return;
     }
     // $("#loading-message-text").html(`country details`);
@@ -477,7 +473,7 @@ function locationData(selectedCountry) {
         progressBar(8, "opencage");
         console.log(result.data.status.message);
         if (result.data.status.message === "ok") {
-          errorRetrievingData("error-country-details");
+          errorRetrievingData("error-country-details", infoStore);
           return;
         }
 
@@ -509,9 +505,6 @@ function locationData(selectedCountry) {
     console.log("***getData call***");
     // add country to progress modal whilst data is loading
     $("#loading-message-country").html($("#select option:selected").text());
-
-    // clearHTML();
-
     //call functions
     Promise.all([
       getGeoJSONData(countryCodeISO2),
@@ -521,8 +514,8 @@ function locationData(selectedCountry) {
       .then(() => console.log(infoStore))
       .then(() =>
         Promise.all([
-          // apiVolcanoesCall(infoStore.countryName),
-          // openExchangeRatesCall(infoStore.currencyISO3Code),
+          apiVolcanoesCall(infoStore.countryName),
+          openExchangeRatesCall(infoStore.currencyISO3Code),
           geonamesCitiesCall(infoStore.boundingBox, countryCodeISO2),
           geonamesEarthquakesCall(infoStore.boundingBox),
           geonamesWikiCall(infoStore.boundingBox),
@@ -534,16 +527,15 @@ function locationData(selectedCountry) {
           getDateTime(),
         ])
       )
-      .then(() => console.log("all done"))
       .then(() => ll.newCountryDataNode(infoStore))
-      .then(() => closeProgressModal());
+      .then(() => closeProgressModal(infoStore));
 
-    function getGeoJSONData() {
+    function getGeoJSONData(countryCodeISO2) {
       console.log("***getGeoJSONData*** was called");
-      // if (!countryCodeISO2) {
-      //   fatalError();
-      //   return;
-      // }
+      if (!countryCodeISO2) {
+        fatalError();
+        return;
+      }
       // $("#loading-message-text").html(`geoJSON data`);
       return $.ajax({
         url: "libs/php/countryBorders-geoJSON.php",
@@ -554,11 +546,10 @@ function locationData(selectedCountry) {
           progressBar(7, "getGeoJSONData");
           console.log(result);
           if (!result) {
-            errorRetrievingData("error-geoJSON");
+            errorRetrievingData("error-geoJSON", infoStore);
             return;
           }
           infoStore.geoJSON = result;
-
           infoStore.geojsonCountryOutline = L.geoJSON(result, {
             style: function (feature) {
               return { color: "rgba(15, 188, 249, 0.548)" };
@@ -578,8 +569,9 @@ function locationData(selectedCountry) {
 
     function geonamesCall(countryCodeISO2) {
       console.log("***geonamesCall***");
-      console.log({ countryCodeISO2: countryCodeISO2 });
+      // console.log({ countryCodeISO2: countryCodeISO2 });
       // $("#loading-message-text").html(`country details`);
+
       return $.ajax({
         url: "libs/php/api-geonames.php",
         type: "POST",
@@ -588,10 +580,11 @@ function locationData(selectedCountry) {
           countryCodeISO2: countryCodeISO2,
         },
         success: function (result) {
+          console.log(result);
           progressBar(7, "geonamesCall");
 
           if (result.data.length !== 1) {
-            errorRetrievingData("error-country-details");
+            errorRetrievingData("error-country-details", infoStore);
             return;
           }
           infoStore.countryName = result.data[0].countryName;
@@ -615,8 +608,6 @@ function locationData(selectedCountry) {
 
     function openExchangeRatesCall(currencyISO3Code) {
       console.log("***openExchangeRatesCall***");
-      console.log({ currencyISO3Code: currencyISO3Code });
-      // $("#loading-message-text").html(`exchange rate`);
       return $.ajax({
         url: "libs/php/api-openexchangerates.php",
         type: "POST",
@@ -624,14 +615,12 @@ function locationData(selectedCountry) {
         success: function (result) {
           progressBar(7, "openexchangerates");
           if (!result.data) {
-            errorRetrievingData("error-country-details");
+            errorRetrievingData("error-country-details", infoStore);
             return;
           }
           infoStore.exchangeRate = result.data[currencyISO3Code];
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          // error code
-
           fatalError();
         },
       });
@@ -641,24 +630,20 @@ function locationData(selectedCountry) {
       console.log("***restCountriesCall***");
       console.log({ countryCodeISO3: countryCodeISO3 });
       if (!countryCodeISO3) {
-        errorRetrievingData("error-country-details");
+        errorRetrievingData("error-country-details", infoStore);
         return;
       }
-      // $("#loading-message-text").html(`country details`);
       return $.ajax({
         url: "libs/php/api-restcountries.php",
         type: "POST",
         dataType: "json",
         data: { countryCodeISO3: countryCodeISO3 },
         success: function (result) {
-          // console.log(JSON.stringify(result));
           progressBar(7, "restcountries");
-
           if (result.data.status === 400) {
-            errorRetrievingData("error-country-details");
+            errorRetrievingData("error-country-details", infoStore);
             return;
           }
-          // console.log(result.data);
           infoStore.languages = result.data.languages[0].name;
           infoStore.latitude = result.data.latlng[0];
           infoStore.longitude = result.data.latlng[1];
@@ -668,28 +653,18 @@ function locationData(selectedCountry) {
           infoStore.currencySymbol = result.data.currencies[0].symbol;
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          // error code
-          // console.log(jqXHR);
-          // console.log(textStatus);
-          // console.log(errorThrown);
           progressBar(7, "restcountries");
           fatalError();
         },
       });
     }
 
-    function geonamesCitiesCall(boundingBox, countryCodeISO2) {
-      console.log({
-        boundingBox: boundingBox,
-        countryCodeISO2: countryCodeISO2,
-      });
-      if (!boundingBox || !countryCodeISO2) {
-        errorRetrievingData("error-cities");
+    function geonamesCitiesCall(boundingBox) {
+      console.log("***geonamesCitiesCall*** was called");
+      if (!boundingBox) {
+        errorRetrievingData("error-cities", infoStore);
         return;
       }
-      console.log("***geonamesCitiesCall*** was called");
-      // $("#loading-message-text").html(`cities`);
-      console.log({ countryCodeISO2: countryCodeISO2 });
       return $.ajax({
         url: "libs/php/api-geonames-cities.php",
         type: "POST",
@@ -704,46 +679,12 @@ function locationData(selectedCountry) {
           progressBar(8, "geonamesCities");
           console.log(result);
           if (result.data.status) {
-            errorRetrievingData("error-cities");
+            errorRetrievingData("error-cities", infoStore);
             return;
           }
           infoStore.cities = result.data.geonames;
-          // result.data.geonames.forEach((city) => {
-          //   if (city.countrycode === countryCodeISO2) {
-          //     if (city.toponymName !== infoStore.capital) {
-          //       L.marker([city.lat, city.lng], {
-          //         icon: cityIcon,
-          //         riseOnHover: true,
-          //       })
-          //         .addTo(citiesMCG)
-          //         .bindPopup(
-          //           `<strong><span id="purple">${
-          //             city.name
-          //           }</span></strong><br>Population: ${fixPopulation(
-          //             city.population
-          //           )}`
-          //         );
-          //     } else {
-          //       L.marker([city.lat, city.lng], {
-          //         icon: capitalCityIcon,
-          //         riseOnHover: true,
-          //       })
-          //         .addTo(capitalMCG)
-          //         .bindPopup(
-          //           `<strong>${city.name}</strong><br class="pop-up-title">${
-          //             infoStore.countryName
-          //           } capital<br>Population: ${fixPopulation(city.population)}`
-          //         )
-          //         .openPopup();
-          //     }
-          //   }
-          // });
         },
-
         error: function (jqXHR, textStatus, errorThrown) {
-          // console.log(jqXHR);
-          // console.log(textStatus);
-          // console.log(errorThrown);
           progressBar(8, "geonamesCities");
           fatalError();
         },
@@ -751,9 +692,8 @@ function locationData(selectedCountry) {
     }
 
     function geonamesEarthquakesCall(boundingBox) {
-      console.log({ boundingBox: boundingBox });
       if (!boundingBox) {
-        errorRetrievingData("error-earthquakes");
+        errorRetrievingData("error-earthquakes", infoStore);
         return;
       }
       console.log("***geonamesEarthquakesCall*** was called");
@@ -770,51 +710,13 @@ function locationData(selectedCountry) {
         },
         success: function (result) {
           progressBar(8, "earthquakes");
-          // console.log(result.data);
-          if (result.data === null) {
-            errorRetrievingData("error-volcanoes");
+          if (!result.data) {
+            errorRetrievingData("error-volcanoes", infoStore);
           }
           infoStore.earthquakes = result.data;
-          // result.data.forEach((earthquake) => {
-          //   // console.log(earthquake);
-          //   const thedate = new Date(earthquake.datetime);
-          //   const months = [
-          //     "January",
-          //     "February",
-          //     "March",
-          //     "April",
-          //     "May",
-          //     "June",
-          //     "July",
-          //     "August",
-          //     "September",
-          //     "October",
-          //     "November",
-          //     "December",
-          //   ];
-          //   let date =
-          //     thedate.getDate().toString() +
-          //     " " +
-          //     months[thedate.getMonth()] +
-          //     " " +
-          //     thedate.getFullYear();
-
-          //   L.marker([earthquake.lat, earthquake.lng], {
-          //     color: "#f8b02b",
-          //     icon: earthquakeIcon,
-          //     riseOnHover: true,
-          //   })
-          //     .addTo(earthquakesMCG)
-          //     .bindPopup(
-          //       `<strong>Earthquake location</strong><br><strong>Date:</strong> ${date}<br><strong>Magnitude:</strong> ${earthquake.magnitude}`
-          //     );
-          // });
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          // console.log(jqXHR);
-          // console.log(textStatus);
-          // console.log(errorThrown);
           progressBar(8, "earthquakes");
           fatalError();
         },
@@ -822,10 +724,9 @@ function locationData(selectedCountry) {
     }
 
     function geonamesWikiCall(boundingBox) {
-      console.log({ boundingBox: boundingBox });
       console.log("***geonamesWikiCall***");
       if (!boundingBox) {
-        errorRetrievingData("error-wikipedia");
+        errorRetrievingData("error-wikipedia", infoStore);
         return;
       }
       // $("#loading-message-text").html(`wikipedia articles`);
@@ -843,16 +744,13 @@ function locationData(selectedCountry) {
           progressBar(8, "geonameswikipedia");
           // console.log(result);
           if (result.data.length === 1) {
-            errorRetrievingData("error-wikipedia");
+            errorRetrievingData("error-wikipedia", infoStore);
             return;
           }
           infoStore.wikipediaArticles = JSON.parse(result.data);
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          // console.log(jqXHR);
-          // console.log(textStatus);
-          // console.log(errorThrown);
           progressBar(8, "geonameswikipedia");
           fatalError();
         },
@@ -860,13 +758,11 @@ function locationData(selectedCountry) {
     }
 
     function apiNewsCall(countryName) {
-      console.log({ countryName: countryName });
       console.log("***apiNewsCall***");
       if (!countryName) {
-        errorRetrievingData("error-news");
+        errorRetrievingData("error-news", infoStore);
         return;
       }
-      // $("#loading-message-text").html(`news articles`);
       return $.ajax({
         url: "libs/php/api-apinews.php",
         type: "POST",
@@ -880,15 +776,11 @@ function locationData(selectedCountry) {
           if (result.data.articles && result.data.articles.length > 0) {
             infoStore.newsArticles = result.data.articles;
           } else {
-            errorRetrievingData("error-news");
+            errorRetrievingData("error-news", infoStore);
             return;
           }
         },
-
         error: function (jqXHR, textStatus, errorThrown) {
-          // console.log(jqXHR);
-          // console.log(textStatus);
-          // console.log(errorThrown);
           progressBar(8, "news");
           fatalError();
         },
@@ -897,9 +789,8 @@ function locationData(selectedCountry) {
 
     function apiOpenWeatherCurrentCall(latitude, longitude) {
       console.log("***apiOpenWeatherCurrentCall***");
-      console.log({ latitude: latitude, longitude: longitude });
       if (!latitude || !longitude) {
-        errorRetrievingData("error-current-weather");
+        errorRetrievingData("error-current-weather", infoStore);
         return;
       }
       // $("#loading-message-text").html(`current weather`);
@@ -912,25 +803,22 @@ function locationData(selectedCountry) {
           longitude: longitude,
         },
         success: function (result) {
+          console.log(result);
           progressBar(8, "current-weather");
           if (result.data.cod) {
-            errorRetrievingData("error-current-weather");
+            errorRetrievingData("error-current-weather", infoStore);
             return;
           }
-          //description
           infoStore.currentWeather.description =
             result.data.current.weather[0].description;
-          //icon
           infoStore.currentWeather.icon = result.data.current.weather[0].icon;
-          //temp
           infoStore.currentWeather.temp = result.data.current.temp;
-          // console.log(infoStore.currentWeather);
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          // console.log(jqXHR);
-          // console.log(textStatus);
-          // console.log(errorThrown);
+          console.log(jqXHR);
+          console.log(textStatus);
+          console.log(errorThrown);
           progressBar(8, "current-weather");
           fatalError();
         },
@@ -941,10 +829,9 @@ function locationData(selectedCountry) {
       console.log("***apiOpenWeatherForecastCall***");
       console.log({ latitude: latitude, longitude: longitude });
       if (!latitude || !longitude) {
-        errorRetrievingData("error-weather-forecast");
+        errorRetrievingData("error-weather-forecast", infoStore);
         return;
       }
-      // $("#loading-message-text").html(`weather forecast`);
       return $.ajax({
         url: "libs/php/api-openweatherForecast.php",
         type: "POST",
@@ -956,7 +843,7 @@ function locationData(selectedCountry) {
         success: function (result) {
           progressBar(8, "openweatherForecast");
           if (result.data.cod !== "200") {
-            errorRetrievingData("error-weather-forecast");
+            errorRetrievingData("error-weather-forecast", infoStore);
             return;
           }
 
@@ -1001,11 +888,9 @@ function locationData(selectedCountry) {
       console.log("***apiVolcanoesCall***");
       console.log({ countryName: countryName });
       if (!countryName) {
-        errorRetrievingData("error-volcanoes");
+        errorRetrievingData("error-volcanoes", infoStore);
         return;
       }
-
-      // $("#loading-message-text").html(`volcanoes`);
       return $.ajax({
         url: "libs/php/api-volcanoes.php",
         type: "POST",
@@ -1015,14 +900,9 @@ function locationData(selectedCountry) {
         },
         success: function (result) {
           progressBar(8, "volcanoes");
-          console.log({ volcanoes: result });
           infoStore.volcanoes = result.data;
         },
-
         error: function (jqXHR, textStatus, errorThrown) {
-          // console.log(jqXHR);
-          // console.log(textStatus);
-          // console.log(errorThrown);
           progressBar(8, "volcanoes");
           fatalError();
         },
@@ -1031,9 +911,8 @@ function locationData(selectedCountry) {
 
     function apiUnsplashCall(countryName) {
       console.log("***apiUnsplashCall***");
-      console.log({ countryName: countryName });
       if (!countryName) {
-        errorRetrievingData("country-images");
+        errorRetrievingData("country-images", infoStore);
         return;
       }
       // $("#loading-message-text").html(`country images`);
@@ -1047,10 +926,9 @@ function locationData(selectedCountry) {
         success: function (result) {
           progressBar(8, "unsplash");
           if (result.data.length === 0) {
-            errorRetrievingData("country-images");
+            errorRetrievingData("country-images", infoStore);
             return;
           }
-          // console.log(result);
           result.data.forEach((result) => {
             let obj = {};
             obj.url = result.urls.small;
@@ -1062,9 +940,6 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          // console.log(jqXHR);
-          // console.log(textStatus);
-          // console.log(errorThrown);
           progressBar(8, "unsplash");
           fatalError();
         },
@@ -1075,44 +950,6 @@ function locationData(selectedCountry) {
       let date = Date();
       const printDate = date.split(" ").slice(0, 5).join(" ");
       infoStore.dataCapturedAt = printDate;
-    }
-
-    function fatalError() {
-      const country = $("#select option:selected").text();
-      $("#loading-message-text").html(
-        `Data for ${country} not currently available!`
-      );
-      $("#progress-modal-footer").removeClass("display-none");
-      $("#try-again").removeClass("display-none");
-      $("#choose-another").removeClass("display-none");
-      $("#loading-message")
-        .removeClass("alert-primary")
-        .addClass("alert-danger");
-      // $("#retrieving-data-text").addClass("display-none");
-    }
-
-    //Error function - when API callfails error modal is enabled
-    function errorRetrievingData(id) {
-      $("#loading-message")
-        .removeClass("alert-primary")
-        .addClass("alert-danger");
-      // $("#error-retrieving-messages").append(`<p>${message}</p>`);
-      $(`#${id}`).removeClass("display-none");
-      infoStore.errors = true;
-    }
-
-    function closeProgressModal() {
-      if (infoStore.errors === false) {
-        $("#progressModal").modal("hide");
-        console.log(infoStore.errors);
-      } else {
-        $("#progress-modal-footer").removeClass("display-none");
-        $("#close-progress-modal").removeClass("display-none");
-        $("#loading-progress-bar-container").addClass("display-none");
-        // $("#retrieving-data-text").addClass("display-none");
-        $("#loading-message-text").html("");
-        console.log(infoStore.errors);
-      }
     }
   }
 }
@@ -1127,14 +964,59 @@ function resetProgressModal() {
   $("#close-progress-modal").addClass("display-none");
   $("#loading-message").removeClass("alert-danger").addClass("alert-primary");
   //error messages:
-  $("#error-country-details").addClass("display-none");
   $("#error-cities").addClass("display-none");
+  $("#error-geoJSON").addClass("display-none");
+  $("#error-country-details").addClass("display-none");
+  $("#error-wikipedia").addClass("display-none");
+  $("#error-news").addClass("display-none");
+  $("#error-current-weather").addClass("display-none");
+  $("#error-weather-forecast").addClass("display-none");
+  $("#error-volcanoes").addClass("display-none");
+  $("#error-country-images").addClass("display-none");
   $("#loading-progress-bar-container").removeClass("display-none");
   progressBarWidth = 0;
   progressBar(0, "reset to zero");
 }
 
+//fatalError offers user choice to try again or choose another country
+function fatalError() {
+  const country = $("#select option:selected").text();
+  $("#loading-message-text").html(
+    `Data for ${country} not currently available!`
+  );
+  $("#progress-modal-footer").removeClass("display-none");
+  $("#try-again").removeClass("display-none");
+  $("#choose-another").removeClass("display-none");
+  $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
+  // $("#retrieving-data-text").addClass("display-none");
+  $("#loading-progress-bar-container").addClass("display-none");
+}
+
+//Error function - when API callfails error modal is enabled
+function errorRetrievingData(id, infoStore) {
+  $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
+  // $("#error-retrieving-messages").append(`<p>${message}</p>`);
+  $(`#${id}`).removeClass("display-none");
+  infoStore.errors = true;
+}
+
+function closeProgressModal(infoStore) {
+  if (infoStore.errors === false) {
+    $("#progressModal").modal("hide");
+    console.log(infoStore.errors);
+  } else {
+    $("#progress-modal-footer").removeClass("display-none");
+    $("#close-progress-modal").removeClass("display-none");
+    $("#loading-progress-bar-container").addClass("display-none");
+    // $("#retrieving-data-text").addClass("display-none");
+    $("#loading-message-text").html("");
+    console.log(infoStore.errors);
+  }
+}
+
+//reset the map and all modals
 function clearHTML(data) {
+  //hide
   if ($("#show-hide-forecast").html() === "(less)") {
     $("#show-hide-forecast").html("(more)");
     const collection = $(".weather-row");
@@ -1153,6 +1035,8 @@ function clearHTML(data) {
   if (!data.geojsonCountryOutline === "") {
     data.geojsonCountryOutline.remove();
   }
+
+  //clear infoModal data (in case new data doesn't load and overwrite it)
   $(".api-country").html("");
   $("#api-capital").html("");
   $("#api-population").html("");
@@ -1188,16 +1072,6 @@ function clearHTML(data) {
     $(`#weather-${i}-icon`).attr("alt", "");
     $(`#weather-${i}-temp`).html("");
   }
-  //ERRORS ON PROGRESS MODAL
-  $("#error-geoJSON").addClass("display-none");
-  $("#error-country-details").addClass("display-none");
-  $("#error-cities").addClass("display-none");
-  $("#error-wikipedia").addClass("display-none");
-  $("#error-news").addClass("display-none");
-  $("#error-current-weather").addClass("display-none");
-  $("#error-weather-forecast").addClass("display-none");
-  $("#error-volcanoes").addClass("display-none");
-  $("#error-country-images").addClass("display-none");
 }
 
 function addToHTML(data) {
@@ -1207,10 +1081,7 @@ function addToHTML(data) {
       return { color: "rgba(15, 188, 249, 0.548)" };
     },
   }).addTo(featureGroup1);
-  // 2. zoom to place on map
-  // map.fitBounds(outline.getBounds(), {
-  //   padding: [9, 9],
-  // });
+
   //2. create bounding box co-ordinates
   const boundingBox = outline.getBounds();
   if (data.cities) {
@@ -1246,39 +1117,41 @@ function addToHTML(data) {
     });
   }
   // earthquakes
-  data.earthquakes.forEach((earthquake) => {
-    const thedate = new Date(earthquake.datetime);
-    const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-    let date =
-      thedate.getDate().toString() +
-      " " +
-      months[thedate.getMonth()] +
-      " " +
-      thedate.getFullYear();
+  if (data.earthquakes) {
+    data.earthquakes.forEach((earthquake) => {
+      const thedate = new Date(earthquake.datetime);
+      const months = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      let date =
+        thedate.getDate().toString() +
+        " " +
+        months[thedate.getMonth()] +
+        " " +
+        thedate.getFullYear();
 
-    L.marker([earthquake.lat, earthquake.lng], {
-      color: "#f8b02b",
-      icon: earthquakeIcon,
-      riseOnHover: true,
-    })
-      .addTo(earthquakesMCG)
-      .bindPopup(
-        `<strong>Earthquake location</strong><br><strong>Date:</strong> ${date}<br><strong>Magnitude:</strong> ${earthquake.magnitude}`
-      );
-  });
+      L.marker([earthquake.lat, earthquake.lng], {
+        color: "#f8b02b",
+        icon: earthquakeIcon,
+        riseOnHover: true,
+      })
+        .addTo(earthquakesMCG)
+        .bindPopup(
+          `<strong>Earthquake location</strong><br><strong>Date:</strong> ${date}<br><strong>Magnitude:</strong> ${earthquake.magnitude}`
+        );
+    });
+  }
 
   if (data.volcanoes) {
     data.volcanoes.forEach((volcano) => {
@@ -1292,25 +1165,31 @@ function addToHTML(data) {
     });
   }
   // wikipedia articles
-  data.wikipediaArticles.forEach((story) => {
-    $("#wiki-data").append(
-      `<p class="lead">${story[0][0]}</p><p>${story[1][0]}</p>
-    <p><a href=${story[2][0]} target="_blank">${story[2][0]}</a></p><hr/>`
-    );
-  });
+  if (data.wikipediaArticles) {
+    data.wikipediaArticles.forEach((story) => {
+      $("#wiki-data").append(
+        `<p class="lead">${story[0][0]}</p><p>${story[1][0]}</p>
+      <p><a href=${story[2][0]} target="_blank">${story[2][0]}</a></p><hr/>`
+      );
+    });
+  }
 
   // news articles
-  data.newsArticles.forEach((story) => {
-    // console.log(story);
-    $("#news-data").append(
-      `<p class="lead">${story.title}</p><p class="font-italic">${readableDate(
-        story.publishedAt
-      )}</p><img class="news-image" src=${story.urlToImage}><p>${
-        story.description
-      }</p>
+  if (data.newsArticles) {
+    data.newsArticles.forEach((story) => {
+      // console.log(story);
+      $("#news-data").append(
+        `<p class="lead">${
+          story.title
+        }</p><p class="font-italic">${readableDate(
+          story.publishedAt
+        )}</p><img class="news-image" src=${story.urlToImage}><p>${
+          story.description
+        }</p>
       <p><a href=${story.url} target="_blank">${story.url}</a></p><hr/>`
-    );
-  });
+      );
+    });
+  }
 
   // general info
   $(".api-country").html(data.countryName);
@@ -1319,7 +1198,10 @@ function addToHTML(data) {
   $("#api-currency").html(data.currencyName);
   $("#api-currency-symbol").html(` (${data.currencySymbol})`);
   $("#api-currency-symbol-for-exchange").html(data.currencySymbol);
-  // $("#api-exchange-rate").html(data.exchangeRate.toFixed(2));
+  if (data.exchangeRate) {
+    $("#api-exchange-rate").html(data.exchangeRate.toFixed(2));
+  }
+
   $("#api-continent").html(data.continent);
   $("#api-languages").html(data.languages);
   $("#api-latitude").html(fixLatLon(data.latitude));
@@ -1358,7 +1240,8 @@ function addToHTML(data) {
   }
 
   //COUNTRY IMAGES FOR GENERAL INFO CAROUSEL
-  if (data.countryImages !== []) {
+  if (data.countryImages.length !== 0) {
+    console.log(data.countryImages);
     for (let i = 0; i < 5; i++) {
       $(`#country-image-${i}`).attr("src", data.countryImages[i].url);
       $(`#country-image-${i}`).attr(
@@ -1405,8 +1288,6 @@ function populateSelect(countryCodeISO3) {
     success: function (result) {
       if (result.status.name === "ok") {
         result = JSON.parse(result.data);
-        // console.log(result);
-        // console.log(Array.isArray(result));
         result.forEach((country) => {
           console.log(country);
           $("#select").append(
