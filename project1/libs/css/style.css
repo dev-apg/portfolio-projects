@@ -1,8 +1,5 @@
 :root {
-  /* --primary-color: #34e7e4; */
   --primary-color: #00d8d6;
-  /* --light-blue: #4bcffa; */
-  --blue: #0fbcf9;
   --light-grey: #d2dae2;
   --grey: #9fa6af;
   --dark-grey: #485460;
@@ -10,9 +7,9 @@
   --slightly-less-darker-grey: #262f36;
   --darker-grey-reduced-opacity: #1e272ed2;
   --orange: #ff5e57;
-  /* --red: #ff3f34; */
-  --pink: #ef5777;
 }
+
+/* MAP CSS */
 
 html,
 body {
@@ -26,14 +23,12 @@ body {
 }
 
 #map {
-  /* position: absolute; */
   width: 100%;
-  /* testing code below */
   height: 100%;
   position: relative;
 }
 
-/* buttons */
+/* leaflet buttons */
 
 .leaflet-touch .leaflet-control-layers,
 .leaflet-touch .leaflet-bar {
@@ -54,13 +49,6 @@ body {
   font-size: 27px;
   font-weight: bold;
 }
-
-/* .easy-button-button .button-state {
-  display: block;
-  width: 100%;
-  height: 100%;
-  position: relative;
-} */
 
 .leaflet-popup-content-wrapper {
   border-radius: 3px;
@@ -121,7 +109,6 @@ body {
 }
 
 .leaflet-bar a:active {
-  /* background: var(--darker-grey); */
   background: var(--light-grey);
   background: #fff;
 }
@@ -132,19 +119,29 @@ body {
   background: var(--dark-grey);
 }
 
-.input-group-text {
-  background-color: var(--primary-color);
-  color: var(--darker-grey);
-  border: 1px solid var(--primary-color);
+.leaflet-control-layers {
+  top: 30px;
+  right: 8px;
 }
 
-.custom-select {
-  /* background-color: var(--darker-grey); */
-  background-color: var(--dark-grey);
-  color: var(--light-grey);
-  border: 1px solid var(--light-grey);
+div.leaflet-control-zoom.leaflet-bar.leaflet-control {
+  top: calc(100vh - 150px);
 }
 
+div.leaflet-control-layers.leaflet-control {
+  top: calc(100vh - 200px);
+  color: var(--primary-color);
+  background-color: #1e272ed2;
+  position: absolute;
+}
+
+div.leaflet-control-layers-overlays {
+  width: 90px;
+}
+
+/* END OF MAP CSS */
+
+/* NAV/TITLE BAR CSS */
 /* outermost nav div */
 #nav-container-all {
   background-color: var(--darker-grey);
@@ -154,19 +151,26 @@ body {
   z-index: 500;
   width: 100%;
   color: #fff;
-  /* border: red 1px solid; */
   display: flex;
   justify-content: center;
   align-items: center;
 }
+.input-group-text {
+  background-color: var(--primary-color);
+  color: var(--darker-grey);
+  border: 1px solid var(--primary-color);
+}
+
+.custom-select {
+  background-color: var(--dark-grey);
+  color: var(--light-grey);
+  border: 1px solid var(--light-grey);
+}
 
 #globe-icon {
-  /* color: var(--primary-color); */
-  /* color: #14bbb8; */
   color: var(--primary-color);
   position: absolute;
   top: 7px;
-  /* left: calc(24% - 153px); */
   left: 15px;
   font-size: 30px;
   cursor: pointer;
@@ -179,15 +183,10 @@ body {
 }
 
 #logo {
-  /* max-height: 37px; */
-  /* height: 37px; */
   height: 49px;
   position: absolute;
-  /* top: 3px; */
   top: -3px;
-  /* left: calc(24% - 119px); */
   left: 48px;
-  /* border: green 1px solid; */
   cursor: pointer;
 }
 
@@ -195,7 +194,6 @@ body {
   #logo {
     height: 35px;
     top: 4px;
-    /* left: calc(20%); */
   }
 }
 
@@ -213,11 +211,7 @@ body {
 }
 
 #flag-select-container {
-  /* border: blue 1px solid; */
-  /* width: 100%; */
   display: flex;
-  /* justify-content: flex-start; */
-  /* align-content: center; */
 }
 
 .nav-flag-div {
@@ -239,13 +233,9 @@ div.input-group {
   max-height: 37px;
 }
 
-/* Galaxy Fold */
+/* responsive setting for smaller screens */
 @media only screen and (max-width: 345px) {
   div.input-group {
-    /* max-width: 100%; */
-    /* width: 97vw; */
-    /* width: 97vw; */
-    /* border: solid var(--blue) 1px; */
     position: relative;
     right: 16px;
   }
@@ -259,15 +249,10 @@ div.input-group {
 }
 
 #nav-icons {
-  /* color: var(--primary-color); */
-  /* color: #14bbb8; */
   color: var(--dark-grey);
   position: absolute;
-  /* top: 3px; */
   left: calc(50% + 131px);
-  /* left: 473px; */
   font-size: 30px;
-  /* cursor: pointer; */
 }
 
 .active-icon {
@@ -275,12 +260,9 @@ div.input-group {
   cursor: pointer;
 }
 
-/* Galaxy Fold */
-/* max-width: 328px */
+/* responsive setting for smaller screens */
 @media only screen and (max-width: 345px) {
   #nav-icons {
-    /* position: relative; */
-    /* left: auto; */
     left: calc(50% + 106px);
     font-size: 22px;
   }
@@ -291,38 +273,14 @@ div.input-group {
   cursor: pointer;
 }
 
-/* Loading Modal */
-/* loading modal - progress bar */
+/* END OF NAV/TITLE BAR CSS */
 
-/* #loading-progress-bar {
-  width: 77%;
-} */
+/* MODALS CSS */
+/* Loading Modal */
 
 .progress {
   height: 3px;
 }
-
-/*
-
-.width0 {
-  width: 0%;
-}
-
-.width25 {
-  width: 25%;
-}
-
-.width50 {
-  width: 50%;
-}
-
-.width75 {
-  width: 75%;
-}
-
-.width100 {
-  width: 100%;
-} */
 
 .display-none {
   display: none;
@@ -338,17 +296,7 @@ div.input-group {
   background-color: #dff9fb;
 }
 
-/* #try-again {
-  color: var(--darker-grey);
-  background-color: var(--light-grey);
-  border-color: var(--light-grey);
-} */
-
-/* #choose-another {
-  color: var(--darker-grey);
-  background-color: var(--light-grey);
-  border-color: var(--light-grey);
-} */
+/* all modals */
 
 .modal-title {
   color: var(--orange);
@@ -363,15 +311,12 @@ div.modal-footer,
   padding: 0.5rem;
   background: var(--darker-grey);
   color: var(--light-grey);
-  /* border-color: var(--primary-color); */
   border: none;
   border-top: var(--darker-grey);
   border-top: var(--primary-color);
 }
 
-#modal-close {
-  /* color: pink; */
-}
+/* infoModal */
 
 .forecast td {
   background-color: var(--slightly-less-darker-grey);
@@ -412,24 +357,14 @@ a.leaflet-popup-close-button {
   display: none;
 }
 
-/* modal */
+/* infoModal image carousel */
 
 .parent {
   height: 300px;
-  /* width: fit-content; */
 }
 
 .img-size {
-  /* height: 300px; */
-  /* max-width: 100%; */
-  /* height: auto; */
-  /* background-size: cover; */
-  /* overflow: hidden; */
   object-fit: cover;
-}
-
-.carousel-item {
-  /* height: 300px; */
 }
 
 .carousel-caption {
@@ -437,13 +372,7 @@ a.leaflet-popup-close-button {
   text-transform: capitalize;
 }
 
-/* modal end */
-
-#info-image-div {
-  height: 200px;
-  margin-top: -10px;
-  margin-bottom: 5px;
-}
+/* infoModal weather */
 
 .weather-img {
   max-height: 45px;
@@ -464,24 +393,8 @@ a.leaflet-popup-close-button {
   display: none;
 }
 
-#country-image {
-  width: 100%;
-}
-
-.news-image {
-  width: 100%;
-}
-
-#slider1 img {
-  width: 100%;
-}
-
 .units {
   color: var(--grey);
-}
-
-caption {
-  caption-side: top;
 }
 
 #data-captured-at-style {
@@ -489,9 +402,14 @@ caption {
   color: var(--grey);
 }
 
+/* wiki and news modals */
+
+.news-image {
+  width: 100%;
+}
+
 div#wiki-data hr,
 div#news-data hr {
-  /* border: 1px solid var(--light-grey); */
   border: 1px solid var(--dark-grey);
 }
 
@@ -500,9 +418,13 @@ div#news-data .lead {
   font-weight: bold;
 }
 
+/* about modal */
+
 #about-modal-title {
   color: var(--light-grey);
 }
+
+/* END OF MODALS CSS */
 
 /* Preloader */
 
@@ -530,32 +452,6 @@ div#news-data .lead {
   -webkit-animation: animate-preloader 1s linear infinite;
   animation: animate-preloader 1s linear infinite;
 }
-
-.leaflet-control-layers {
-  top: 30px;
-  right: 8px;
-}
-
-div.leaflet-control-zoom.leaflet-bar.leaflet-control {
-  top: calc(100vh - 150px);
-}
-
-div.leaflet-control-layers.leaflet-control {
-  /* top: calc(75vh - 98px); */
-  top: calc(100vh - 200px);
-  color: var(--primary-color);
-  background-color: #1e272ed2;
-  position: absolute;
-  /* bottom: 10px; */
-}
-
-div.leaflet-control-layers-overlays {
-  width: 90px;
-}
-
-/* .modal-dialog {
-  height: 50vh;
-} */
 
 @-webkit-keyframes animate-preloader {
   0% {
