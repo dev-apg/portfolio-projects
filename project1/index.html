@@ -416,21 +416,76 @@
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
-            <div id="">
-              <p>Thank you for visiting the Gazetteer app.</p>
+            <div id="about-data">
+              <br>
+
+              <div class="d-flex">
+                <div class="first-column d-flex justify-content-center"><p>
+                  <span class="fa-solid fa-earth-asia about-modal-icons" ></span>
+                </p>
+                </div>
+                <div class="second-column"><p> - About Gazetteer App</p></div>
+              </div>
+
+              <div class="d-flex">
+                <div class="first-column d-flex justify-content-center"><p>
+                  <span class="fas fa-info about-modal-icons" ></span>
+                </p>
+                </div>
+                <div class="second-column"><p> - General information</p></div>
+              </div>
+
+              <div class="d-flex">
+                <div class="first-column d-flex justify-content-center"><p>
+                  <span class="fab fa-wikipedia-w about-modal-icons" ></span>
+                </p>
+                </div>
+                <div class="second-column"><p> - Wikipedia</p></div>
+              </div>
+
+              <div class="d-flex">
+                <div class="first-column d-flex justify-content-center"><p>
+                  <span class="fas fa-newspaper about-modal-icons" ></span>
+                </p>
+                </div>
+                <div class="second-column"><p> - News</p></div>
+              </div>
+
+              <div class="d-flex">
+                <div class="first-column d-flex justify-content-center"><p>
+                  <span class="fa-solid fa-location-crosshairs about-modal-icons" ></span>
+                </p>
+                </div>
+                <div class="second-column"><p> - Recenter</p></div>
+              </div>
+
+              <div class="d-flex">
+                <div class="first-column d-flex justify-content-center"><p>
+                  <span class="fa-solid fa-angle-left about-modal-icons" ></span>
+                  <span class="fa-solid fa-angle-right about-modal-icons" ></span>
+                </p>
+                </div>
+                <div class="second-column"><p> - Back/Forward</p></div>
+              </div>
+
+              <p> <img id="about-modal-flag"></img> - Refresh data</p>
               <p>
-                Front end:<br />
-                HTML<br />CSS<br />Javascript
+                <br>
+                <hr>
+                <br>
+                <span class="lead">Front end:</span>
+                <br />
+                HTML, CSS, Javascript
                 <br />
                 <a href="https://getbootstrap.com/">https://getbootstrap.com</a>
                 <br /><a href="https://jquery.com/">https://jquery.com/</a>
               </p>
               <p>
-                Back end:<br />
+                <span class="lead">Back end:</span><br />
                 PHP
               </p>
               <p>
-                Map and interface: <br />
+                <span class="lead">Maps and Interface:</span> <br />
                 <a href="https://leafletjs.com/" target="_blank"
                   >https://leafletjs.com/</a
                 ><br />
@@ -450,7 +505,7 @@
                 <a href="https://fontawesome.com/">https://fontawesome.com/</a>
               </p>
               <p>
-                Country Information:<br />
+                <span class="lead">Country Information:</span><br />
                 <a href="https://www.geonames.org" target="_blank"
                   >https://www.geonames.org</a
                 >
@@ -480,7 +535,7 @@
                 >
               </p>
               <p>
-                Hosted by:
+                <span class="lead">Hosted By:</span>
                 <a href="https://heroku.com" target="_blank"
                   >https://heroku.com</a
                 >
@@ -514,34 +569,34 @@
               <p id="loading-message-text"></p>
               <div id="error-retrieving-messages">
                 <p id="error-cities" class="display-none">
-                  Unable to retrieve cities for this location
+                  Cities data not currently available
                 </p>
                 <p id="error-geoJSON" class="display-none">
-                  Unable to retrieve country outline
+                  Country outline not currently available
                 </p>
                 <p id="error-country-details" class="">
-                  Unable to retrieve all country information
+                  Some country information may not be available
                 </p>
                 <p id="error-wikipedia" class="display-none">
-                  Unable to retrieve Wikipedia articles
+                  Wikipedia articles currently unavailable
                 </p>
                 <p id="error-news" class="display-none">
-                  Unable to retrieve news articles
+                  News articles currently unavailable
                 </p>
                 <p id="error-current-weather" class="display-none">
-                  Unable to retrieve current weather information
+                  Current weather information currently unavailable
                 </p>
                 <p id="error-weather-forecast" class="display-none">
-                  Unable to retrieve weather forecast
+                  Weather forecast currently unavailable
                 </p>
                 <p id="error-volcanoes" class="display-none">
-                  Unable to retrieve volcanoes
+                  Information on volcanoes currently unavailable
                 </p>
                 <p id="error-country-images" class="display-none">
-                  Unable to retrieve country images
+                  Country images currently unavailable
                 </p>
                 <p id="error-earthquakes" class="display-none">
-                  Unable to retrieve earthquakes for this location
+                  Information on earthquakes currently unavailable
                 </p>
               </div>
             </div>
@@ -587,7 +642,7 @@
     <!-- JS SCRIPTS -->
     <script
       type="application/javascript"
-      src="libs/js/jquery-2.2.3.min.js"
+      src="libs/js/jquery-3.6.0.min.js"
     ></script>
     <script
       type="application/javascript"

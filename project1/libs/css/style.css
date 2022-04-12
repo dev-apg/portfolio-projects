@@ -409,7 +409,8 @@ a.leaflet-popup-close-button {
 }
 
 div#wiki-data hr,
-div#news-data hr {
+div#news-data hr,
+#about-data hr {
   border: 1px solid var(--dark-grey);
 }
 
@@ -422,6 +423,22 @@ div#news-data .lead {
 
 #about-modal-title {
   color: var(--light-grey);
+}
+
+.about-modal-icons {
+  color: var(--primary-color);
+}
+
+#about-modal-flag {
+  height: 23px;
+  width: 40px;
+  background: url("https://flagcdn.com/w320/gb.png") no-repeat center
+    center/cover;
+  border-radius: 4px;
+}
+
+.first-column {
+  width: 26px;
 }
 
 /* END OF MODALS CSS */
