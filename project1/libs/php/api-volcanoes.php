@@ -1,9 +1,8 @@
 <?php
 
-	// remove for production
+$executionStartTime = microtime(true);
 
-	ini_set('display_errors', 'On');
-	error_reporting(E_ALL);
+function get_volcanoes_data() {
 
 	$executionStartTime = microtime(true);
     
@@ -18,31 +17,64 @@
 
 	curl_close($ch);
 
-	$json_data = json_decode($result,true);	
+	$decoded_result = json_decode($result,true);
 
-//Declare array to add values to
+	return $decoded_result;
+}
+
+
+
+function filter_volcanoes_data($volcanoes, $country) {
+
 $array = array();
-
-$country = $_REQUEST['countryname'];
-
-//loop through JSON file to get required data
-//pass data to array 
-foreach($json_data['features'] as $volcano) {
+foreach($volcanoes['features'] as $volcano) {
    if ($volcano['properties']['Country'] == $country) {
 	   array_push($array, $volcano);
    }
 }
 
-// json_encode($array,JSON_FORCE_OBJECT);
+return $array;
+
+}
+
+function get_volcanoes($country) {
+	global $executionStartTime;
+//get file name
+$cache_file = '../resources/volcanoes-cache.json';
+
+//define expiry time (180 days)
+$expires = time() - 180*24*60*60;
+
+if (!file_exists($cache_file)) {
+	$results = get_volcanoes_data();
+	$encoded_results = json_encode($results, true);
+	file_put_contents($cache_file, $encoded_results);
+} else if ( filectime($cache_file) < $expires || file_get_contents($cache_file)  == '') {
+	$results = get_volcanoes_data();
+	$encoded_results = json_encode($results, true);
+	file_put_contents($cache_file, $encoded_results);
+} 
+
+$results = file_get_contents($cache_file);
+
+$decoded_results = json_decode($results,true);
+
+$filtered_results = filter_volcanoes_data($decoded_results, $country);
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-	$output['data'] = $array;
+	$output['data'] = $filtered_results;
 
 	header('Content-Type: application/json; charset=UTF-8');
 
-	echo json_encode($output); 
+	$encoded_output = json_encode($output,true);
+
+	echo $encoded_output;
+}
+
+
+get_volcanoes($_REQUEST['countryname']);
 
 ?>
