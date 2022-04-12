@@ -106,9 +106,12 @@ class LinkedList {
   }
 
   recenter() {
-    // map.fitBounds(this.current.data.geojsonCountryOutline.getBounds(), {
-    //   padding: [9, 9],
-    // });
+    if (this.current.data.countryName === "Russia") {
+      map.fitBounds(this.current.data.geojsonCountryOutline.getBounds(), {
+        padding: [9, 9],
+      });
+      return;
+    }
     map.fitBounds(
       [
         [this.current.data.south, this.current.data.west],
@@ -169,7 +172,7 @@ const map = L.map("map", {
 // ).addTo(map);
 
 // MAPTILER TILES
-//import map tiles
+// import map tiles
 const streetTiles = L.tileLayer(
   "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
   {
@@ -341,7 +344,7 @@ function setSelected(twoLetterCountryCode) {
 populateSelect();
 locationData();
 
-//-------------------------locationData()-------------------------------//
+//-----------------------Define locationData()-------------------------------//
 
 //GET USER'S LOCATION (LAT LON coords) FROM DEVICE
 //CALLS OPENCAGE WITH THIS INFORMATION
@@ -388,7 +391,7 @@ function locationData(selectedCountry) {
   };
 
   //show progress modal
-  //settings added so that user can't click off before completion
+  //settings object added so that user can't click off before completion
   $("#progressModal").modal({
     backdrop: "static",
     keyboard: false,
@@ -513,15 +516,15 @@ function locationData(selectedCountry) {
       .then(() =>
         Promise.all([
           apiVolcanoesCall(infoStore.countryName),
-          openExchangeRatesCall(infoStore.currencyISO3Code),
+          // openExchangeRatesCall(infoStore.currencyISO3Code),
           geonamesCitiesCall(infoStore, countryCodeISO2),
           geonamesEarthquakesCall(infoStore.boundingBox),
           geonamesWikiCall(infoStore.boundingBox),
           opencageCall(infoStore.latitude, infoStore.longitude),
           apiOpenWeatherCurrentCall(infoStore.latitude, infoStore.longitude),
           apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude),
-          apiNewsCall(infoStore.countryName),
-          apiUnsplashCall(infoStore.countryName),
+          // apiNewsCall(infoStore.countryName),
+          // apiUnsplashCall(infoStore.countryName),
           getDateTime(),
         ])
       )
