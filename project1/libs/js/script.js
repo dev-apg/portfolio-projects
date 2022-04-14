@@ -161,27 +161,27 @@ const map = L.map("map", {
 });
 
 //alternative tiles for when maptiler not available due to free account
-// const streetTiles = L.tileLayer(
-//   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-//   {
-//     attribution:
-//       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-//     minZoom: 2,
-//     maxZoom: 15,
-//   }
-// ).addTo(map);
-
-// MAPTILER TILES
-// import map tiles
 const streetTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
     attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     minZoom: 2,
     maxZoom: 15,
   }
 ).addTo(map);
+
+// MAPTILER TILES
+// import map tiles
+// const streetTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 2,
+//     maxZoom: 15,
+//   }
+// ).addTo(map);
 
 // const topographicTiles = L.tileLayer(
 //   "https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
@@ -193,15 +193,15 @@ const streetTiles = L.tileLayer(
 //   }
 // ).addTo(map);
 
-const satelliteTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
-  {
-    attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-    minZoom: 2,
-    maxZoom: 15,
-  }
-).addTo(map);
+// const satelliteTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 2,
+//     maxZoom: 15,
+//   }
+// ).addTo(map);
 
 let cityIcon = L.icon({
   iconUrl: "libs/css/images/bigcity.png",
@@ -237,7 +237,7 @@ earthquakesMCG.addTo(featureGroup1);
 volcanoesMCG.addTo(featureGroup1);
 
 const baseLayers = {
-  Satellite: satelliteTiles,
+  // Satellite: satelliteTiles,
   // Topographic: topographicTiles,
   Street: streetTiles,
 };
@@ -376,6 +376,7 @@ function locationData(selectedCountry) {
     countryImages: [],
     weather: [],
     offset_sec: "",
+    offset_string: "",
     localTime: "",
     exchangeRate: "",
     earthquakes: "",
@@ -482,13 +483,13 @@ function locationData(selectedCountry) {
         }
         infoStore.twoLetterCountryCode =
           result.data.results[0].components["ISO_3166-1_alpha-2"];
-        //utc time
+        //time
+        infoStore.offset_string =
+          result.data.results[0].annotations.timezone.offset_string;
         infoStore.offset_sec =
           result.data.results[0].annotations.timezone.offset_sec;
-        infoStore.unix = result.data.timestamp.created_unix;
-        infoStore.localTime = currentDayTime(
-          infoStore.unix + infoStore.offset_sec
-        );
+        infoStore.unix = Date.now();
+        infoStore.localTime = currentDayTime(infoStore.offset_sec);
       },
       error: function (jqXHR, textStatus, errorThrown) {
         fatalError();
@@ -510,17 +511,17 @@ function locationData(selectedCountry) {
       geonamesCall(countryCodeISO2),
     ])
       .then(() => restCountriesCall(infoStore.threeLetterCountryCode))
+      .then(() => opencageCall(infoStore.latitude, infoStore.longitude))
       .then(() =>
         Promise.all([
           apiVolcanoesCall(infoStore.countryName),
-          openExchangeRatesCall(infoStore.currencyISO3Code),
+          // openExchangeRatesCall(infoStore.currencyISO3Code),
           geonamesCitiesCall(infoStore, countryCodeISO2),
           geonamesEarthquakesCall(infoStore.boundingBox),
           geonamesWikiCall(infoStore.boundingBox),
-          opencageCall(infoStore.latitude, infoStore.longitude),
           apiOpenWeatherCurrentCall(infoStore.latitude, infoStore.longitude),
           apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude),
-          apiNewsCall(infoStore.countryName),
+          // apiNewsCall(infoStore.countryName),
           apiUnsplashCall(infoStore.countryName),
           getDateTime(),
         ])
@@ -834,19 +835,19 @@ function locationData(selectedCountry) {
             const obj = {};
             if (i === 0) {
               obj.dateTime = forecastDayAndTime(
-                forecast[i].dt + infoStore.offset_sec
+                forecast[i].dt,
+                infoStore.offset_sec
               );
             } else if (
               i > 0 &&
-              forecastDay(forecast[i].dt + infoStore.offset_sec) ===
-                forecastDay(forecast[i - 1].dt + infoStore.offset_sec)
+              forecastDay(forecast[i].dt, infoStore.offset_sec) ===
+                forecastDay(forecast[i - 1].dt, infoStore.offset_sec)
             ) {
-              obj.dateTime = forecastTime(
-                forecast[i].dt + infoStore.offset_sec
-              );
+              obj.dateTime = forecastTime(forecast[i].dt, infoStore.offset_sec);
             } else {
               obj.dateTime = forecastDayAndTime(
-                forecast[i].dt + infoStore.offset_sec
+                forecast[i].dt,
+                infoStore.offset_sec
               );
             }
             obj.description = forecast[i].weather[0].description;
@@ -1180,6 +1181,7 @@ function addToHTML(data) {
   //LOCAL TIME
   $("#api-date-time").html(data.localTime.replace(/am|pm/, ""));
   $("#api-date-time-units").html(data.localTime.slice(-2));
+  $("#api-gmt-offset-string").html(data.offset_string);
   //CURRENT WEATHER
   $("#current-weather-icon").attr(
     "src",
@@ -1311,17 +1313,12 @@ function readableDate(rawDate) {
 
 //DATE AND TIME FOR LOCAL TIME
 
-function currentDayTime(unix) {
-  unix = unix * 1000;
-  const date = new Date(unix);
-  const options = {
-    day: "2-digit",
-    month: "short",
-    weekday: "short",
-    year: "numeric",
-  };
-  let minutes = String(date.getMinutes());
-  let hours = date.getHours();
+function currentDayTime(offset) {
+  offset = offset * 1000;
+  const currentTime = new Date();
+  const localTime = new Date(currentTime.getTime() + offset);
+  const minutes = String(localTime.getUTCMinutes());
+  let hours = localTime.getUTCHours();
   let amOrPm = "";
 
   if (hours === 12) {
@@ -1340,8 +1337,16 @@ function currentDayTime(unix) {
     minutes = "0" + minutes;
   }
 
+  const options = {
+    day: "2-digit",
+    month: "short",
+    weekday: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  };
+
   return (
-    new Intl.DateTimeFormat("en-GB", options).format(date) +
+    new Intl.DateTimeFormat("en-GB", options).format(localTime) +
     ", " +
     hours +
     ":" +
@@ -1352,19 +1357,23 @@ function currentDayTime(unix) {
 
 //DATE AND TIME FORMATTING FOR FORECAST
 
-function forecastDay(unix) {
-  unix = unix * 1000;
-  let date = new Date(unix);
+function forecastDay(timestamp, offset) {
+  offset *= 1000;
+  timestamp *= 1000;
+  let date = new Date(timestamp + offset);
   let options = {
+    timeZone: "UTC",
     weekday: "long",
   };
   return new Intl.DateTimeFormat("en-GB", options).format(date);
 }
 
-function forecastTime(unix) {
-  unix = unix * 1000;
-  let date = new Date(unix);
-  let hours = date.getHours();
+function forecastTime(timestamp, offset) {
+  offset *= 1000;
+  timestamp *= 1000;
+  let date = new Date(timestamp + offset);
+  let hours = date.getUTCHours();
+  console.log({ forecastTime: hours });
   if (hours === 12) {
     hours = hours + "pm";
   } else if (hours === 0) {
@@ -1377,16 +1386,16 @@ function forecastTime(unix) {
   return hours;
 }
 
-function forecastDayAndTime(unix) {
-  unix = unix * 1000;
-  let date = new Date(unix);
+function forecastDayAndTime(timestamp, offset) {
+  offset *= 1000;
+  timestamp *= 1000;
+  let date = new Date(timestamp + offset);
   let options = {
     weekday: "long",
-    // hour12: true,
-    // hour: "numeric",
+    timeZone: "UTC",
   };
-  let hours = date.getHours();
-
+  let hours = date.getUTCHours();
+  console.log({ forecastDayAndTime: hours });
   if (hours === 12) {
     hours = hours + "pm";
   } else if (hours === 0) {
@@ -1396,7 +1405,11 @@ function forecastDayAndTime(unix) {
   } else {
     hours = hours + "am";
   }
-  return new Intl.DateTimeFormat("en-GB", options).format(date) + ", " + hours;
+  return (
+    new Intl.DateTimeFormat("en-GB", options).format(date).toUpperCase() +
+    " - " +
+    hours
+  );
 }
 
 //SHOW/HIDE FORECAST ON INFO MODAL
