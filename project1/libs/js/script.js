@@ -419,12 +419,29 @@ function locationData(selectedCountry) {
   } else {
     //request permission:
     //display message plus yes/no buttons
-    $("#request-permission").removeClass("display-none");
-    $("#loading-message").addClass("display-none");
-    $("#loading-progress-bar-container").addClass("display-none");
+    const cookie = document.cookie
+      .split(";")
+      .map((cookie) => cookie.split("="))
+      .reduce(
+        (accumulator, [key, value]) => ({
+          ...accumulator,
+          [key.trim()]: decodeURIComponent(value),
+        }),
+        {}
+      );
+
+    if (cookie["access-granted"] === "yes") {
+      console.log("authorised previously");
+      locationConsentGiven();
+    } else {
+      $("#request-permission").removeClass("display-none");
+      $("#loading-message").addClass("display-none");
+      $("#loading-progress-bar-container").addClass("display-none");
+    }
   }
 
   $("#location-consent-given").on("click", function () {
+    document.cookie = "access-granted=yes";
     locationConsentGiven();
   });
 
@@ -970,6 +987,8 @@ function locationData(selectedCountry) {
 }
 
 function resetProgressModal() {
+  $("#loading-message").removeClass("display-none");
+  $("#request-permission").addClass("display-none");
   $("#loading-message-text-1").html("");
   $("#loading-message-text-2").html("");
   $("#loading-progress-bar-container").removeClass("display-none");
