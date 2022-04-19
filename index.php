@@ -26,6 +26,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" integrity="sha512-EZLkOqwILORob+p0BXZc+Vm3RgJBOe1Iq/0fiI7r/wJgzOFZMlsqTa29UEl6v6U6gsV4uIpsNZoV32YZqrCRCQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
   <body>
+    <script>
+      if (location.href !== "http://localhost/portfolio/") {
+  if (location.href === "http://www.apglynn.co.uk/") {
+    location.assign("https://www.apglynn.co.uk/");
+  }
+}
+    </script>
 
     <?php
 

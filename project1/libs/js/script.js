@@ -985,6 +985,8 @@ function closeProgressModal(infoStore) {
 
 //reset the map and all modals
 function clearHTML(data) {
+  $("#loading-message-text").html("");
+
   //hide
   if ($("#show-hide-forecast").html() === "<sup>(less)</sup>") {
     $("#show-hide-forecast").html("<sup>(more)</sup>");
