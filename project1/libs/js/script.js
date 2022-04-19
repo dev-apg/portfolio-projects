@@ -515,13 +515,13 @@ function locationData(selectedCountry) {
       .then(() =>
         Promise.all([
           apiVolcanoesCall(infoStore.countryName),
-          // openExchangeRatesCall(infoStore.currencyISO3Code),
+          openExchangeRatesCall(infoStore.currencyISO3Code),
           geonamesCitiesCall(infoStore, countryCodeISO2),
           geonamesEarthquakesCall(infoStore.boundingBox),
           geonamesWikiCall(infoStore.boundingBox),
           apiOpenWeatherCurrentCall(infoStore.latitude, infoStore.longitude),
           apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude),
-          // apiNewsCall(infoStore.countryName),
+          apiNewsCall(infoStore.countryName),
           apiUnsplashCall(infoStore.countryName),
           getDateTime(),
         ])
@@ -986,8 +986,8 @@ function closeProgressModal(infoStore) {
 //reset the map and all modals
 function clearHTML(data) {
   //hide
-  if ($("#show-hide-forecast").html() === "(less)") {
-    $("#show-hide-forecast").html("(more)");
+  if ($("#show-hide-forecast").html() === "<sup>(less)</sup>") {
+    $("#show-hide-forecast").html("<sup>(more)</sup>");
     const collection = $(".weather-row");
     Array.from(collection).forEach((row) => {
       row.classList.toggle("hide-row");
@@ -1135,8 +1135,14 @@ function addToHTML(data) {
   if (data.wikipediaArticles) {
     data.wikipediaArticles.forEach((story) => {
       $("#wiki-data").append(
-        `<p class="lead">${story[0][0]}</p><p>${story[1][0]}</p>
-      <p><a href=${story[2][0]} target="_blank">${story[2][0]}</a></p><hr/>`
+        `<div class="articles-container"><h6>${
+          story[0][0]
+        }</h6><img class='wiki-thumbnail' src=${
+          story[3][0] ? story[3][0] : ""
+        }><p>${story[1][0]}</p>
+      <p><a href="${story[2][0]}" target="_blank">${
+          story[2][0]
+        }</a></p></div><hr/>`
       );
     });
   }
@@ -1145,14 +1151,14 @@ function addToHTML(data) {
   if (data.newsArticles) {
     data.newsArticles.forEach((story) => {
       $("#news-data").append(
-        `<p class="lead">${
+        `<div class="articles-container"><h6>${
           story.title
-        }</p><p class="font-italic">${readableDate(
+        }</h6><p class="font-italic news-story-date">${readableDate(
           story.publishedAt
         )}</p><img class="news-image" src=${story.urlToImage}><p>${
           story.description
         }</p>
-      <p><a href=${story.url} target="_blank">${story.url}</a></p><hr/>`
+      <p><a href=${story.url} target="_blank">${story.url}</a></p></div><hr/>`
       );
     });
   }
@@ -1317,7 +1323,7 @@ function currentDayTime(offset) {
   offset = offset * 1000;
   const currentTime = new Date();
   const localTime = new Date(currentTime.getTime() + offset);
-  const minutes = String(localTime.getUTCMinutes());
+  let minutes = String(localTime.getUTCMinutes());
   let hours = localTime.getUTCHours();
   let amOrPm = "";
 
@@ -1373,7 +1379,6 @@ function forecastTime(timestamp, offset) {
   timestamp *= 1000;
   let date = new Date(timestamp + offset);
   let hours = date.getUTCHours();
-  console.log({ forecastTime: hours });
   if (hours === 12) {
     hours = hours + "pm";
   } else if (hours === 0) {
@@ -1391,11 +1396,10 @@ function forecastDayAndTime(timestamp, offset) {
   timestamp *= 1000;
   let date = new Date(timestamp + offset);
   let options = {
-    weekday: "long",
+    weekday: "short",
     timeZone: "UTC",
   };
   let hours = date.getUTCHours();
-  console.log({ forecastDayAndTime: hours });
   if (hours === 12) {
     hours = hours + "pm";
   } else if (hours === 0) {
@@ -1405,11 +1409,7 @@ function forecastDayAndTime(timestamp, offset) {
   } else {
     hours = hours + "am";
   }
-  return (
-    new Intl.DateTimeFormat("en-GB", options).format(date).toUpperCase() +
-    " - " +
-    hours
-  );
+  return new Intl.DateTimeFormat("en-GB", options).format(date) + ", " + hours;
 }
 
 //SHOW/HIDE FORECAST ON INFO MODAL
@@ -1418,10 +1418,10 @@ $("#show-hide-forecast").on("click", function () {
   Array.from(collection).forEach((row) => {
     row.classList.toggle("hide-row");
   });
-  if ($("#show-hide-forecast").html() === "(more)") {
-    $("#show-hide-forecast").html("(less)");
+  if ($("#show-hide-forecast").html() === "<sup>(more)</sup>") {
+    $("#show-hide-forecast").html("<sup>(less)</sup>");
   } else {
-    $("#show-hide-forecast").html("(more)");
+    $("#show-hide-forecast").html("<sup>(more)</sup>");
   }
 });
 

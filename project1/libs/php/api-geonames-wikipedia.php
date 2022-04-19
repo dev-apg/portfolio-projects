@@ -28,6 +28,7 @@
 		array_push($tempArray,$entry->title);
 		array_push($tempArray,$entry->summary);
 		array_push($tempArray,$entry->wikipediaUrl);
+		array_push($tempArray,$entry->thumbnailImg);
 		array_push($array, $tempArray);
 	}
 
