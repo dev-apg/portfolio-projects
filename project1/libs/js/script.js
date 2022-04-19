@@ -106,7 +106,10 @@ class LinkedList {
   }
 
   recenter() {
-    if (this.current.data.countryName === "Russia") {
+    if (
+      this.current.data.countryName === "Russia" ||
+      this.current.data.countryName === "United States"
+    ) {
       map.fitBounds(this.current.data.geojsonCountryOutline.getBounds(), {
         padding: [3, 3],
       });
@@ -157,31 +160,31 @@ let progressBarWidth = 0;
 
 const map = L.map("map", {
   center: [51.505, -0.09],
-  // zoom: 4,
+  zoom: 4,
 });
 
 //alternative tiles for when maptiler not available due to free account
-// const streetTiles = L.tileLayer(
-//   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-//   {
-//     attribution:
-//       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-//     minZoom: 2,
-//     maxZoom: 15,
-//   }
-// ).addTo(map);
-
-// MAPTILER TILES
-// import map tiles
 const streetTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
     attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     minZoom: 2,
     maxZoom: 15,
   }
 ).addTo(map);
+
+// MAPTILER TILES
+// import map tiles
+// const streetTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 2,
+//     maxZoom: 15,
+//   }
+// ).addTo(map);
 
 // const topographicTiles = L.tileLayer(
 //   "https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
@@ -193,15 +196,15 @@ const streetTiles = L.tileLayer(
 //   }
 // ).addTo(map);
 
-const satelliteTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
-  {
-    attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-    minZoom: 2,
-    maxZoom: 15,
-  }
-).addTo(map);
+// const satelliteTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 2,
+//     maxZoom: 15,
+//   }
+// ).addTo(map);
 
 let cityIcon = L.icon({
   iconUrl: "libs/css/images/bigcity.png",
@@ -237,7 +240,7 @@ earthquakesMCG.addTo(featureGroup1);
 volcanoesMCG.addTo(featureGroup1);
 
 const baseLayers = {
-  Satellite: satelliteTiles,
+  // Satellite: satelliteTiles,
   // Topographic: topographicTiles,
   Street: streetTiles,
 };
@@ -332,6 +335,12 @@ $("#try-again").on("click", function () {
 
 $("#choose-another").on("click", function () {
   $("#progressModal").modal("hide");
+});
+
+$("#close-progress-modal-redirect-to-usa").on("click", function () {
+  $("#progressModal").modal("hide");
+  locationData("USA");
+  setSelected("USA");
 });
 
 //set select input to match that of current country
@@ -436,25 +445,24 @@ function locationData(selectedCountry) {
     switch (error.code) {
       case error.PERMISSION_DENIED:
         // alert("Unable User denied the request for Geolocation.");
-        errorMessage = `Unable to access your location - please select a country to visit.`;
+        errorMessage = `Unable to access your location`;
         break;
       case error.POSITION_UNAVAILABLE:
         // alert("Location information is unavailable.");
-        errorMessage = `Unable to access your location - please select a country`;
-
+        errorMessage = `Unable to access your location`;
         break;
       case error.TIMEOUT:
         // alert("The request to get user location timed out.");
-        errorMessage = `Geolocation request timed out - please choose a country`;
+        errorMessage = `Unable to access your location`;
         break;
       case error.UNKNOWN_ERROR:
         // alert("An unknown error occurred.");
-        errorMessage = `Unable to access your location - please choose a country`;
+        errorMessage = `Unable to access your location`;
         break;
     }
     $("#loading-message-text").html(`${errorMessage}`);
     $("#progress-modal-footer").removeClass("display-none");
-    $("#close-progress-modal").removeClass("display-none");
+    $("#close-progress-modal-redirect-to-usa").removeClass("display-none");
     $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
     $("#country-selected-text").addClass("display-none");
     $("#loading-progress-bar-container").addClass("display-none");
@@ -476,7 +484,7 @@ function locationData(selectedCountry) {
         lon: lon,
       },
       success: function (result) {
-        progressBar(8, "opencage");
+        progressBar(8);
         if (result.data.results.length === 0) {
           errorRetrievingData("error-country-details", infoStore);
           return;
@@ -493,7 +501,7 @@ function locationData(selectedCountry) {
       },
       error: function (jqXHR, textStatus, errorThrown) {
         fatalError();
-        progressBar(8, "opencage");
+        progressBar(8);
       },
     });
   }
@@ -541,7 +549,7 @@ function locationData(selectedCountry) {
         dataType: "json",
         data: { countryCode: countryCodeISO2 },
         success: function (result) {
-          progressBar(7, "getGeoJSONData");
+          progressBar(7);
           if (!result) {
             errorRetrievingData("error-geoJSON", infoStore);
             return;
@@ -556,7 +564,7 @@ function locationData(selectedCountry) {
         },
         error: function (jqXHR, textStatus, errorThrown) {
           fatalError();
-          progressBar(7, "getGeoJSONData");
+          progressBar(7);
         },
       });
     }
@@ -570,7 +578,7 @@ function locationData(selectedCountry) {
           countryCodeISO2: countryCodeISO2,
         },
         success: function (result) {
-          progressBar(7, "geonamesCall");
+          progressBar(7);
           if (result.data.length !== 1) {
             errorRetrievingData("error-country-details", infoStore);
             return;
@@ -589,7 +597,7 @@ function locationData(selectedCountry) {
           infoStore.west = result.data[0].west;
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          progressBar(7, "geonamesCall");
+          progressBar(7);
           fatalError();
         },
       });
@@ -604,7 +612,7 @@ function locationData(selectedCountry) {
         type: "POST",
         dataType: "json",
         success: function (result) {
-          progressBar(7, "openexchangerates");
+          progressBar(7);
           if (!result.data) {
             errorRetrievingData("error-country-details", infoStore);
             return;
@@ -612,7 +620,7 @@ function locationData(selectedCountry) {
           infoStore.exchangeRate = result.data[currencyISO3Code];
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          progressBar(7, "openexchangerates");
+          progressBar(7);
           fatalError();
         },
       });
@@ -621,7 +629,7 @@ function locationData(selectedCountry) {
     function restCountriesCall(countryCodeISO3) {
       if (!countryCodeISO3) {
         errorRetrievingData("error-country-details", infoStore);
-        progressBar(7, "restcountries");
+        progressBar(7);
         return;
       }
       return $.ajax({
@@ -630,7 +638,7 @@ function locationData(selectedCountry) {
         dataType: "json",
         data: { countryCodeISO3: countryCodeISO3 },
         success: function (result) {
-          progressBar(7, "restcountries");
+          progressBar(7);
           if (result.data.status === 400) {
             errorRetrievingData("error-country-details", infoStore);
             return;
@@ -644,7 +652,7 @@ function locationData(selectedCountry) {
           infoStore.currencySymbol = result.data.currencies[0].symbol;
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          progressBar(7, "restcountries");
+          progressBar(7);
           fatalError();
         },
       });
@@ -671,7 +679,7 @@ function locationData(selectedCountry) {
           south: infoStore.south,
         },
         success: function (result) {
-          progressBar(8, "geonamesCities");
+          progressBar(8);
           if (result.data.status) {
             errorRetrievingData("error-cities", infoStore);
             return;
@@ -679,7 +687,7 @@ function locationData(selectedCountry) {
           infoStore.cities = result.data.geonames;
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          progressBar(8, "geonamesCities");
+          progressBar(8);
           fatalError();
         },
       });
@@ -687,7 +695,7 @@ function locationData(selectedCountry) {
 
     function geonamesEarthquakesCall(boundingBox) {
       if (!boundingBox) {
-        progressBar(8, "earthquakes");
+        progressBar(8);
         errorRetrievingData("error-earthquakes", infoStore);
         return;
       }
@@ -702,7 +710,7 @@ function locationData(selectedCountry) {
           west: boundingBox._southWest.lng,
         },
         success: function (result) {
-          progressBar(8, "earthquakes");
+          progressBar(8);
           if (!result.data) {
             errorRetrievingData("error-volcanoes", infoStore);
           }
@@ -710,7 +718,7 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          progressBar(8, "earthquakes");
+          progressBar(8);
           fatalError();
         },
       });
@@ -719,7 +727,7 @@ function locationData(selectedCountry) {
     function geonamesWikiCall(boundingBox) {
       if (!boundingBox) {
         errorRetrievingData("error-wikipedia", infoStore);
-        progressBar(8, "geonameswikipedia");
+        progressBar(8);
         return;
       }
       return $.ajax({
@@ -733,7 +741,7 @@ function locationData(selectedCountry) {
           west: boundingBox._southWest.lng,
         },
         success: function (result) {
-          progressBar(8, "geonameswikipedia");
+          progressBar(8);
           if (result.data.length === 1) {
             errorRetrievingData("error-wikipedia", infoStore);
             return;
@@ -741,7 +749,7 @@ function locationData(selectedCountry) {
           infoStore.wikipediaArticles = JSON.parse(result.data);
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          progressBar(8, "geonameswikipedia");
+          progressBar(8);
           fatalError();
         },
       });
@@ -749,7 +757,7 @@ function locationData(selectedCountry) {
 
     function apiNewsCall(countryName) {
       if (!countryName) {
-        progressBar(8, "news");
+        progressBar(8);
         errorRetrievingData("error-news", infoStore);
         return;
       }
@@ -761,7 +769,7 @@ function locationData(selectedCountry) {
           countryname: countryName,
         },
         success: function (result) {
-          progressBar(8, "news");
+          progressBar(8);
           if (result.data.articles && result.data.articles.length > 0) {
             infoStore.newsArticles = result.data.articles;
           } else {
@@ -770,7 +778,7 @@ function locationData(selectedCountry) {
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          progressBar(8, "news");
+          progressBar(8);
           fatalError();
         },
       });
@@ -779,7 +787,7 @@ function locationData(selectedCountry) {
     function apiOpenWeatherCurrentCall(latitude, longitude) {
       if (!latitude || !longitude) {
         errorRetrievingData("error-current-weather", infoStore);
-        progressBar(8, "current-weather");
+        progressBar(8);
         return;
       }
       return $.ajax({
@@ -791,7 +799,7 @@ function locationData(selectedCountry) {
           longitude: longitude,
         },
         success: function (result) {
-          progressBar(8, "current-weather");
+          progressBar(8);
           if (result.data.cod) {
             errorRetrievingData("error-current-weather", infoStore);
             return;
@@ -803,7 +811,7 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          progressBar(8, "current-weather");
+          progressBar(8);
           fatalError();
         },
       });
@@ -812,7 +820,7 @@ function locationData(selectedCountry) {
     function apiOpenWeatherForecastCall(latitude, longitude) {
       if (!latitude || !longitude) {
         errorRetrievingData("error-weather-forecast", infoStore);
-        progressBar(8, "openweatherForecast");
+        progressBar(8);
         return;
       }
       return $.ajax({
@@ -824,7 +832,7 @@ function locationData(selectedCountry) {
           longitude: infoStore.longitude,
         },
         success: function (result) {
-          progressBar(8, "openweatherForecast");
+          progressBar(8);
           if (result.data.cod !== "200") {
             errorRetrievingData("error-weather-forecast", infoStore);
             return;
@@ -857,7 +865,7 @@ function locationData(selectedCountry) {
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          progressBar(8, "openweatherForecast");
+          progressBar(8);
           fatalError();
         },
       });
@@ -866,7 +874,7 @@ function locationData(selectedCountry) {
     function apiVolcanoesCall(countryName) {
       if (!countryName) {
         errorRetrievingData("error-volcanoes", infoStore);
-        progressBar(8, "volcanoes");
+        progressBar(8);
         return;
       }
       return $.ajax({
@@ -877,11 +885,11 @@ function locationData(selectedCountry) {
           countryname: countryName,
         },
         success: function (result) {
-          progressBar(8, "volcanoes");
+          progressBar(8);
           infoStore.volcanoes = result.data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          progressBar(8, "volcanoes");
+          progressBar(8);
           fatalError();
         },
       });
@@ -890,7 +898,7 @@ function locationData(selectedCountry) {
     function apiUnsplashCall(countryName) {
       if (!countryName) {
         errorRetrievingData("country-images", infoStore);
-        progressBar(8, "unsplash");
+        progressBar(8);
         return;
       }
       return $.ajax({
@@ -901,7 +909,7 @@ function locationData(selectedCountry) {
           countryname: infoStore.countryName,
         },
         success: function (result) {
-          progressBar(8, "unsplash");
+          progressBar(8);
           if (result.data.length === 0) {
             errorRetrievingData("country-images", infoStore);
             return;
@@ -916,7 +924,7 @@ function locationData(selectedCountry) {
         },
 
         error: function (jqXHR, textStatus, errorThrown) {
-          progressBar(8, "unsplash");
+          progressBar(8);
           fatalError();
         },
       });
@@ -931,6 +939,7 @@ function locationData(selectedCountry) {
 }
 
 function resetProgressModal() {
+  $("#loading-message-text").html("");
   $("#loading-progress-bar-container").removeClass("display-none");
   $("#country-selected-text").removeClass("display-none");
   $("#progress-modal-footer").addClass("display-none");
@@ -938,6 +947,8 @@ function resetProgressModal() {
   $("#choose-another").addClass("display-none");
   $("#close-progress-modal").addClass("display-none");
   $("#loading-message").removeClass("alert-danger").addClass("alert-primary");
+  progressBarWidth = 0;
+  progressBar(0);
   //error messages:
   $("#error-cities").addClass("display-none");
   $("#error-geoJSON").addClass("display-none");
@@ -949,8 +960,6 @@ function resetProgressModal() {
   $("#error-volcanoes").addClass("display-none");
   $("#error-country-images").addClass("display-none");
   $("#loading-progress-bar-container").removeClass("display-none");
-  progressBarWidth = 0;
-  progressBar(0, "reset to zero");
 }
 
 //fatalError offers user choice to try again or choose another country
@@ -1244,7 +1253,7 @@ function addToHTML(data) {
 
 //HELPER FUNCTIONS------------------------------------------//
 
-function progressBar(widthIncrease, functionName) {
+function progressBar(widthIncrease) {
   progressBarWidth += widthIncrease;
   $("#loading-progress-bar").css({ width: `${progressBarWidth}%` });
 }
