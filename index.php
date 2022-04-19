@@ -38,7 +38,7 @@
 
 echo "<h3>Site under construction</h3>";
 echo "<h3>Links:</h3>";
-echo "<a href='project1/index.html'>Project One - Gazzatteer</a>";
+echo "<a href='project1/index.html'>Project One - Gazetteer</a>";
 
 
 

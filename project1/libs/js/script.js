@@ -337,10 +337,10 @@ $("#choose-another").on("click", function () {
   $("#progressModal").modal("hide");
 });
 
-$("#close-progress-modal-redirect-to-usa").on("click", function () {
-  $("#progressModal").modal("hide");
-  locationData("USA");
-  setSelected("USA");
+$("#select-progress").change(function () {
+  setSelected($("#select-progress").val());
+  locationData($("#select-progress").val());
+  $("#select-progress-div").addClass("display-none");
 });
 
 //set select input to match that of current country
@@ -413,8 +413,29 @@ function locationData(selectedCountry) {
     callOpencage = false;
   }
 
-  if (!selectedCountry) {
-    //Call functions
+  if (selectedCountry) {
+    getData(selectedCountry);
+  } else {
+    //request permission:
+    //display message plus yes/no buttons
+    $("#request-permission").removeClass("display-none");
+    $("#loading-message").addClass("display-none");
+    $("#loading-progress-bar-container").addClass("display-none");
+  }
+
+  $("#location-consent-given").on("click", function () {
+    locationConsentGiven();
+  });
+
+  $("#location-consent-declined").on("click", function () {
+    locationConsentDeclined();
+  });
+
+  function locationConsentDeclined() {
+    displayProgressSelectCountry("Please select a country from below:");
+  }
+
+  function locationConsentGiven() {
     getUserLocation()
       .then((position) =>
         opencageCall(position.coords.latitude, position.coords.longitude)
@@ -424,8 +445,6 @@ function locationData(selectedCountry) {
       .then(() => setSelected(infoStore.twoLetterCountryCode))
       .then(() => getData(infoStore.twoLetterCountryCode))
       .catch((error) => console.log(error));
-  } else {
-    getData(selectedCountry);
   }
 
   //-------------------getLocation() - declared inside locationData()-----------------//
@@ -445,28 +464,39 @@ function locationData(selectedCountry) {
     switch (error.code) {
       case error.PERMISSION_DENIED:
         // alert("Unable User denied the request for Geolocation.");
-        errorMessage = `Unable to access your location`;
+        errorMessage = `Unable to access your location. You may need to reset permissions in your browser.`;
         break;
       case error.POSITION_UNAVAILABLE:
         // alert("Location information is unavailable.");
-        errorMessage = `Unable to access your location`;
+        errorMessage = `Unable to access your location. You may need to reset permissions in your browser.`;
         break;
       case error.TIMEOUT:
         // alert("The request to get user location timed out.");
-        errorMessage = `Unable to access your location`;
+        errorMessage = `Unable to access your location. You may need to reset permissions in your browser.`;
         break;
       case error.UNKNOWN_ERROR:
         // alert("An unknown error occurred.");
-        errorMessage = `Unable to access your location`;
+        errorMessage = `Unable to access your location. You may need to reset permissions in your browser.`;
         break;
     }
-    $("#loading-message-text").html(`${errorMessage}`);
+    const message2 = "Please select a country from below:";
+    displayProgressSelectCountry(errorMessage, message2);
+  }
+
+  function displayProgressSelectCountry(message1, message2) {
+    $("#loading-message").removeClass("display-none");
+    $("#request-permission").addClass("display-none");
+    $("#loading-message-text-1").html(`${message1}`);
+    if (message2) {
+      $("#loading-message-text-2").html(`${message2}`);
+    }
     $("#progress-modal-footer").removeClass("display-none");
-    $("#close-progress-modal-redirect-to-usa").removeClass("display-none");
-    $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
+    $("#select-progress-div").removeClass("display-none");
+    // $("#loading-message").removeClass("alert-primary").addClass("alert-danger");
     $("#country-selected-text").addClass("display-none");
     $("#loading-progress-bar-container").addClass("display-none");
   }
+
   //success callback
   //on success sets infoStore.twoLetterCountryCode
   function opencageCall(lat, lon) {
@@ -939,7 +969,8 @@ function locationData(selectedCountry) {
 }
 
 function resetProgressModal() {
-  $("#loading-message-text").html("");
+  $("#loading-message-text-1").html("");
+  $("#loading-message-text-2").html("");
   $("#loading-progress-bar-container").removeClass("display-none");
   $("#country-selected-text").removeClass("display-none");
   $("#progress-modal-footer").addClass("display-none");
@@ -965,7 +996,7 @@ function resetProgressModal() {
 //fatalError offers user choice to try again or choose another country
 function fatalError() {
   const country = $("#select option:selected").text();
-  $("#loading-message-text").html(
+  $("#loading-message-text-1").html(
     `Data for ${country} not currently available!`
   );
   $("#progress-modal-footer").removeClass("display-none");
@@ -988,13 +1019,15 @@ function closeProgressModal(infoStore) {
     $("#progress-modal-footer").removeClass("display-none");
     $("#close-progress-modal").removeClass("display-none");
     $("#loading-progress-bar-container").addClass("display-none");
-    $("#loading-message-text").html("");
+    $("#loading-message-text-1").html("");
+    $("#loading-message-text-2").html("");
   }
 }
 
 //reset the map and all modals
 function clearHTML(data) {
-  $("#loading-message-text").html("");
+  $("#loading-message-text-1").html("");
+  $("#loading-message-text-2").html("");
 
   //hide
   if ($("#show-hide-forecast").html() === "<sup>(less)</sup>") {
@@ -1270,6 +1303,12 @@ function populateSelect(countryCodeISO3) {
         result = JSON.parse(result.data);
         result.forEach((country) => {
           $("#select").append(
+            $("<option>", {
+              value: [country[1]],
+              text: [country[0]],
+            })
+          );
+          $("#select-progress").append(
             $("<option>", {
               value: [country[1]],
               text: [country[0]],

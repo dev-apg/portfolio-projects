@@ -596,7 +596,8 @@
                 <span id="country-selected-text">Country selected: </span
                 ><span id="loading-message-country"></span>
               </p>
-              <p id="loading-message-text"></p>
+              <p id="loading-message-text-1"></p>
+              <p id="loading-message-text-2"></p>
               <div id="error-retrieving-messages">
                 <p id="error-cities" class="display-none">
                   Cities data not currently available
@@ -636,6 +637,27 @@
                 id="loading-progress-bar"
               ></div>
             </div>
+            <div id="request-permission" class="display-none">
+              <p>Allow access to your current location?</p>
+              <button
+              id="location-consent-given"
+              class="btn btn-outline-light "
+              type="button"
+            >
+              Yes
+            </button>
+            <button
+              id="location-consent-declined"
+              class="btn btn-outline-light"
+              type="button"
+            >
+              No
+            </button>
+            </div>
+            <div id="select-progress-div" class="display-none">
+              <select id="select-progress" class="custom-select">
+            </select>
+          </div>
           </div>
           <div
             id="progress-modal-footer"
@@ -658,14 +680,6 @@
             </button>
             <button
               id="close-progress-modal"
-              class="btn btn-outline-secondary display-none"
-              type="button"
-              data-dismiss="modal"
-            >
-              Continue
-            </button>
-            <button
-              id="close-progress-modal-redirect-to-usa"
               class="btn btn-outline-secondary display-none"
               type="button"
               data-dismiss="modal"
