@@ -22,7 +22,7 @@
       <div id="map"></div>
     </div>
 
-    <nav>
+    <nav id="#navbar">
       <div id="nav-container-all" class="">
         <div>
           <i id="globe-icon" class="fa-solid fa-earth-asia"></i>
@@ -254,72 +254,92 @@
 
               <tr>
                 <td class="key text-right align-middle font-weight-bold">
-                  Current Weather:
+                  Weather:
                 </td>
                 <td id="api-current-weather">
-                  <img id="current-weather-icon" class="weather-img" />
+                  <div class="weather-icon-parent-container">
+
+                    <div class="weather-icon-container">
+                      <img id="current-weather-icon" class="weather-img" />
+                    </div>
+                  </div>
                   <span id="current-temp"></span
                   ><span class="units">&deg;C </span>
-                  <span id="show-hide-forecast">(more)</span>
+                  <span id="show-hide-forecast"><sup>(more)</sup></span>
                 </td>
               </tr>
               <!-- FORECAST -->
               <tr class="weather-row hide-row forecast">
                 <td class="key text-right align-middle font-weight-bold">
                   <span id="local-time-message" class="font-weight-normal"
-                    >(local time)</span
-                  >
+                  ><sup>(local time)</sup></span
+                >
                   <span id="weather-0-dateTime"></span><span>:</span>
-                  <!-- delete line below -->
                 </td>
                 <td>
-                  <img id="weather-0-icon" class="weather-img" />
+                  <div class="weather-icon-parent-container">
+                    <div class="weather-icon-container">
+                      <img id="weather-0-icon" class="weather-img" />
+                    </div>
+                  </div>
                   <span id="weather-0-temp"></span
+                    ><span class="units">&deg;C</span>
+                </td>
+              </tr>
+              <tr class="weather-row hide-row forecast">
+                <td class="key text-right align-middle font-weight-bold">
+                 <span id="weather-1-dateTime"></span><span>:</span>
+                </td>
+                <td>
+                  <div class="weather-icon-parent-container">
+                    <div class="weather-icon-container">
+                      <img id="weather-1-icon" class="weather-img" />
+                    </div>
+                  </div>
+                  <span id="weather-1-temp"></span
                   ><span class="units">&deg;C</span>
                 </td>
               </tr>
               <tr class="weather-row hide-row forecast">
                 <td class="key text-right align-middle font-weight-bold">
-                  <span id="weather-1-dateTime"></span><span>:</span>
+                 <span id="weather-2-dateTime"></span><span>:</span>
                 </td>
                 <td>
-                  <img id="weather-1-icon" class="weather-img" /><span
-                    id="weather-1-temp"
-                  ></span
+                  <div class="weather-icon-parent-container">
+                    <div class="weather-icon-container">
+                      <img id="weather-2-icon" class="weather-img" />
+                    </div>
+                  </div>
+                  <span id="weather-2-temp"></span
                   ><span class="units">&deg;C</span>
                 </td>
               </tr>
-              <tr class="weather-row align-middle hide-row forecast">
+              <tr class="weather-row hide-row forecast">
                 <td class="key text-right align-middle font-weight-bold">
-                  <span id="weather-2-dateTime"></span><span>:</span>
+                 <span id="weather-3-dateTime"></span><span>:</span>
                 </td>
                 <td>
-                  <img id="weather-2-icon" class="weather-img" /><span
-                    id="weather-2-temp"
-                  ></span
-                  ><span class="units">&deg;C </span>
+                  <div class="weather-icon-parent-container">
+                    <div class="weather-icon-container">
+                      <img id="weather-3-icon" class="weather-img" />
+                    </div>
+                  </div>
+                  <span id="weather-3-temp"></span
+                  ><span class="units">&deg;C</span>
                 </td>
               </tr>
               <tr class="weather-row hide-row forecast">
                 <td class="key text-right align-middle font-weight-bold">
-                  <span id="weather-3-dateTime"></span><span>:</span>
+                 <span id="weather-4-dateTime"></span><span>:</span>
                 </td>
                 <td>
-                  <img id="weather-3-icon" class="weather-img" /><span
-                    id="weather-3-temp"
-                  ></span
-                  ><span class="units">&deg;C </span>
-                </td>
-              </tr>
-              <tr class="weather-row hide-row forecast">
-                <td class="key text-right align-middle font-weight-bold">
-                  <span id="weather-4-dateTime"></span><span>:</span>
-                </td>
-                <td>
-                  <img id="weather-4-icon" class="weather-img" /><span
-                    id="weather-4-temp"
-                  ></span
-                  ><span class="units">&deg;C </span>
+                  <div class="weather-icon-parent-container">
+                    <div class="weather-icon-container">
+                      <img id="weather-4-icon" class="weather-img" />
+                    </div>
+                  </div>
+                  <span id="weather-4-temp"></span
+                  ><span class="units">&deg;C</span>
                 </td>
               </tr>
               <!-- END OF FORECAST -->
@@ -478,7 +498,7 @@
                 <div class="second-column"><p> - Back/Forward</p></div>
               </div>
 
-              <p> <img id="about-modal-flag"></img> - Refresh data</p>
+              <p> <img id="about-modal-flag"></img> - Refresh country data</p>
               <p>
                 <br>
                 <hr>

@@ -161,6 +161,7 @@ div.leaflet-control-layers-overlays {
 /* NAV/TITLE BAR CSS */
 /* outermost nav div */
 #nav-container-all {
+  box-shadow: 2px 2px 5px #1b789a;
   background-color: var(--darker-grey);
   position: fixed;
   top: 0px;
