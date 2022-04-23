@@ -165,27 +165,27 @@ const map = L.map("map", {
 });
 
 //alternative tiles for when maptiler not available due to free account
-// const streetTiles = L.tileLayer(
-//   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-//   {
-//     attribution:
-//       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-//     minZoom: 2,
-//     maxZoom: 15,
-//   }
-// ).addTo(map);
-
-// MAPTILER TILES
-// import map tiles
 const streetTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
     attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     minZoom: 2,
     maxZoom: 15,
   }
 ).addTo(map);
+
+// MAPTILER TILES
+// import map tiles
+// const streetTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 2,
+//     maxZoom: 15,
+//   }
+// ).addTo(map);
 
 // const topographicTiles = L.tileLayer(
 //   "https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
@@ -197,15 +197,15 @@ const streetTiles = L.tileLayer(
 //   }
 // ).addTo(map);
 
-const satelliteTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
-  {
-    attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-    minZoom: 2,
-    maxZoom: 15,
-  }
-).addTo(map);
+// const satelliteTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 2,
+//     maxZoom: 15,
+//   }
+// ).addTo(map);
 
 let cityIcon = L.icon({
   iconUrl: "libs/css/images/bigcity.png",
@@ -241,7 +241,7 @@ earthquakesMCG.addTo(featureGroup1);
 volcanoesMCG.addTo(featureGroup1);
 
 const baseLayers = {
-  Satellite: satelliteTiles,
+  // Satellite: satelliteTiles,
   // Topographic: topographicTiles,
   Street: streetTiles,
 };
@@ -571,13 +571,15 @@ function locationData(selectedCountry) {
       .then(() =>
         Promise.all([
           apiVolcanoesCall(infoStore.countryName),
-          openExchangeRatesCall(infoStore.currencyISO3Code),
+          openExchangeRatesCall(
+            infoStore.currencyISO3Code
+          ) /* 1k starting from 6th of the month*/,
           geonamesCitiesCall(infoStore, countryCodeISO2),
           geonamesEarthquakesCall(infoStore.boundingBox),
           geonamesWikiCall(infoStore.boundingBox),
           apiOpenWeatherCurrentCall(infoStore.latitude, infoStore.longitude),
           apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude),
-          apiNewsCall(infoStore.countryName),
+          apiNewsCall(infoStore.countryName) /* 100 reqs per day */,
           apiUnsplashCall(infoStore.countryName),
           getDateTime(),
         ])
@@ -1199,14 +1201,14 @@ function addToHTML(data) {
   if (data.wikipediaArticles) {
     data.wikipediaArticles.forEach((story) => {
       $("#wiki-data").append(
-        `<div class="articles-container"><h6>${
+        `<div class="articles-container"><a href="${
+          story[2][0]
+        }" target="_blank"><h5 class="font-weight-bold">${
           story[0][0]
-        }</h6><img class='wiki-thumbnail' src=${
+        }</h5><img class='wiki-thumbnail' src=${
           story[3][0] ? story[3][0] : ""
         }><p>${story[1][0]}</p>
-      <p><a href="${story[2][0]}" target="_blank">${
-          story[2][0]
-        }</a></p></div><hr/>`
+      </a></div><br/>`
       );
     });
   }
@@ -1215,14 +1217,16 @@ function addToHTML(data) {
   if (data.newsArticles) {
     data.newsArticles.forEach((story) => {
       $("#news-data").append(
-        `<div class="articles-container"><h6>${
+        `<div class="articles-container"><a href=${
+          story.url
+        } target="_blank"><h5 class="font-weight-bold">${
           story.title
-        }</h6><p class="font-italic news-story-date">${readableDate(
+        }</h5><p class="font-italic news-story-date">${readableDate(
           story.publishedAt
         )}</p><img class="news-image" src=${story.urlToImage}><p>${
           story.description
-        }</p>
-      <p><a href=${story.url} target="_blank">${story.url}</a></p></div><hr/>`
+        }</p></a>
+      </div><hr/>`
       );
     });
   }

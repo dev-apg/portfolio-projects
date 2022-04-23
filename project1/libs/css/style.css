@@ -360,16 +360,23 @@ button.close:hover {
 }
 
 a {
-  color: var(--primary-color);
+  color: var(--light-grey);
 }
 
 a:hover {
-  color: #0fbcf9;
+  color: var(--light-grey);
+  text-decoration: none;
 }
 
+.articles-container:hover h5 {
+  text-decoration: underline;
+  text-decoration-color: var(--light-grey);
+}
+
+/*
 a:active {
   color: var(--light-grey);
-}
+} */
 
 a.leaflet-popup-close-button {
   display: none;
