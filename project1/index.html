@@ -35,8 +35,8 @@
         </div>
         <div id="flag-select-container" class="">
           <div class="input-group">
-            <div class="input-group-prepend nav-flag-div"></div>
-            <select id="select" class="custom-select"></select>
+            <div class="bg-secondary input-group-prepend nav-flag-div"></div>
+            <select id="select" class="custom-select bg-secondary text-light"></select>
           </div>
         </div>
         <div id="nav-icons">
@@ -63,9 +63,10 @@
             <h5 class="modal-title lead">General Information</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body pt-2 pb-1">
             <!-- carousel -->
-            <div
+            <div class="mb-2">
+              <div
               id="carouselExampleIndicators"
               class="carousel slide"
               data-ride="carousel"
@@ -190,7 +191,8 @@
                 <span class="sr-only">Next</span>
               </a>
             </div>
-            <div>
+          </div>
+          <div>
               <table class="table">
                 <tr>
                   <td class="key text-right font-weight-bold">Country</td>
@@ -356,23 +358,24 @@
                                   </td>
                                   <td>
                                     <span id="api-latitude"></span
-                                      ><span id="api-latitude-units" class="units"></span>,
-                                      <span id="api-longitude"></span
-                                        ><span id="api-longitude-units" class="units"></span>
+                                      ><span id="api-latitude-units" class="units"></span>,&nbsp;<span id="api-longitude"></span
+                                        ><span id="api-longitude-units" class="units">
+                                        </span>
                                       </td>
                                     </tr>
                                     <tr>
-                                      <td colspan="2" id="data-captured-at-style" class="text-right">
-                                        Data captured at:
-                                        <span id="data-captured-at-text"></span>
-                                      </td>
-                                    </tr>
                                   </table>
                                 </div>
                               </div>
-                              <div class="modal-footer">
-                                <button type="button" id="modal-close" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                              <!-- INFORMATION MODAL FOOTER -->
+                              <div class="modal-footer pb-0 pt-2">
+                                <div class="d-flex flex-column align-items-end">
+                                  <button type="button" id="modal-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                  <p id="data-captured-at-style" class="text-right text-secondary small mb-0">Data captured at:&nbsp;<span class="data-captured-at-text"></span>
+                                  </p>
+                                </div>
                               </div>
+                              <!-- END OF INFORMATION MODAL FOOTER -->
                             </div>
                           </div>
                         </div>
@@ -386,19 +389,18 @@
             <h5 class="modal-title lead" id="">Wikipedia Articles</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body pb-1">
             <div id="wiki-data"></div>
           </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              id="modal-close"
-              class="btn btn-outline-light"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
+          <!-- WIKI MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              <button type="button" id="modal-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <p id="data-captured-at-style" class="text-right text-secondary small mb-0">Data captured at:&nbsp;<span class="data-captured-at-text"></span>
+              </p>
+            </div>
           </div>
+          <!-- END OF MODAL FOOTER -->
         </div>
       </div>
     </div>
@@ -412,19 +414,18 @@
             <h5 class="modal-title lead" id="">News</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body pb-1">
             <div id="news-data"></div>
           </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              id="modal-close"
-              class="btn btn-outline-light"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
+          <!-- NEWS MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              <button type="button" id="modal-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <p id="data-captured-at-style" class="text-right text-secondary small mb-0">Data captured at:&nbsp;<span class="data-captured-at-text"></span>
+              </p>
+            </div>
           </div>
+          <!-- END OF NEWS MODAL FOOTER -->
         </div>
       </div>
     </div>
@@ -439,7 +440,7 @@
             <h5 class="modal-title lead" id="about-modal-title">About</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body pb-1">
             <div id="about-data">
               <br>
 
@@ -566,16 +567,15 @@
               </p>
             </div>
           </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              id="modal-close"
-              class="btn btn-outline-light"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
+          <!-- ABOUT MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              <button type="button" id="modal-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <p id="data-captured-at-style" class="text-right text-secondary small mb-0">Data captured at:&nbsp;<span class="data-captured-at-text"></span>
+              </p>
+            </div>
           </div>
+          <!-- END OF ABOUT MODAL FOOTER -->
         </div>
       </div>
     </div>
@@ -584,8 +584,7 @@
     <div class="modal fade" id="progressModal" data-backdrop="false">
       <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
-          <div class="modal-header"></div>
-          <div class="modal-body">
+          <div class="modal-body pb-3">
             <div id="loading-message" class="alert alert-primary">
               <p>
                 <span id="country-selected-text">Country selected: </span
@@ -636,21 +635,21 @@
               <p>Allow access to your current location?</p>
               <button
               id="location-consent-given"
-              class="btn btn-outline-light "
+              class="btn btn-secondary "
               type="button"
             >
               Yes
             </button>
             <button
               id="location-consent-declined"
-              class="btn btn-outline-light"
+              class="btn btn-secondary"
               type="button"
             >
               No
             </button>
             </div>
             <div id="select-progress-div" class="display-none">
-              <select id="select-progress" class="custom-select">
+              <select id="select-progress" class="bg-secondary text-light custom-select">
             </select>
           </div>
           </div>
@@ -660,14 +659,14 @@
           >
             <button
               id="try-again"
-              class="btn btn-outline-light display-none"
+              class="btn btn-secondary display-none"
               type="button"
             >
               Try Again
             </button>
             <button
               id="choose-another"
-              class="btn btn-outline-light display-none"
+              class="btn btn-secondary display-none"
               type="button"
               data-dismiss="modal"
             >
@@ -675,7 +674,7 @@
             </button>
             <button
               id="close-progress-modal"
-              class="btn btn-outline-secondary display-none"
+              class="btn btn-secondary display-none"
               type="button"
               data-dismiss="modal"
             >

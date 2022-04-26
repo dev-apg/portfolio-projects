@@ -231,14 +231,14 @@ let volcanoIcon = L.icon({
 const featureGroup1 = L.featureGroup().addTo(map);
 
 const citiesMCG = L.markerClusterGroup();
-const capitalMCG = L.markerClusterGroup();
 const earthquakesMCG = L.markerClusterGroup();
 const volcanoesMCG = L.markerClusterGroup();
+const capitalMCG = L.markerClusterGroup();
 
 citiesMCG.addTo(featureGroup1);
-capitalMCG.addTo(featureGroup1);
 earthquakesMCG.addTo(featureGroup1);
 volcanoesMCG.addTo(featureGroup1);
+capitalMCG.addTo(featureGroup1);
 
 const baseLayers = {
   // Satellite: satelliteTiles,
@@ -247,10 +247,10 @@ const baseLayers = {
 };
 
 const overlays = {
-  cities: citiesMCG,
-  capital: capitalMCG,
   earthquakes: earthquakesMCG,
   volcanoes: volcanoesMCG,
+  cities: citiesMCG,
+  capital: capitalMCG,
 };
 
 L.control.layers(baseLayers, overlays, { collapsed: false }).addTo(map);
@@ -1117,6 +1117,8 @@ function addToHTML(data) {
     },
   }).addTo(featureGroup1);
 
+  let capitalIcon = null;
+
   //cities
   if (data.cities) {
     data.cities.forEach((city) => {
@@ -1133,7 +1135,7 @@ function addToHTML(data) {
               }</span><br>Population: ${fixPopulation(city.population)}</h6>`
             );
         } else {
-          L.marker([city.lat, city.lng], {
+          capitalIcon = L.marker([city.lat, city.lng], {
             icon: capitalCityIcon,
             riseOnHover: true,
           })
@@ -1144,8 +1146,8 @@ function addToHTML(data) {
               }<br>Capital City<br>Population: </span>${fixPopulation(
                 city.population
               )}</h6>`
-            )
-            .openPopup();
+            );
+          // .openPopup();
         }
       }
     });
@@ -1201,9 +1203,9 @@ function addToHTML(data) {
   if (data.wikipediaArticles) {
     data.wikipediaArticles.forEach((story) => {
       $("#wiki-data").append(
-        `<div class="container py-3 rounded articles-container"><a href="${
+        `<div class="container rounded articles-container"><a href="${
           story[2][0]
-        }" target="_blank"><h5 class="font-weight-bold">${
+        }" target="_blank" class="text-dark"><h5 class="font-weight-bold">${
           story[0][0]
         }</h5><img class='wiki-thumbnail' src=${
           story[3][0] ? story[3][0] : ""
@@ -1305,7 +1307,7 @@ function addToHTML(data) {
     }
   }
 
-  $("#data-captured-at-text").html(data.dataCapturedAt);
+  $(".data-captured-at-text").html(data.dataCapturedAt);
 }
 
 //HELPER FUNCTIONS------------------------------------------//

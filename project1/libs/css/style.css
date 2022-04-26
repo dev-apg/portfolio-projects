@@ -1,12 +1,15 @@
 :root {
   --primary-color: #00d8d6;
+  /* --primary-color: #17a2b8; */
+  /* --primary-color: #007bff; */
   --light-grey: #d2dae2;
   --grey: #9fa6af;
   --dark-grey: #485460;
   --darker-grey: #1e272e;
   --slightly-less-darker-grey: #262f36;
   --darker-grey-reduced-opacity: #1e272ed2;
-  --orange: #ff5e57;
+  /* --orange: #ff5e57; */
+  /* --orange: #d89e00; */
 }
 
 /* MAP CSS */
@@ -86,54 +89,54 @@ body {
 
 .leaflet-bar button {
   color: var(--primary-color);
-  background-color: var(--darker-grey);
+  background-color: var(--dark);
 }
 
 .leaflet-bar button:hover {
   color: var(--primary-color);
-  background-color: var(--darker-grey);
+  background-color: var(--dark);
 }
 
 @media (hover: hover) {
   .leaflet-bar button:hover {
-    color: var(--darker-grey);
+    color: var(--dark);
     background-color: var(--primary-color);
   }
 }
 
 .leaflet-bar button:active {
-  background: var(--light-grey);
-  background: #fff;
+  background: var(--light);
+  /* background: #fff; */
 }
 
 /* zoom buttons with hover fix for mobiles */
 
 .leaflet-bar a {
-  color: var(--orange);
-  background-color: var(--darker-grey);
+  color: var(--light);
+  background-color: var(--dark);
 }
 
 .leaflet-bar a:hover {
-  color: var(--orange);
-  background-color: var(--darker-grey);
+  color: var(--light);
+  background-color: var(--dark);
 }
 
 @media (hover: hover) {
   .leaflet-bar a:hover {
-    color: var(--darker-grey);
-    background-color: var(--orange);
+    color: var(--dark);
+    background-color: var(--light);
   }
 }
 
 .leaflet-bar a:active {
-  background: var(--light-grey);
-  background: #fff;
+  background: var(--light);
+  /* background: #fff; */
 }
 
 /* For when the zoom in/out buttons are maximised */
 .leaflet-bar a.leaflet-disabled {
-  color: var(--light-grey);
-  background: var(--dark-grey);
+  color: var(--light);
+  background: var(--grey);
 }
 
 .leaflet-control-layers {
@@ -149,6 +152,7 @@ div.leaflet-control-layers.leaflet-control {
   top: calc(100vh - 200px);
   color: var(--primary-color);
   background-color: #1e272ed2;
+  background-color: var(--dark);
   position: absolute;
 }
 
@@ -161,28 +165,29 @@ div.leaflet-control-layers-overlays {
 /* NAV/TITLE BAR CSS */
 /* outermost nav div */
 #nav-container-all {
-  box-shadow: 2px 2px 5px #1b789a;
-  background-color: var(--darker-grey);
+  /* box-shadow: 2px 2px 5px #1b789a; */
+  box-shadow: 2px 2px 5px var(--dark);
+  background-color: var(--dark);
   position: fixed;
   top: 0px;
   right: 0;
   z-index: 500;
   width: 100%;
-  color: #fff;
+  color: var(--light);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .input-group-text {
   background-color: var(--primary-color);
-  color: var(--darker-grey);
+  color: var(--dark);
   border: 1px solid var(--primary-color);
 }
 
 .custom-select {
-  background-color: var(--dark-grey);
-  color: var(--light-grey);
-  border: 1px solid var(--light-grey);
+  /* background-color: var(--dark-grey); */
+  /* color: var(--light-grey); */
+  border: 1px solid var(--light);
 }
 
 #globe-icon {
@@ -234,12 +239,12 @@ div.leaflet-control-layers-overlays {
 
 .nav-flag-div {
   background: no-repeat url("") center center/cover;
-  background-color: var(--dark-grey);
+  background-color: var(--dark);
   height: 38px;
   width: 75px;
   margin-top: auto;
   margin-bottom: auto;
-  border: 1px solid var(--light-grey);
+  border: 1px solid var(--light);
   border-bottom-left-radius: 4px;
   border-top-left-radius: 4px;
   cursor: pointer;
@@ -262,19 +267,20 @@ div.input-group {
 .api-flag {
   width: 50px;
   margin-left: 5px;
+  margin-top: 3px;
   margin-right: 10px;
   border-radius: 3px;
 }
 
 #nav-icons {
-  color: var(--dark-grey);
+  color: var(--gray);
   position: absolute;
   left: calc(50% + 131px);
   font-size: 30px;
 }
 
 .active-icon {
-  color: var(--primary-color);
+  color: var(--light);
   cursor: pointer;
 }
 
@@ -286,10 +292,10 @@ div.input-group {
   }
 }
 
-.active-nav-icon {
+/* .active-nav-icon {
   color: var(--light-grey);
   cursor: pointer;
-}
+} */
 
 /* END OF NAV/TITLE BAR CSS */
 
@@ -316,12 +322,12 @@ div.input-group {
 
 /* all modals */
 
-.modal-title {
+/* .modal-title {
   color: var(--orange);
   font-weight: bold;
-}
+} */
 
-div.modal-content,
+/* div.modal-content,
 div.modal-body,
 div.modal-header,
 div.modal-footer,
@@ -332,7 +338,7 @@ div.modal-footer,
   border: none;
   border-top: var(--darker-grey);
   border-top: var(--primary-color);
-}
+} */
 
 /* infoModal */
 
@@ -341,21 +347,21 @@ div.modal-footer,
   border-bottom: 1px solid var(--dark-grey);
 }
 
-.table td {
+/* .table td {
   padding: 0.37rem;
 }
 
 td.key {
   color: var(--orange);
-}
+} */
 
-button.close {
+/* button.close {
   text-shadow: none;
   color: var(--light-grey);
   opacity: 0.9;
-}
+} */
 
-button.close:hover {
+/* button.close:hover {
   color: var(--light-grey);
 }
 
@@ -363,24 +369,25 @@ a {
   color: var(--light-grey);
 }
 
+ */
 a:hover {
-  color: var(--light-grey);
+  /* color: var(--light-grey); */
   text-decoration: none;
 }
 
 .articles-container:hover h5 {
   text-decoration: underline;
-  text-decoration-color: var(--light-grey);
+  text-decoration-color: var(--gray-dark);
 }
 
 .articles-container:hover {
-  background-color: var(--darker-grey);
+  /* background-color: var(--darker-grey); */
   transition: color 1s ease;
   transition: background 0.7s ease;
 }
 
 .articles-container:hover {
-  background-color: hsla(208, 22%, 85%, 0.05);
+  background-color: hsla(208, 22%, 85%, 0.103);
 }
 
 /*
@@ -403,7 +410,7 @@ a.leaflet-popup-close-button {
 }
 
 .carousel-caption {
-  background-color: #343a4027;
+  /* background-color: #343a4027; */
   text-transform: capitalize;
 }
 
@@ -448,11 +455,6 @@ a.leaflet-popup-close-button {
   color: var(--grey);
 }
 
-#data-captured-at-style {
-  font-size: 0.7rem;
-  color: var(--grey);
-}
-
 /* wiki and news modals */
 
 .news-image,
@@ -465,7 +467,7 @@ a.leaflet-popup-close-button {
 div#wiki-data hr,
 div#news-data hr,
 #about-data hr {
-  border: 1px solid var(--dark-grey);
+  /* border: 1px solid var(--dark-grey); */
 }
 
 div#wiki-data .lead,
@@ -484,7 +486,7 @@ div#news-data .lead {
 /* about modal */
 
 #about-modal-title {
-  color: var(--light-grey);
+  /* color: var(--light-grey); */
 }
 
 .about-modal-icons {
