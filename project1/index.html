@@ -52,10 +52,11 @@
       id="infoModal"
       tabindex="-1"
       role="dialog"
+      data-backdrop="false"
       aria-labelledby="basicModal"
       aria-hidden="true"
-    >
-      <div class="modal-dialog">
+      >
+      <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <img class="api-flag" />
@@ -189,26 +190,25 @@
                 <span class="sr-only">Next</span>
               </a>
             </div>
-          </div>
-          <div>
-            <table class="table">
-              <tr>
-                <td class="key text-right font-weight-bold">Country</td>
-                <td class="api-country"></td>
-              </tr>
-              <tr>
-                <td class="key text-right font-weight-bold">Capital</td>
-                <td id="api-capital"></td>
-              </tr>
-              <tr>
-                <td class="key text-right font-weight-bold">Population</td>
-                <td id="api-population"></td>
-              </tr>
-              <tr>
-                <td class="key text-right font-weight-bold">Main Language</td>
-                <td id="api-languages"></td>
-              </tr>
-              <tr>
+            <div>
+              <table class="table">
+                <tr>
+                  <td class="key text-right font-weight-bold">Country</td>
+                  <td class="api-country"></td>
+                </tr>
+                <tr>
+                  <td class="key text-right font-weight-bold">Capital</td>
+                  <td id="api-capital"></td>
+                </tr>
+                <tr>
+                  <td class="key text-right font-weight-bold">Population</td>
+                  <td id="api-population"></td>
+                </tr>
+                <tr>
+                  <td class="key text-right font-weight-bold">Main Language</td>
+                  <td id="api-languages"></td>
+                </tr>
+                <tr>
                 <td class="key text-right font-weight-bold">Continent</td>
                 <td id="api-continent"></td>
               </tr>
@@ -216,176 +216,170 @@
                 <td class="key text-right font-weight-bold">Currency</td>
                 <td>
                   <span id="api-currency"></span
-                  ><span id="api-currency-symbol" class="units"></span>
+                    ><span id="api-currency-symbol" class="units"></span>
                 </td>
               </tr>
               <tr>
                 <td
-                  class="key text-right font-weight-bold"
-                  id="api-exchange-currencies"
+                class="key text-right font-weight-bold"
+                id="api-exchange-currencies"
                 >
-                  $1 USD
-                </td>
-                <td>
-                  <span id="api-currency-symbol-for-exchange"></span
+                $1 USD
+              </td>
+              <td>
+                <span id="api-currency-symbol-for-exchange"></span
                   ><span id="api-exchange-rate"></span>
                 </td>
               </tr>
-
+              
               <tr>
                 <td class="key text-right font-weight-bold">
                   Local Date and Time
                 </td>
                 <td>
                   <span id="api-date-time"></span
-                  ><span id="api-date-time-units" class="units"></span>
-                </td>
-              </tr>
-
-              <tr>
-                <td class="key text-right font-weight-bold">
-                  GMT offset
-                </td>
-                <td>
-                  <span></span
-                  ><span id="api-gmt-offset-string"></span>
-                </td>
-              </tr>
-
-              <tr>
-                <td class="key text-right align-middle font-weight-bold">
-                  Weather
-                </td>
-                <td id="api-current-weather">
-                  <div class="weather-icon-parent-container">
-
-                    <div class="weather-icon-container">
-                      <img id="current-weather-icon" class="weather-img" />
-                    </div>
-                  </div>
-                  <span id="current-temp"></span
-                  ><span class="units">&deg;C </span>
-                  <span id="show-hide-forecast"><sup>(more)</sup></span>
-                </td>
-              </tr>
-              <!-- FORECAST -->
-              <tr class="weather-row hide-row forecast">
-                <td class="key text-right align-middle font-weight-bold">
-                  <span id="local-time-message" class="font-weight-normal"
-                  ><sup>(local time)</sup></span
-                >
-                  <span id="weather-0-dateTime"></span><span></span>
-                </td>
-                <td>
-                  <div class="weather-icon-parent-container">
-                    <div class="weather-icon-container">
-                      <img id="weather-0-icon" class="weather-img" />
-                    </div>
-                  </div>
-                  <span id="weather-0-temp"></span
-                    ><span class="units">&deg;C</span>
-                </td>
-              </tr>
-              <tr class="weather-row hide-row forecast">
-                <td class="key text-right align-middle font-weight-bold">
-                 <span id="weather-1-dateTime"></span><span></span>
-                </td>
-                <td>
-                  <div class="weather-icon-parent-container">
-                    <div class="weather-icon-container">
-                      <img id="weather-1-icon" class="weather-img" />
-                    </div>
-                  </div>
-                  <span id="weather-1-temp"></span
-                  ><span class="units">&deg;C</span>
-                </td>
-              </tr>
-              <tr class="weather-row hide-row forecast">
-                <td class="key text-right align-middle font-weight-bold">
-                 <span id="weather-2-dateTime"></span><span></span>
-                </td>
-                <td>
-                  <div class="weather-icon-parent-container">
-                    <div class="weather-icon-container">
-                      <img id="weather-2-icon" class="weather-img" />
-                    </div>
-                  </div>
-                  <span id="weather-2-temp"></span
-                  ><span class="units">&deg;C</span>
-                </td>
-              </tr>
-              <tr class="weather-row hide-row forecast">
-                <td class="key text-right align-middle font-weight-bold">
-                 <span id="weather-3-dateTime"></span><span></span>
-                </td>
-                <td>
-                  <div class="weather-icon-parent-container">
-                    <div class="weather-icon-container">
-                      <img id="weather-3-icon" class="weather-img" />
-                    </div>
-                  </div>
-                  <span id="weather-3-temp"></span
-                  ><span class="units">&deg;C</span>
-                </td>
-              </tr>
-              <tr class="weather-row hide-row forecast">
-                <td class="key text-right align-middle font-weight-bold">
-                 <span id="weather-4-dateTime"></span><span></span>
-                </td>
-                <td>
-                  <div class="weather-icon-parent-container">
-                    <div class="weather-icon-container">
-                      <img id="weather-4-icon" class="weather-img" />
-                    </div>
-                  </div>
-                  <span id="weather-4-temp"></span
-                  ><span class="units">&deg;C</span>
-                </td>
-              </tr>
-              <!-- END OF FORECAST -->
-              <tr>
-                <td class="key text-right font-weight-bold">Area</td>
-                <td>
-                  <span id="api-area"></span
-                  ><span class="units">km<sup>2</sup></span>
-                </td>
-              </tr>
-              <tr>
-                <td class="key text-right font-weight-bold">
-                  Latitude/Longitude
-                </td>
-                <td>
-                  <span id="api-latitude"></span
-                  ><span id="api-latitude-units" class="units"></span>,
-                  <span id="api-longitude"></span
-                  ><span id="api-longitude-units" class="units"></span>
-                </td>
-              </tr>
-              <tr>
-                <td colspan="2" id="data-captured-at-style" class="text-right">
-                  Data captured at:
-                  <span id="data-captured-at-text"></span>
-                </td>
-              </tr>
-            </table>
-          </div>
-
-          <div class="modal-footer">
-            <button
-              type="button"
-              id="modal-close"
-              class="btn btn-outline-light"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+                    ><span id="api-date-time-units" class="units"></span>
+                  </td>
+                </tr>
+                
+                <tr>
+                  <td class="key text-right font-weight-bold">
+                    GMT offset
+                  </td>
+                  <td>
+                    <span></span
+                      ><span id="api-gmt-offset-string"></span>
+                    </td>
+                  </tr>
+                  
+                  <tr>
+                    <td class="key text-right align-middle font-weight-bold">
+                      Weather
+                    </td>
+                    <td id="api-current-weather">
+                      <div class="weather-icon-parent-container">
+                        
+                        <div class="weather-icon-container">
+                          <img id="current-weather-icon" class="weather-img" />
+                        </div>
+                      </div>
+                      <span id="current-temp"></span
+                        ><span class="units">&deg;C </span>
+                        <span id="show-hide-forecast"><sup>(more)</sup></span>
+                      </td>
+                    </tr>
+                    <!-- FORECAST -->
+                    <tr class="weather-row hide-row forecast">
+                      <td class="key text-right align-middle font-weight-bold">
+                        <span id="local-time-message" class="font-weight-normal"
+                        ><sup>(local time)</sup></span
+                        >
+                        <span id="weather-0-dateTime"></span><span></span>
+                      </td>
+                      <td>
+                        <div class="weather-icon-parent-container">
+                          <div class="weather-icon-container">
+                            <img id="weather-0-icon" class="weather-img" />
+                          </div>
+                        </div>
+                        <span id="weather-0-temp"></span
+                          ><span class="units">&deg;C</span>
+                        </td>
+                      </tr>
+                      <tr class="weather-row hide-row forecast">
+                        <td class="key text-right align-middle font-weight-bold">
+                          <span id="weather-1-dateTime"></span><span></span>
+                        </td>
+                        <td>
+                          <div class="weather-icon-parent-container">
+                            <div class="weather-icon-container">
+                              <img id="weather-1-icon" class="weather-img" />
+                            </div>
+                          </div>
+                          <span id="weather-1-temp"></span
+                            ><span class="units">&deg;C</span>
+                          </td>
+                        </tr>
+                        <tr class="weather-row hide-row forecast">
+                          <td class="key text-right align-middle font-weight-bold">
+                            <span id="weather-2-dateTime"></span><span></span>
+                          </td>
+                          <td>
+                            <div class="weather-icon-parent-container">
+                              <div class="weather-icon-container">
+                                <img id="weather-2-icon" class="weather-img" />
+                              </div>
+                            </div>
+                            <span id="weather-2-temp"></span
+                              ><span class="units">&deg;C</span>
+                            </td>
+                          </tr>
+                          <tr class="weather-row hide-row forecast">
+                            <td class="key text-right align-middle font-weight-bold">
+                              <span id="weather-3-dateTime"></span><span></span>
+                            </td>
+                            <td>
+                              <div class="weather-icon-parent-container">
+                                <div class="weather-icon-container">
+                                  <img id="weather-3-icon" class="weather-img" />
+                                </div>
+                              </div>
+                              <span id="weather-3-temp"></span
+                                ><span class="units">&deg;C</span>
+                              </td>
+                            </tr>
+                            <tr class="weather-row hide-row forecast">
+                              <td class="key text-right align-middle font-weight-bold">
+                                <span id="weather-4-dateTime"></span><span></span>
+                              </td>
+                              <td>
+                                <div class="weather-icon-parent-container">
+                                  <div class="weather-icon-container">
+                                    <img id="weather-4-icon" class="weather-img" />
+                                  </div>
+                                </div>
+                                <span id="weather-4-temp"></span
+                                  ><span class="units">&deg;C</span>
+                                </td>
+                              </tr>
+                              <!-- END OF FORECAST -->
+                              <tr>
+                                <td class="key text-right font-weight-bold">Area</td>
+                                <td>
+                                  <span id="api-area"></span
+                                    ><span class="units">km<sup>2</sup></span>
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td class="key text-right font-weight-bold">
+                                    Latitude/Longitude
+                                  </td>
+                                  <td>
+                                    <span id="api-latitude"></span
+                                      ><span id="api-latitude-units" class="units"></span>,
+                                      <span id="api-longitude"></span
+                                        ><span id="api-longitude-units" class="units"></span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td colspan="2" id="data-captured-at-style" class="text-right">
+                                        Data captured at:
+                                        <span id="data-captured-at-text"></span>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" id="modal-close" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
     <!-------- WIKI MODAL ---------------->
-    <div class="modal fade" id="wikiModal">
-      <div class="modal-dialog">
+    <div class="modal fade" id="wikiModal" data-backdrop="false">
+      <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <img class="api-flag" />
@@ -410,8 +404,8 @@
     </div>
 
     <!-- NEWS MODAL -->
-    <div class="modal fade" id="newsModal">
-      <div class="modal-dialog">
+    <div class="modal fade" id="newsModal" data-backdrop="false">
+      <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <img class="api-flag" />
@@ -437,8 +431,8 @@
 
     <!-- ABOUT MODAL -->
 
-    <div class="modal fade" id="aboutModal">
-      <div class="modal-dialog">
+    <div class="modal fade" id="aboutModal" data-backdrop="false">
+      <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <!-- <img class="api-flag" /> -->
@@ -587,9 +581,10 @@
     </div>
 
     <!-- PROGRESS/LOADING MODAL -->
-    <div class="modal fade" id="progressModal">
-      <div class="modal-dialog">
+    <div class="modal fade" id="progressModal" data-backdrop="false">
+      <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
+          <div class="modal-header"></div>
           <div class="modal-body">
             <div id="loading-message" class="alert alert-primary">
               <p>

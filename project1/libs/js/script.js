@@ -402,10 +402,11 @@ function locationData(selectedCountry) {
 
   //show progress modal
   //settings object added so that user can't click off before completion
-  $("#progressModal").modal({
-    backdrop: "static",
-    keyboard: false,
-  });
+  // $("#progressModal").modal({
+  //   backdrop: "static",
+  //   keyboard: false,
+  // });
+  $("#progressModal").modal("show");
 
   //flag to stop OpenCage being run twice on the first run
   let callOpencage = true;
@@ -571,15 +572,15 @@ function locationData(selectedCountry) {
       .then(() =>
         Promise.all([
           apiVolcanoesCall(infoStore.countryName),
-          openExchangeRatesCall(
-            infoStore.currencyISO3Code
-          ) /* 1k starting from 6th of the month*/,
+          // openExchangeRatesCall(
+          //   infoStore.currencyISO3Code
+          // ) /* 1k starting from 6th of the month*/,
           geonamesCitiesCall(infoStore, countryCodeISO2),
           geonamesEarthquakesCall(infoStore.boundingBox),
           geonamesWikiCall(infoStore.boundingBox),
           apiOpenWeatherCurrentCall(infoStore.latitude, infoStore.longitude),
           apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude),
-          apiNewsCall(infoStore.countryName) /* 100 reqs per day */,
+          // apiNewsCall(infoStore.countryName) /* 100 reqs per day */,
           apiUnsplashCall(infoStore.countryName),
           getDateTime(),
         ])
@@ -719,22 +720,21 @@ function locationData(selectedCountry) {
         return;
       }
       return $.ajax({
-        url: "libs/php/api-geonames-cities.php",
+        url: "libs/php/api-cachedCities.php",
         type: "POST",
         dataType: "json",
         data: {
-          west: infoStore.west,
-          north: infoStore.north,
-          east: infoStore.east,
-          south: infoStore.south,
+          twoLetterCountryCode: infoStore.twoLetterCountryCode,
         },
         success: function (result) {
           progressBar(8);
-          if (result.data.status) {
-            errorRetrievingData("error-cities", infoStore);
-            return;
-          }
-          infoStore.cities = result.data.geonames;
+          console.log(result.data);
+
+          // if (result.data.status) {
+          //   errorRetrievingData("error-cities", infoStore);
+          //   return;
+          // }
+          infoStore.cities = result.data;
         },
         error: function (jqXHR, textStatus, errorThrown) {
           progressBar(8);
@@ -1121,18 +1121,16 @@ function addToHTML(data) {
   if (data.cities) {
     data.cities.forEach((city) => {
       if (city.countrycode === data.twoLetterCountryCode) {
-        if (city.toponymName !== data.capital) {
+        if (city.name !== data.capital) {
           L.marker([city.lat, city.lng], {
             icon: cityIcon,
             riseOnHover: true,
           })
             .addTo(citiesMCG)
             .bindPopup(
-              `<strong><span id="purple">${
+              `<h6><span id="" class="font-weight-bold">${
                 city.name
-              }</span></strong><br>Population: ${fixPopulation(
-                city.population
-              )}`
+              }</span><br>Population: ${fixPopulation(city.population)}</h6>`
             );
         } else {
           L.marker([city.lat, city.lng], {
@@ -1141,9 +1139,11 @@ function addToHTML(data) {
           })
             .addTo(capitalMCG)
             .bindPopup(
-              `<strong>${city.name}</strong><br class="pop-up-title">${
-                data.countryName
-              } capital<br>Population: ${fixPopulation(city.population)}`
+              `<h6><span id="" class="font-weight-bold">${
+                city.name
+              }<br>Capital City<br>Population: </span>${fixPopulation(
+                city.population
+              )}</h6>`
             )
             .openPopup();
         }
@@ -1201,14 +1201,14 @@ function addToHTML(data) {
   if (data.wikipediaArticles) {
     data.wikipediaArticles.forEach((story) => {
       $("#wiki-data").append(
-        `<div class="articles-container"><a href="${
+        `<div class="container py-3 rounded articles-container"><a href="${
           story[2][0]
         }" target="_blank"><h5 class="font-weight-bold">${
           story[0][0]
         }</h5><img class='wiki-thumbnail' src=${
           story[3][0] ? story[3][0] : ""
         }><p>${story[1][0]}</p>
-      </a></div><br/>`
+      </a></div>`
       );
     });
   }
@@ -1217,7 +1217,7 @@ function addToHTML(data) {
   if (data.newsArticles) {
     data.newsArticles.forEach((story) => {
       $("#news-data").append(
-        `<div class="articles-container"><a href=${
+        `<div class="container py-3 rounded articles-container"><a href=${
           story.url
         } target="_blank"><h5 class="font-weight-bold">${
           story.title
@@ -1226,7 +1226,7 @@ function addToHTML(data) {
         )}</p><img class="news-image" src=${story.urlToImage}><p>${
           story.description
         }</p></a>
-      </div><hr/>`
+      </div>`
       );
     });
   }
@@ -1360,10 +1360,9 @@ function fixPopulation(num) {
     } else if (num.length < 4) {
       return num;
     } else if (num.length <= 6) {
-      num = num.slice(0, -1);
-      num = num / 100;
-      num = num.toFixed(0);
-      num = num + " thousand";
+      let thousands = num.slice(0, -3);
+      let hundreds = num.slice(-3);
+      num = thousands + "," + hundreds;
     } else if (num.length <= 9) {
       num = num.slice(0, -4);
       num = num / 100;

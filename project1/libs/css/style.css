@@ -373,6 +373,16 @@ a:hover {
   text-decoration-color: var(--light-grey);
 }
 
+.articles-container:hover {
+  background-color: var(--darker-grey);
+  transition: color 1s ease;
+  transition: background 0.7s ease;
+}
+
+.articles-container:hover {
+  background-color: hsla(208, 22%, 85%, 0.05);
+}
+
 /*
 a:active {
   color: var(--light-grey);
