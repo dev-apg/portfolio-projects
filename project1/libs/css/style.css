@@ -383,16 +383,16 @@ a:hover {
 }
 
 .articles-container:hover h5 {
-  color: #0a58ca;
-  text-decoration: underline;
-  text-decoration-color: var(--bs-blue);
-  text-decoration-color: #0a58ca;
+  color: var(--bs-dark);
+  text-decoration: none;
 }
 
 @media (hover: hover) {
   .articles-container:hover h5 {
-    color: var(--bs-dark);
-    text-decoration: none;
+    color: #0a58ca;
+    text-decoration: underline;
+    text-decoration-color: var(--bs-blue);
+    text-decoration-color: #0a58ca;
   }
 }
 
