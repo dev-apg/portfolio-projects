@@ -377,8 +377,10 @@ a:hover {
 }
 
 .articles-container:hover h5 {
+  color: var(--blue);
   text-decoration: underline;
   text-decoration-color: var(--gray-dark);
+  text-decoration-color: var(--blue);
 }
 
 /* .articles-container:hover {

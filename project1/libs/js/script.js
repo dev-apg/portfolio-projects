@@ -602,6 +602,7 @@ function locationData(selectedCountry) {
           geonamesCitiesCall(infoStore, countryCodeISO2),
           geonamesEarthquakesCall(infoStore.boundingBox),
           geonamesWikiCall(infoStore.boundingBox),
+          // openweather 1M calls per month
           apiOpenWeatherCurrentCall(infoStore.latitude, infoStore.longitude),
           apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude),
           // apiNewsCall(infoStore.countryName) /* 100 reqs per day */,
