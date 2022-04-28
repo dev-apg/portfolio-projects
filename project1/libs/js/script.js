@@ -295,6 +295,30 @@ const newsButton = L.easyButton({
   ],
 }).addTo(map);
 
+const citiesButton = L.easyButton({
+  states: [
+    {
+      icon: "<span class='fa-solid fa-city'></span>",
+      onClick: function () {
+        $("#newsModal").modal("show");
+      },
+      id: "myEasyButton",
+    },
+  ],
+}).addTo(map);
+
+const weatherButton = L.easyButton({
+  states: [
+    {
+      icon: "<span class='fa-solid fa-cloud-sun'></span>",
+      onClick: function () {
+        $("#newsModal").modal("show");
+      },
+      id: "myEasyButton",
+    },
+  ],
+}).addTo(map);
+
 //recenter button
 const recenterButton = L.easyButton({
   states: [
@@ -1203,7 +1227,7 @@ function addToHTML(data) {
   if (data.wikipediaArticles) {
     data.wikipediaArticles.forEach((story) => {
       $("#wiki-data").append(
-        `<div class="container rounded articles-container"><a href="${
+        `<div class="container rounded pt-1 pb-1 articles-container"><a href="${
           story[2][0]
         }" target="_blank" class="text-dark"><h5 class="font-weight-bold">${
           story[0][0]

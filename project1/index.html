@@ -35,8 +35,11 @@
         </div>
         <div id="flag-select-container" class="">
           <div class="input-group">
-            <div class="bg-secondary input-group-prepend nav-flag-div"></div>
-            <select id="select" class="custom-select bg-secondary text-light"></select>
+            <div class="input-group-prepend nav-flag-div"></div>
+            <select
+              id="select"
+              class="custom-select bg-secondary text-light"
+            ></select>
           </div>
         </div>
         <div id="nav-icons">
@@ -55,338 +58,345 @@
       data-backdrop="false"
       aria-labelledby="basicModal"
       aria-hidden="true"
-      >
+    >
       <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <img class="api-flag" />
-            <h5 class="modal-title lead">General Information</h5>
+            <h5 class="modal-title">General Information</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body pt-2 pb-1">
             <!-- carousel -->
             <div class="mb-2">
               <div
-              id="carouselExampleIndicators"
-              class="carousel slide"
-              data-ride="carousel"
-            >
-              <ol class="carousel-indicators">
-                <li
-                  data-target="#carouselExampleIndicators"
-                  data-slide-to="0"
-                  class="active"
-                ></li>
-                <li
-                  data-target="#carouselExampleIndicators"
-                  data-slide-to="1"
-                ></li>
-                <li
-                  data-target="#carouselExampleIndicators"
-                  data-slide-to="2"
-                ></li>
-                <li
-                  data-target="#carouselExampleIndicators"
-                  data-slide-to="3"
-                ></li>
-                <li
-                  data-target="#carouselExampleIndicators"
-                  data-slide-to="4"
-                ></li>
-              </ol>
-              <div class="carousel-inner">
-                <div class="carousel-item active">
-                  <div class="parent d-flex justify-content-center">
-                    <img
-                      id="country-image-0"
-                      class="img-size"
-                      src=""
-                      alt="First slide"
-                    />
+                id="carouselExampleIndicators"
+                class="carousel slide"
+                data-ride="carousel"
+              >
+                <ol class="carousel-indicators">
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="0"
+                    class="active"
+                  ></li>
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="1"
+                  ></li>
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="2"
+                  ></li>
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="3"
+                  ></li>
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="4"
+                  ></li>
+                </ol>
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <div class="parent d-flex justify-content-center">
+                      <img
+                        id="country-image-0"
+                        class="img-size"
+                        src=""
+                        alt="First slide"
+                      />
+                    </div>
+                    <div class="carousel-caption">
+                      <h3 id="country-image-0-description"></h3>
+                      <p id="country-image-0-alt-description"></p>
+                    </div>
                   </div>
-                  <div class="carousel-caption">
-                    <h3 id="country-image-0-description"></h3>
-                    <p id="country-image-0-alt-description"></p>
+                  <div class="carousel-item">
+                    <div class="parent d-flex justify-content-center">
+                      <img
+                        id="country-image-1"
+                        class="img-size"
+                        src=""
+                        alt="Second slide"
+                      />
+                    </div>
+                    <div class="carousel-caption">
+                      <h3 id="country-image-1-description"></h3>
+                      <p id="country-image-1-alt-description"></p>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="parent d-flex justify-content-center">
+                      <img
+                        id="country-image-2"
+                        class="img-size"
+                        src=""
+                        alt="Third slide"
+                      />
+                    </div>
+                    <div class="carousel-caption">
+                      <h3 id="country-image-2-description"></h3>
+                      <p id="country-image-2-alt-description"></p>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="parent d-flex justify-content-center">
+                      <img
+                        id="country-image-3"
+                        class="img-size"
+                        src=""
+                        alt="Fourth slide"
+                      />
+                    </div>
+                    <div class="carousel-caption">
+                      <h3 id="country-image-3-description"></h3>
+                      <p id="country-image-3-alt-description"></p>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="parent d-flex justify-content-center">
+                      <img
+                        id="country-image-4"
+                        class="img-size"
+                        src=""
+                        alt="Fifth slide"
+                      />
+                    </div>
+                    <div class="carousel-caption">
+                      <h3 id="country-image-4-description"></h3>
+                      <p id="country-image-4-alt-description"></p>
+                    </div>
                   </div>
                 </div>
-                <div class="carousel-item">
-                  <div class="parent d-flex justify-content-center">
-                    <img
-                      id="country-image-1"
-                      class="img-size"
-                      src=""
-                      alt="Second slide"
-                    />
-                  </div>
-                  <div class="carousel-caption">
-                    <h3 id="country-image-1-description"></h3>
-                    <p id="country-image-1-alt-description"></p>
-                  </div>
-                </div>
-                <div class="carousel-item">
-                  <div class="parent d-flex justify-content-center">
-                    <img
-                      id="country-image-2"
-                      class="img-size"
-                      src=""
-                      alt="Third slide"
-                    />
-                  </div>
-                  <div class="carousel-caption">
-                    <h3 id="country-image-2-description"></h3>
-                    <p id="country-image-2-alt-description"></p>
-                  </div>
-                </div>
-                <div class="carousel-item">
-                  <div class="parent d-flex justify-content-center">
-                    <img
-                      id="country-image-3"
-                      class="img-size"
-                      src=""
-                      alt="Fourth slide"
-                    />
-                  </div>
-                  <div class="carousel-caption">
-                    <h3 id="country-image-3-description"></h3>
-                    <p id="country-image-3-alt-description"></p>
-                  </div>
-                </div>
-                <div class="carousel-item">
-                  <div class="parent d-flex justify-content-center">
-                    <img
-                      id="country-image-4"
-                      class="img-size"
-                      src=""
-                      alt="Fifth slide"
-                    />
-                  </div>
-                  <div class="carousel-caption">
-                    <h3 id="country-image-4-description"></h3>
-                    <p id="country-image-4-alt-description"></p>
-                  </div>
-                </div>
+                <a
+                  class="carousel-control-prev"
+                  href="#carouselExampleIndicators"
+                  role="button"
+                  data-slide="prev"
+                >
+                  <span
+                    class="carousel-control-prev-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a
+                  class="carousel-control-next"
+                  href="#carouselExampleIndicators"
+                  role="button"
+                  data-slide="next"
+                >
+                  <span
+                    class="carousel-control-next-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="sr-only">Next</span>
+                </a>
               </div>
-              <a
-                class="carousel-control-prev"
-                href="#carouselExampleIndicators"
-                role="button"
-                data-slide="prev"
-              >
-                <span
-                  class="carousel-control-prev-icon"
-                  aria-hidden="true"
-                ></span>
-                <span class="sr-only">Previous</span>
-              </a>
-              <a
-                class="carousel-control-next"
-                href="#carouselExampleIndicators"
-                role="button"
-                data-slide="next"
-              >
-                <span
-                  class="carousel-control-next-icon"
-                  aria-hidden="true"
-                ></span>
-                <span class="sr-only">Next</span>
-              </a>
             </div>
-          </div>
-          <div>
-              <table class="table">
+            <div>
+              <table class="table table-striped table-borderless">
                 <tr>
-                  <td class="key text-right font-weight-bold">Country</td>
+                  <td class="text-right font-weight-bold">Country</td>
                   <td class="api-country"></td>
                 </tr>
                 <tr>
-                  <td class="key text-right font-weight-bold">Capital</td>
+                  <td class="text-right font-weight-bold">Capital</td>
                   <td id="api-capital"></td>
                 </tr>
                 <tr>
-                  <td class="key text-right font-weight-bold">Population</td>
+                  <td class="text-right font-weight-bold">Population</td>
                   <td id="api-population"></td>
                 </tr>
                 <tr>
-                  <td class="key text-right font-weight-bold">Main Language</td>
+                  <td class="text-right font-weight-bold">Main Language</td>
                   <td id="api-languages"></td>
                 </tr>
                 <tr>
-                <td class="key text-right font-weight-bold">Continent</td>
-                <td id="api-continent"></td>
-              </tr>
-              <tr>
-                <td class="key text-right font-weight-bold">Currency</td>
-                <td>
-                  <span id="api-currency"></span
-                    ><span id="api-currency-symbol" class="units"></span>
-                </td>
-              </tr>
-              <tr>
-                <td
-                class="key text-right font-weight-bold"
-                id="api-exchange-currencies"
-                >
-                $1 USD
-              </td>
-              <td>
-                <span id="api-currency-symbol-for-exchange"></span
-                  ><span id="api-exchange-rate"></span>
-                </td>
-              </tr>
-              
-              <tr>
-                <td class="key text-right font-weight-bold">
-                  Local Date and Time
-                </td>
-                <td>
-                  <span id="api-date-time"></span
-                    ><span id="api-date-time-units" class="units"></span>
+                  <td class="text-right font-weight-bold">Continent</td>
+                  <td id="api-continent"></td>
+                </tr>
+                <tr>
+                  <td class="text-right font-weight-bold">Currency</td>
+                  <td>
+                    <span id="api-currency"></span
+                    ><span id="api-currency-symbol" class="text-muted"></span>
                   </td>
                 </tr>
-                
                 <tr>
-                  <td class="key text-right font-weight-bold">
-                    GMT offset
+                  <td
+                    class="text-right font-weight-bold"
+                    id="api-exchange-currencies"
+                  >
+                    $1 USD
                   </td>
                   <td>
-                    <span></span
-                      ><span id="api-gmt-offset-string"></span>
-                    </td>
-                  </tr>
-                  
-                  <tr>
-                    <td class="key text-right align-middle font-weight-bold">
-                      Weather
-                    </td>
-                    <td id="api-current-weather">
-                      <div class="weather-icon-parent-container">
-                        
-                        <div class="weather-icon-container">
-                          <img id="current-weather-icon" class="weather-img" />
-                        </div>
+                    <span id="api-currency-symbol-for-exchange"></span
+                    ><span id="api-exchange-rate"></span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="text-right font-weight-bold">
+                    Local Date and Time
+                  </td>
+                  <td>
+                    <span id="api-date-time"></span
+                    ><span id="api-date-time-units" class="text-muted"></span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="text-right font-weight-bold">GMT offset</td>
+                  <td><span></span><span id="api-gmt-offset-string"></span></td>
+                </tr>
+
+                <tr>
+                  <td class="text-right align-middle font-weight-bold">
+                    Weather
+                  </td>
+                  <td id="api-current-weather">
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="current-weather-icon" class="weather-img" />
                       </div>
-                      <span id="current-temp"></span
-                        ><span class="units">&deg;C </span>
-                        <span id="show-hide-forecast"><sup>(more)</sup></span>
-                      </td>
-                    </tr>
-                    <!-- FORECAST -->
-                    <tr class="weather-row hide-row forecast">
-                      <td class="key text-right align-middle font-weight-bold">
-                        <span id="local-time-message" class="font-weight-normal"
-                        ><sup>(local time)</sup></span
-                        >
-                        <span id="weather-0-dateTime"></span><span></span>
-                      </td>
-                      <td>
-                        <div class="weather-icon-parent-container">
-                          <div class="weather-icon-container">
-                            <img id="weather-0-icon" class="weather-img" />
-                          </div>
-                        </div>
-                        <span id="weather-0-temp"></span
-                          ><span class="units">&deg;C</span>
-                        </td>
-                      </tr>
-                      <tr class="weather-row hide-row forecast">
-                        <td class="key text-right align-middle font-weight-bold">
-                          <span id="weather-1-dateTime"></span><span></span>
-                        </td>
-                        <td>
-                          <div class="weather-icon-parent-container">
-                            <div class="weather-icon-container">
-                              <img id="weather-1-icon" class="weather-img" />
-                            </div>
-                          </div>
-                          <span id="weather-1-temp"></span
-                            ><span class="units">&deg;C</span>
-                          </td>
-                        </tr>
-                        <tr class="weather-row hide-row forecast">
-                          <td class="key text-right align-middle font-weight-bold">
-                            <span id="weather-2-dateTime"></span><span></span>
-                          </td>
-                          <td>
-                            <div class="weather-icon-parent-container">
-                              <div class="weather-icon-container">
-                                <img id="weather-2-icon" class="weather-img" />
-                              </div>
-                            </div>
-                            <span id="weather-2-temp"></span
-                              ><span class="units">&deg;C</span>
-                            </td>
-                          </tr>
-                          <tr class="weather-row hide-row forecast">
-                            <td class="key text-right align-middle font-weight-bold">
-                              <span id="weather-3-dateTime"></span><span></span>
-                            </td>
-                            <td>
-                              <div class="weather-icon-parent-container">
-                                <div class="weather-icon-container">
-                                  <img id="weather-3-icon" class="weather-img" />
-                                </div>
-                              </div>
-                              <span id="weather-3-temp"></span
-                                ><span class="units">&deg;C</span>
-                              </td>
-                            </tr>
-                            <tr class="weather-row hide-row forecast">
-                              <td class="key text-right align-middle font-weight-bold">
-                                <span id="weather-4-dateTime"></span><span></span>
-                              </td>
-                              <td>
-                                <div class="weather-icon-parent-container">
-                                  <div class="weather-icon-container">
-                                    <img id="weather-4-icon" class="weather-img" />
-                                  </div>
-                                </div>
-                                <span id="weather-4-temp"></span
-                                  ><span class="units">&deg;C</span>
-                                </td>
-                              </tr>
-                              <!-- END OF FORECAST -->
-                              <tr>
-                                <td class="key text-right font-weight-bold">Area</td>
-                                <td>
-                                  <span id="api-area"></span
-                                    ><span class="units">km<sup>2</sup></span>
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td class="key text-right font-weight-bold">
-                                    Latitude/Longitude
-                                  </td>
-                                  <td>
-                                    <span id="api-latitude"></span
-                                      ><span id="api-latitude-units" class="units"></span>,&nbsp;<span id="api-longitude"></span
-                                        ><span id="api-longitude-units" class="units">
-                                        </span>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                  </table>
-                                </div>
-                              </div>
-                              <!-- INFORMATION MODAL FOOTER -->
-                              <div class="modal-footer pb-0 pt-2">
-                                <div class="d-flex flex-column align-items-end">
-                                  <button type="button" id="modal-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                  <p id="data-captured-at-style" class="text-right text-secondary small mb-0">Data captured at:&nbsp;<span class="data-captured-at-text"></span>
-                                  </p>
-                                </div>
-                              </div>
-                              <!-- END OF INFORMATION MODAL FOOTER -->
-                            </div>
-                          </div>
-                        </div>
-                        
+                    </div>
+                    <span id="current-temp"></span
+                    ><span class="text-muted">&deg;C </span>
+                    <span id="show-hide-forecast"><sup>(more)</sup></span>
+                  </td>
+                </tr>
+                <!-- FORECAST -->
+                <tr class="weather-row hide-row">
+                  <td class="key text-right align-middle font-weight-bold">
+                    <span id="local-time-message" class="font-weight-normal"
+                      ><sup>(local time)</sup></span
+                    >
+                    <span id="weather-0-dateTime"></span><span></span>
+                  </td>
+                  <td>
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="weather-0-icon" class="weather-img" />
+                      </div>
+                    </div>
+                    <span id="weather-0-temp"></span
+                    ><span class="text-muted">&deg;C</span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row">
+                  <td class="key text-right align-middle font-weight-bold">
+                    <span id="weather-1-dateTime"></span><span></span>
+                  </td>
+                  <td>
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="weather-1-icon" class="weather-img" />
+                      </div>
+                    </div>
+                    <span id="weather-1-temp"></span
+                    ><span class="text-muted">&deg;C</span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row">
+                  <td class="key text-right align-middle font-weight-bold">
+                    <span id="weather-2-dateTime"></span><span></span>
+                  </td>
+                  <td>
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="weather-2-icon" class="weather-img" />
+                      </div>
+                    </div>
+                    <span id="weather-2-temp"></span
+                    ><span class="text-muted">&deg;C</span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row">
+                  <td class="key text-right align-middle font-weight-bold">
+                    <span id="weather-3-dateTime"></span><span></span>
+                  </td>
+                  <td>
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="weather-3-icon" class="weather-img" />
+                      </div>
+                    </div>
+                    <span id="weather-3-temp"></span
+                    ><span class="text-muted">&deg;C</span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row">
+                  <td class="key text-right align-middle font-weight-bold">
+                    <span id="weather-4-dateTime"></span><span></span>
+                  </td>
+                  <td>
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="weather-4-icon" class="weather-img" />
+                      </div>
+                    </div>
+                    <span id="weather-4-temp"></span
+                    ><span class="text-muted">&deg;C</span>
+                  </td>
+                </tr>
+                <!-- END OF FORECAST -->
+                <tr>
+                  <td class="key text-right font-weight-bold">Area</td>
+                  <td>
+                    <span id="api-area"></span
+                    ><span class="text-muted">km<sup>2</sup></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="key text-right font-weight-bold">
+                    Latitude/Longitude
+                  </td>
+                  <td>
+                    <span id="api-latitude"></span
+                    ><span id="api-latitude-units" class="text-muted"></span
+                    >,&nbsp;<span id="api-longitude"></span
+                    ><span id="api-longitude-units" class="text-muted"> </span>
+                  </td>
+                </tr>
+                <tr></tr>
+              </table>
+            </div>
+          </div>
+          <!-- INFORMATION MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              <button
+                type="button"
+                id="modal-close"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <p
+                id="data-captured-at-style"
+                class="text-right text-secondary small mt-1 mb-0"
+              >
+                Data captured at:&nbsp;<span
+                  class="data-captured-at-text"
+                ></span>
+              </p>
+            </div>
+          </div>
+          <!-- END OF INFORMATION MODAL FOOTER -->
+        </div>
+      </div>
+    </div>
+
     <!-------- WIKI MODAL ---------------->
     <div class="modal fade" id="wikiModal" data-backdrop="false">
       <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <img class="api-flag" />
-            <h5 class="modal-title lead" id="">Wikipedia Articles</h5>
+            <h5 class="modal-title" id="">Wikipedia Articles</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body pb-1">
@@ -395,8 +405,21 @@
           <!-- WIKI MODAL FOOTER -->
           <div class="modal-footer pb-0 pt-2">
             <div class="d-flex flex-column align-items-end">
-              <button type="button" id="modal-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <p id="data-captured-at-style" class="text-right text-secondary small mb-0">Data captured at:&nbsp;<span class="data-captured-at-text"></span>
+              <button
+                type="button"
+                id="modal-close"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <p
+                id="data-captured-at-style"
+                class="text-right text-secondary small mt-1 mb-0"
+              >
+                Data captured at:&nbsp;<span
+                  class="data-captured-at-text"
+                ></span>
               </p>
             </div>
           </div>
@@ -411,7 +434,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <img class="api-flag" />
-            <h5 class="modal-title lead" id="">News</h5>
+            <h5 class="modal-title" id="">News</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body pb-1">
@@ -420,8 +443,21 @@
           <!-- NEWS MODAL FOOTER -->
           <div class="modal-footer pb-0 pt-2">
             <div class="d-flex flex-column align-items-end">
-              <button type="button" id="modal-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <p id="data-captured-at-style" class="text-right text-secondary small mb-0">Data captured at:&nbsp;<span class="data-captured-at-text"></span>
+              <button
+                type="button"
+                id="modal-close"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <p
+                id="data-captured-at-style"
+                class="text-right text-secondary small mt-1 mb-0"
+              >
+                Data captured at:&nbsp;<span
+                  class="data-captured-at-text"
+                ></span>
               </p>
             </div>
           </div>
@@ -431,147 +467,161 @@
     </div>
 
     <!-- ABOUT MODAL -->
-
     <div class="modal fade" id="aboutModal" data-backdrop="false">
       <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <!-- <img class="api-flag" /> -->
-            <h5 class="modal-title lead" id="about-modal-title">About</h5>
+            <h5 class="modal-title" id="about-modal-title">About</h5>
             <button class="close" data-dismiss="modal">&times;</button>
           </div>
-          <div class="modal-body pb-1">
-            <div id="about-data">
-              <br>
-
-              <div class="d-flex">
-                <div class="first-column d-flex justify-content-center"><p>
-                  <span class="fa-solid fa-earth-asia about-modal-icons" ></span>
-                </p>
-                </div>
-                <div class="second-column"><p> - About Gazetteer App</p></div>
-              </div>
-
-              <div class="d-flex">
-                <div class="first-column d-flex justify-content-center"><p>
-                  <span class="fas fa-info about-modal-icons" ></span>
-                </p>
-                </div>
-                <div class="second-column"><p> - General information</p></div>
-              </div>
-
-              <div class="d-flex">
-                <div class="first-column d-flex justify-content-center"><p>
-                  <span class="fab fa-wikipedia-w about-modal-icons" ></span>
-                </p>
-                </div>
-                <div class="second-column"><p> - Wikipedia</p></div>
-              </div>
-
-              <div class="d-flex">
-                <div class="first-column d-flex justify-content-center"><p>
-                  <span class="fas fa-newspaper about-modal-icons" ></span>
-                </p>
-                </div>
-                <div class="second-column"><p> - News</p></div>
-              </div>
-
-              <div class="d-flex">
-                <div class="first-column d-flex justify-content-center"><p>
-                  <span class="fa-solid fa-location-crosshairs about-modal-icons" ></span>
-                </p>
-                </div>
-                <div class="second-column"><p> - Recenter</p></div>
-              </div>
-
-              <div class="d-flex">
-                <div class="first-column d-flex justify-content-center"><p>
-                  <span class="fa-solid fa-angle-left about-modal-icons" ></span>
-                  <span class="fa-solid fa-angle-right about-modal-icons" ></span>
-                </p>
-                </div>
-                <div class="second-column"><p> - Back/Forward</p></div>
-              </div>
-
-              <p> <img id="about-modal-flag"></img> - Refresh country data</p>
-              <p>
-                <br>
-                <hr>
-                <br>
-                <span class="lead">Front end:</span>
-                <br />
-                HTML, CSS, Javascript
-                <br />
-                <a href="https://getbootstrap.com/">https://getbootstrap.com</a>
-                <br /><a href="https://jquery.com/">https://jquery.com/</a>
-              </p>
-              <p>
-                <span class="lead">Back end:</span><br />
-                PHP
-              </p>
-              <p>
-                <span class="lead">Maps and Interface:</span> <br />
-                <a href="https://leafletjs.com/" target="_blank"
-                  >https://leafletjs.com/</a
-                ><br />
-                <a
-                  href="http://danielmontague.com/projects/easyButton.js"
-                  target="_blank"
-                  >http://danielmontague.com/projects/easyButton.js</a
-                ><br />
-                <a
-                  href="https://github.com/Leaflet/Leaflet.markercluster"
-                  target="_blank"
-                  >https://github.com/Leaflet/Leaflet.markercluster</a
-                >
-                <a href="https://mapicons.mapsmarker.com/"
-                  >https://mapicons.mapsmarker.com/</a
-                ><br />
-                <a href="https://fontawesome.com/">https://fontawesome.com/</a>
-              </p>
-              <p>
-                <span class="lead">Country Information:</span><br />
-                <a href="https://www.geonames.org" target="_blank"
-                  >https://www.geonames.org</a
-                >
-                <br /><a href="https://newsapi.org" target="_blank"
-                  >https://newsapi.org</a
-                >
-
-                <br /><a href="https://opencagedata.com/" target="_blank"
-                  >https://opencagedata.com</a
-                >
-                <br /><a href="https://openexchangerates.org/" target="_blank"
-                  >https://openexchangerates.org</a
-                >
-                <br /><a href="https://openweathermap.org/" target="_blank"
-                  >https://openweathermap.org</a
-                >
-                <br /><a href="https://restcountries.com/" target="_blank"
-                  >https://restcountries.com</a
-                >
-                <br /><a href="https://unsplash.com/" target="_blank"
-                  >https://unsplash.com</a
-                >
-                <br /><a
-                  href="https://volcano.si.edu/database/webservices.cfm"
-                  target="_blank"
-                  >https://volcano.si.edu/database/webservices.cfm</a
-                >
-              </p>
-              <p>
-                <span class="lead">Hosted By:</span>
-                <a href="https://heroku.com" target="_blank"
-                  >https://heroku.com</a
-                >
-              </p>
+          <div class="modal-body py-1">
+            <table class="table table-striped table-borderless">
+              <thead></thead>
+              <tbody>
+                <tr>
+                  <td class="text-center w-50 border-top-0">
+                    <span
+                      class="fa-solid fa-earth-asia about-modal-icons"
+                    ></span>
+                  </td>
+                  <td class="border-top-0">About</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <span
+                      id="general-info-icon"
+                      class="fas fa-info about-modal-icons"
+                    ></span>
+                  </td>
+                  <td>General Information</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <span class="fab fa-wikipedia-w about-modal-icons"></span>
+                  </td>
+                  <td>Wikipedia</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <span class="fas fa-newspaper about-modal-icons"></span>
+                  </td>
+                  <td>News</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <span
+                      class="fa-solid fa-location-crosshairs about-modal-icons"
+                    ></span>
+                  </td>
+                  <td>Recenter</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <span
+                      class="fa-solid fa-angle-left about-modal-icons"
+                    ></span>
+                    <span
+                      class="fa-solid fa-angle-right about-modal-icons"
+                    ></span>
+                  </td>
+                  <td>Back/forward</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <img id="about-modal-flag" />
+                  </td>
+                  <td>Refresh country data</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="container">
+              <h5 class="mt-5 mb-3">Languages, libraries and APIs</h5>
+              <dl class="">
+                <dt class="">Front End</dt>
+                <dd>
+                  <a href="https://html.spec.whatwg.org/">HTML,</a>&nbsp;<a
+                    href="https://www.w3.org/TR/CSS/#css"
+                    >CSS,</a
+                  >&nbsp;<a
+                    href="https://www.ecma-international.org/publications-and-standards/standards/ecma-262/"
+                    >javaScript,</a
+                  >&nbsp;<a href="https://getbootstrap.com/">Bootstrap,</a
+                  >&nbsp;and&nbsp;<a href="https://jquery.com/">jQuery.</a>
+                </dd>
+                <dt class="">Back End</dt>
+                <dd><a href="https://www.php.net/">PHP</a></dd>
+                <dt class="">Maps and Interface</dt>
+                <dd>
+                  <a href="https://leafletjs.com/" target="_blank"
+                    >Leaflet.js,</a
+                  >&nbsp;<a
+                    href="http://danielmontague.com/projects/easyButton.js"
+                    target="_blank"
+                    >easyButton.js,</a
+                  >&nbsp;<a
+                    href="https://github.com/Leaflet/Leaflet.markercluster"
+                    target="_blank"
+                    >Leaflet.markercluster,</a
+                  >&nbsp;<a
+                    href="https://mapicons.mapsmarker.com/"
+                    target="_blank"
+                    >Map Icons,</a
+                  >&nbsp;and&nbsp;<a href="https://fontawesome.com/"
+                    >Font Awesome.</a
+                  >
+                </dd>
+                <dt class="">Country Data</dt>
+                <dd>
+                  <a href="https://www.geonames.org" target="_blank"
+                    >GeoNames,</a
+                  >&nbsp;<a href="https://newsapi.org" target="_blank"
+                    >News API,</a
+                  >&nbsp;<a href="https://opencagedata.com/" target="_blank"
+                    >OpenCage,</a
+                  >&nbsp;<a
+                    href="https://openexchangerates.org/"
+                    target="_blank"
+                    >Open Exchange Rates,</a
+                  >&nbsp;<a href="https://openweathermap.org/" target="_blank"
+                    >OpenWeather,</a
+                  >&nbsp;<a href="https://restcountries.com/" target="_blank"
+                    >REST countries,</a
+                  >&nbsp;and&nbsp;<a
+                    href="https://volcano.si.edu/"
+                    target="_blank"
+                    >Global Volcanism Program, Smithsonian Institution.</a
+                  >
+                </dd>
+                <dt>Country Images</dt>
+                <dd>
+                  <a href="https://unsplash.com/" target="_blank">Unsplash</a>
+                </dd>
+                <dt class="">Hosted By</dt>
+                <dd>
+                  <a href="https://heroku.com" target="_blank">Heroku</a>
+                </dd>
+              </dl>
             </div>
           </div>
           <!-- ABOUT MODAL FOOTER -->
           <div class="modal-footer pb-0 pt-2">
             <div class="d-flex flex-column align-items-end">
-              <button type="button" id="modal-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <p id="data-captured-at-style" class="text-right text-secondary small mb-0">Data captured at:&nbsp;<span class="data-captured-at-text"></span>
+              <button
+                type="button"
+                id="modal-close"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <p
+                id="data-captured-at-style"
+                class="text-right text-secondary small mt-1 mb-0"
+              >
+                Data captured at:&nbsp;<span
+                  class="data-captured-at-text"
+                ></span>
               </p>
             </div>
           </div>
@@ -579,7 +629,6 @@
         </div>
       </div>
     </div>
-
     <!-- PROGRESS/LOADING MODAL -->
     <div class="modal fade" id="progressModal" data-backdrop="false">
       <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
@@ -634,24 +683,26 @@
             <div id="request-permission" class="display-none">
               <p>Allow access to your current location?</p>
               <button
-              id="location-consent-given"
-              class="btn btn-secondary "
-              type="button"
-            >
-              Yes
-            </button>
-            <button
-              id="location-consent-declined"
-              class="btn btn-secondary"
-              type="button"
-            >
-              No
-            </button>
+                id="location-consent-given"
+                class="btn btn-secondary"
+                type="button"
+              >
+                Yes
+              </button>
+              <button
+                id="location-consent-declined"
+                class="btn btn-secondary"
+                type="button"
+              >
+                No
+              </button>
             </div>
             <div id="select-progress-div" class="display-none">
-              <select id="select-progress" class="bg-secondary text-light custom-select">
-            </select>
-          </div>
+              <select
+                id="select-progress"
+                class="bg-secondary text-light custom-select"
+              ></select>
+            </div>
           </div>
           <div
             id="progress-modal-footer"

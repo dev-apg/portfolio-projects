@@ -2,11 +2,11 @@
   --primary-color: #00d8d6;
   /* --primary-color: #17a2b8; */
   /* --primary-color: #007bff; */
-  --light-grey: #d2dae2;
-  --grey: #9fa6af;
-  --dark-grey: #485460;
-  --darker-grey: #1e272e;
-  --slightly-less-darker-grey: #262f36;
+  /* --light-grey: #d2dae2; */
+  /* --grey: #9fa6af; */
+  /* --dark-grey: #485460; */
+  /* --darker-grey: #1e272e; */
+  /* --slightly-less-darker-grey: #262f36; */
   --darker-grey-reduced-opacity: #1e272ed2;
   /* --orange: #ff5e57; */
   /* --orange: #d89e00; */
@@ -136,7 +136,7 @@ body {
 /* For when the zoom in/out buttons are maximised */
 .leaflet-bar a.leaflet-disabled {
   color: var(--light);
-  background: var(--grey);
+  background: var(--gray);
 }
 
 .leaflet-control-layers {
@@ -239,7 +239,8 @@ div.leaflet-control-layers-overlays {
 
 .nav-flag-div {
   background: no-repeat url("") center center/cover;
-  background-color: var(--dark);
+  background-color: var(--primary-color);
+  background-color: #dff9fb;
   height: 38px;
   width: 75px;
   margin-top: auto;
@@ -342,10 +343,10 @@ div.modal-footer,
 
 /* infoModal */
 
-.forecast td {
+/* .forecast td {
   background-color: var(--slightly-less-darker-grey);
   border-bottom: 1px solid var(--dark-grey);
-}
+} */
 
 /* .table td {
   padding: 0.37rem;
@@ -380,15 +381,17 @@ a:hover {
   text-decoration-color: var(--gray-dark);
 }
 
-.articles-container:hover {
-  /* background-color: var(--darker-grey); */
+/* .articles-container:hover {
+  background-color: var(--darker-grey);
   transition: color 1s ease;
   transition: background 0.7s ease;
 }
 
 .articles-container:hover {
-  background-color: hsla(208, 22%, 85%, 0.103);
-}
+  background-color: hsla(208, 22%, 85%, 0.103); 
+  background-color: var(--dark);
+  color: var(--light);
+} */
 
 /*
 a:active {
@@ -444,15 +447,11 @@ a.leaflet-popup-close-button {
 
 #local-time-message {
   /* font-size: 0.8rem; */
-  color: var(--grey);
+  color: var(--gray);
 }
 
 .hide-row {
   display: none;
-}
-
-.units {
-  color: var(--grey);
 }
 
 /* wiki and news modals */
@@ -480,17 +479,21 @@ div#news-data .lead {
 }
 
 .news-story-date {
-  color: var(--grey);
+  color: var(--gray);
 }
 
 /* about modal */
+
+#general-info-icon {
+  /* margin-right: 6px; */
+}
 
 #about-modal-title {
   /* color: var(--light-grey); */
 }
 
 .about-modal-icons {
-  color: var(--primary-color);
+  /* color: var(--primary-color); */
 }
 
 #about-modal-flag {
@@ -501,9 +504,9 @@ div#news-data .lead {
   border-radius: 4px;
 }
 
-.first-column {
+/* .first-column {
   width: 26px;
-}
+} */
 
 /* END OF MODALS CSS */
 
