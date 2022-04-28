@@ -614,7 +614,7 @@ function locationData(selectedCountry) {
           // openweather 1M calls per month
           apiOpenWeatherCurrentCall(infoStore.latitude, infoStore.longitude),
           apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude),
-          // apiNewsCall(infoStore.countryName) /* 100 reqs per day */,
+          apiNewsCall(infoStore.countryName) /* apinews 100 reqs per day */,
           apiUnsplashCall(infoStore.countryName),
           getDateTime(),
         ])
@@ -1239,7 +1239,7 @@ function addToHTML(data) {
       $("#wiki-data").append(
         `<div class="container rounded pt-1 pb-1 articles-container"><a href="${
           story[2][0]
-        }" target="_blank" class="text-dark"><h5 class="font-weight-bold">${
+        }" target="_blank" class="text-dark"><h5 class="">${
           story[0][0]
         }</h5><img class='wiki-thumbnail' src=${
           story[3][0] ? story[3][0] : ""
@@ -1253,9 +1253,9 @@ function addToHTML(data) {
   if (data.newsArticles) {
     data.newsArticles.forEach((story) => {
       $("#news-data").append(
-        `<div class="container py-3 rounded articles-container"><a href=${
+        `<div class="container rounded pt-1 pb-1 articles-container"><a href=${
           story.url
-        } target="_blank"><h5 class="font-weight-bold">${
+        } target="_blank" class="text-dark"><h5 class="">${
           story.title
         }</h5><p class="font-italic news-story-date">${readableDate(
           story.publishedAt
