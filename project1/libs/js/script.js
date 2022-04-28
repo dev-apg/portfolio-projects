@@ -373,6 +373,13 @@ function setSelected(twoLetterCountryCode) {
   $(`#select option[value=${twoLetterCountryCode}]`).prop("selected", true);
 }
 
+const progressModal = new bootstrap.Modal(
+  document.getElementById("progressModal"),
+  {
+    keyboard: false,
+  }
+);
+
 //----------------------------CALL FUNCTIONS----------------------//
 populateSelect();
 locationData();
@@ -430,7 +437,9 @@ function locationData(selectedCountry) {
   //   backdrop: "static",
   //   keyboard: false,
   // });
-  $("#progressModal").modal("show");
+  // $("#progressModal").modal("show");
+
+  progressModal.show();
 
   //flag to stop OpenCage being run twice on the first run
   let callOpencage = true;

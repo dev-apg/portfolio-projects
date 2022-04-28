@@ -89,54 +89,54 @@ body {
 
 .leaflet-bar button {
   color: var(--primary-color);
-  background-color: var(--dark);
+  background-color: var(--bs-dark);
 }
 
 .leaflet-bar button:hover {
   color: var(--primary-color);
-  background-color: var(--dark);
+  background-color: var(--bs-dark);
 }
 
 @media (hover: hover) {
   .leaflet-bar button:hover {
-    color: var(--dark);
+    color: var(--bs-dark);
     background-color: var(--primary-color);
   }
 }
 
 .leaflet-bar button:active {
-  background: var(--light);
+  background: var(--bs-light);
   /* background: #fff; */
 }
 
 /* zoom buttons with hover fix for mobiles */
 
 .leaflet-bar a {
-  color: var(--light);
-  background-color: var(--dark);
+  color: var(--bs-light);
+  background-color: var(--bs-dark);
 }
 
 .leaflet-bar a:hover {
-  color: var(--light);
-  background-color: var(--dark);
+  color: var(--bs-light);
+  background-color: var(--bs-dark);
 }
 
 @media (hover: hover) {
   .leaflet-bar a:hover {
-    color: var(--dark);
-    background-color: var(--light);
+    color: var(--bs-dark);
+    background-color: var(--bs-light);
   }
 }
 
 .leaflet-bar a:active {
-  background: var(--light);
+  background: var(--bs-light);
   /* background: #fff; */
 }
 
 /* For when the zoom in/out buttons are maximised */
 .leaflet-bar a.leaflet-disabled {
-  color: var(--light);
-  background: var(--gray);
+  color: var(--bs-light);
+  background: var(--bs-gray);
 }
 
 .leaflet-control-layers {
@@ -152,7 +152,7 @@ div.leaflet-control-layers.leaflet-control {
   top: calc(100vh - 200px);
   color: var(--primary-color);
   background-color: #1e272ed2;
-  background-color: var(--dark);
+  background-color: var(--bs-dark);
   position: absolute;
 }
 
@@ -166,28 +166,28 @@ div.leaflet-control-layers-overlays {
 /* outermost nav div */
 #nav-container-all {
   /* box-shadow: 2px 2px 5px #1b789a; */
-  box-shadow: 2px 2px 5px var(--dark);
-  background-color: var(--dark);
+  box-shadow: 2px 2px 5px var(--bs-dark);
+  background-color: var(--bs-dark);
   position: fixed;
   top: 0px;
   right: 0;
   z-index: 500;
   width: 100%;
-  color: var(--light);
+  color: var(--bs-light);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .input-group-text {
   background-color: var(--primary-color);
-  color: var(--dark);
+  color: var(--bs-dark);
   border: 1px solid var(--primary-color);
 }
 
 .custom-select {
   /* background-color: var(--dark-grey); */
   /* color: var(--light-grey); */
-  border: 1px solid var(--light);
+  border: 1px solid var(--bs-light);
 }
 
 #globe-icon {
@@ -245,7 +245,7 @@ div.leaflet-control-layers-overlays {
   width: 75px;
   margin-top: auto;
   margin-bottom: auto;
-  border: 1px solid var(--light);
+  border: 1px solid var(--bs-light);
   border-bottom-left-radius: 4px;
   border-top-left-radius: 4px;
   cursor: pointer;
@@ -274,14 +274,14 @@ div.input-group {
 }
 
 #nav-icons {
-  color: var(--gray);
+  color: var(--bs-gray);
   position: absolute;
   left: calc(50% + 131px);
   font-size: 30px;
 }
 
 .active-icon {
-  color: var(--light);
+  color: var(--bs-light);
   cursor: pointer;
 }
 
@@ -371,16 +371,23 @@ a {
 }
 
  */
+
+a,
 a:hover {
   /* color: var(--light-grey); */
   text-decoration: none;
 }
 
+.articles-container h5 {
+  color: var(--bs-dark);
+}
+
 .articles-container:hover h5 {
-  color: var(--blue);
+  color: #0a58ca;
   text-decoration: underline;
-  text-decoration-color: var(--gray-dark);
-  text-decoration-color: var(--blue);
+  text-decoration-color: var(--bs-gray-dark);
+  text-decoration-color: var(--bs-blue);
+  text-decoration-color: #0a58ca;
 }
 
 /* .articles-container:hover {
