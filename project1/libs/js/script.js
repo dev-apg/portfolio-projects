@@ -264,7 +264,19 @@ const generalInfoButton = L.easyButton({
       onClick: function () {
         $("#infoModal").modal("show");
       },
-      id: "myEasyButton",
+      id: "general-info-easybutton",
+    },
+  ],
+}).addTo(map);
+
+const citiesButton = L.easyButton({
+  states: [
+    {
+      icon: "<span class='fa-solid fa-city'></span>",
+      onClick: function () {
+        $("#citiesModal").modal("show");
+      },
+      id: "cities-easybutton",
     },
   ],
 }).addTo(map);
@@ -277,7 +289,7 @@ const wikiButton = L.easyButton({
       onClick: function () {
         $("#wikiModal").modal("show");
       },
-      id: "myEasyButton",
+      id: "wiki-easybutton",
     },
   ],
 }).addTo(map);
@@ -290,19 +302,7 @@ const newsButton = L.easyButton({
       onClick: function () {
         $("#newsModal").modal("show");
       },
-      id: "myEasyButton",
-    },
-  ],
-}).addTo(map);
-
-const citiesButton = L.easyButton({
-  states: [
-    {
-      icon: "<span class='fa-solid fa-city'></span>",
-      onClick: function () {
-        $("#newsModal").modal("show");
-      },
-      id: "myEasyButton",
+      id: "news-easybutton",
     },
   ],
 }).addTo(map);
@@ -314,7 +314,7 @@ const weatherButton = L.easyButton({
       onClick: function () {
         $("#newsModal").modal("show");
       },
-      id: "myEasyButton",
+      id: "weather-easybutton",
     },
   ],
 }).addTo(map);
@@ -327,7 +327,7 @@ const recenterButton = L.easyButton({
       onClick: function () {
         ll.recenter();
       },
-      id: "myEasyButton",
+      id: "recenter-easybutton",
     },
   ],
 }).addTo(map);
@@ -414,6 +414,7 @@ function locationData(selectedCountry) {
     flag: "",
     currentWeather: {},
     cities: null,
+    cityMarkers: {},
     countryImages: [],
     weather: [],
     offset_sec: "",
@@ -612,9 +613,9 @@ function locationData(selectedCountry) {
           geonamesEarthquakesCall(infoStore.boundingBox),
           geonamesWikiCall(infoStore.boundingBox),
           // openweather 1M calls per month
-          apiOpenWeatherCurrentCall(infoStore.latitude, infoStore.longitude),
-          apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude),
-          apiNewsCall(infoStore.countryName) /* apinews 100 reqs per day */,
+          // apiOpenWeatherCurrentCall(infoStore.latitude, infoStore.longitude),
+          // apiOpenWeatherForecastCall(infoStore.latitude, infoStore.longitude),
+          // apiNewsCall(infoStore.countryName) /* apinews 100 reqs per day */,
           apiUnsplashCall(infoStore.countryName),
           getDateTime(),
         ])
@@ -744,15 +745,6 @@ function locationData(selectedCountry) {
     }
 
     function geonamesCitiesCall(infoStore) {
-      if (
-        !infoStore.west ||
-        !infoStore.north ||
-        !infoStore.east ||
-        !infoStore.south
-      ) {
-        errorRetrievingData("error-cities", infoStore);
-        return;
-      }
       return $.ajax({
         url: "libs/php/api-cachedCities.php",
         type: "POST",
@@ -762,7 +754,7 @@ function locationData(selectedCountry) {
         },
         success: function (result) {
           progressBar(8);
-          console.log(result.data);
+          // console.log(result.data);
 
           // if (result.data.status) {
           //   errorRetrievingData("error-cities", infoStore);

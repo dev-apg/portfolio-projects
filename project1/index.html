@@ -380,6 +380,57 @@
       </div>
     </div>
 
+    <!-- CITIES MODAL -->
+    <div
+      class="modal fade"
+      id="citiesModal"
+      tabindex="-1"
+      role="dialog"
+      data-bs-backdrop="false"
+      aria-labelledby="cities modal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <img class="api-flag" />
+            <h5 class="modal-title" id="">Cities Articles</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body pb-1">
+            <div id="cities-data"></div>
+          </div>
+          <!-- CITIES MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              <button
+                type="button"
+                id="modal-close"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <p
+                id="data-captured-at-style"
+                class="text-end text-secondary small mt-1 mb-0"
+              >
+                Data captured at:&nbsp;<span
+                  class="data-captured-at-text"
+                ></span>
+              </p>
+            </div>
+          </div>
+          <!-- CITIES MODAL FOOTER -->
+        </div>
+      </div>
+    </div>
+
     <!-------- WIKI MODAL ---------------->
     <div
       class="modal fade"
@@ -772,6 +823,6 @@
       src="libs/js/leaflet.markercluster.js"
     ></script>
     <script type="application/javascript" src="libs/js/easy-button.js"></script>
-    <script type="application/javascript" src="libs/js/script.js"></script>
+    <script type="application/javascript" src="libs/js/script2.js"></script>
   </body>
 </html>

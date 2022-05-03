@@ -27,7 +27,7 @@ function cache_data() {
 function get_cities_data () {
     $cache_file = '../resources/cities15000.txt';
     // $selected_country = $input['countryName'];
-    $selected_country = $_REQUEST['twoLetterCountryCode'];
+    $selected_country = $_REQUEST['countryCodeISO2'];
     // $selected_country = "GB";
     $fp = fopen($cache_file, 'r');
     
