@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Leaflet example" />
+    <meta name="author" content="apg" />
+    <link rel="stylesheet" href="libs/css/leaflet.css" />
+    <link rel="stylesheet" href="libs/css/MarkerCluster.css" />
+    <link rel="stylesheet" href="libs/css/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="libs/css/easy-button.css" />
+    <link href="libs/css/all.css" rel="stylesheet" />
+    <link rel="stylesheet" href="libs/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="libs/css/style.css" />
+    <title>Gazetteer</title>
+  </head>
+  <body>
+    <div id="preloader"></div>
+    <div class="map-wrapper">
+      <div id="map"></div>
+    </div>
+    <nav id="#navbar">
+      <div id="nav-container-all" class="">
+        <div>
+          <i id="globe-icon" class="fa-solid fa-earth-asia"></i>
+          <img
+            src="libs/imgs/Gazetteer@2x.png"
+            id="logo"
+            class="fluid align-self-start"
+            alt=""
+          />
+        </div>
+        <div id="flag-select-container" class="">
+          <div class="input-group">
+            <label class="input-group-text nav-flag-div" for="select"></label>
+            <select
+              id="select"
+              class="form-select bg-secondary text-light"
+            ></select>
+          </div>
+        </div>
+        <div id="nav-icons">
+          <i id="left-bracket" class="fa-solid fa-angle-left"></i>
+          <i id="right-bracket" class="fa-solid fa-angle-right"></i>
+        </div>
+      </div>
+    </nav>
+
+    <!-- INFORMATION MODAL -->
+    <div
+      class="modal fade"
+      id="infoModal"
+      tabindex="-1"
+      role="dialog"
+      data-bs-backdrop="false"
+      aria-labelledby="info modal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <img class="api-flag" />
+            <h5 class="modal-title">General Information</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body pt-2 pb-1">
+            <!-- carousel -->
+            <div class="mb-2">
+              <div
+                id="carouselExampleIndicators"
+                class="carousel slide"
+                data-ride="carousel"
+              >
+                <ol class="carousel-indicators">
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="0"
+                    class="active"
+                  ></li>
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="1"
+                  ></li>
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="2"
+                  ></li>
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="3"
+                  ></li>
+                  <li
+                    data-target="#carouselExampleIndicators"
+                    data-slide-to="4"
+                  ></li>
+                </ol>
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <div class="parent d-flex justify-content-center">
+                      <img
+                        id="country-image-0"
+                        class="img-size"
+                        src=""
+                        alt="First slide"
+                      />
+                    </div>
+                    <div class="carousel-caption">
+                      <h3 id="country-image-0-description"></h3>
+                      <p id="country-image-0-alt-description"></p>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="parent d-flex justify-content-center">
+                      <img
+                        id="country-image-1"
+                        class="img-size"
+                        src=""
+                        alt="Second slide"
+                      />
+                    </div>
+                    <div class="carousel-caption">
+                      <h3 id="country-image-1-description"></h3>
+                      <p id="country-image-1-alt-description"></p>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="parent d-flex justify-content-center">
+                      <img
+                        id="country-image-2"
+                        class="img-size"
+                        src=""
+                        alt="Third slide"
+                      />
+                    </div>
+                    <div class="carousel-caption">
+                      <h3 id="country-image-2-description"></h3>
+                      <p id="country-image-2-alt-description"></p>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="parent d-flex justify-content-center">
+                      <img
+                        id="country-image-3"
+                        class="img-size"
+                        src=""
+                        alt="Fourth slide"
+                      />
+                    </div>
+                    <div class="carousel-caption">
+                      <h3 id="country-image-3-description"></h3>
+                      <p id="country-image-3-alt-description"></p>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="parent d-flex justify-content-center">
+                      <img
+                        id="country-image-4"
+                        class="img-size"
+                        src=""
+                        alt="Fifth slide"
+                      />
+                    </div>
+                    <div class="carousel-caption">
+                      <h3 id="country-image-4-description"></h3>
+                      <p id="country-image-4-alt-description"></p>
+                    </div>
+                  </div>
+                </div>
+                <a
+                  class="carousel-control-prev"
+                  href="#carouselExampleIndicators"
+                  role="button"
+                  data-slide="prev"
+                >
+                  <span
+                    class="carousel-control-prev-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a
+                  class="carousel-control-next"
+                  href="#carouselExampleIndicators"
+                  role="button"
+                  data-slide="next"
+                >
+                  <span
+                    class="carousel-control-next-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </div>
+            </div>
+            <div>
+              <table class="table table-striped table-borderless">
+                <tr>
+                  <th class="text-end">Country</th>
+                  <td class="api-country"></td>
+                </tr>
+                <tr>
+                  <th class="text-end">Capital</th>
+                  <td id="api-capital"></td>
+                </tr>
+                <tr>
+                  <th class="text-end">Population</th>
+                  <td id="api-population"></td>
+                </tr>
+                <tr>
+                  <th class="text-end">Main Language</th>
+                  <td id="api-languages"></td>
+                </tr>
+                <tr>
+                  <th class="text-end">Continent</th>
+                  <td id="api-continent"></td>
+                </tr>
+                <tr>
+                  <th class="text-end">Currency</th>
+                  <td>
+                    <span id="api-currency"></span
+                    ><span id="api-currency-symbol" class="text-muted"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="text-end" id="api-exchange-currencies">$1 USD</th>
+                  <td>
+                    <span id="api-currency-symbol-for-exchange"></span
+                    ><span id="api-exchange-rate"></span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th class="text-end">Local Date and Time</th>
+                  <td>
+                    <span id="api-date-time"></span
+                    ><span id="api-date-time-units" class="text-muted"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="text-end">GMT offset</th>
+                  <td><span></span><span id="api-gmt-offset-string"></span></td>
+                </tr>
+                <tr>
+                  <th class="text-end align-middle">Weather</th>
+                  <td id="api-current-weather">
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="current-weather-icon" class="weather-img" />
+                      </div>
+                    </div>
+                    <span id="current-temp"></span
+                    ><span class="text-muted">&deg;C </span>
+                    <span id="show-hide-forecast"><sup>(more)</sup></span>
+                  </td>
+                </tr>
+                <!-- FORECAST -->
+                <tr class="weather-row hide-row">
+                  <th class="text-end align-middle">
+                    <span id="local-time-message" class="font-weight-normal"
+                      ><sup>(local time)</sup></span
+                    >
+                    <span id="weather-0-dateTime"></span><span></span>
+                  </th>
+                  <td>
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="weather-0-icon" class="weather-img" />
+                      </div>
+                    </div>
+                    <span id="weather-0-temp"></span
+                    ><span class="text-muted">&deg;C</span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row">
+                  <th class="text-end align-middle">
+                    <span id="weather-1-dateTime"></span><span></span>
+                  </th>
+                  <td>
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="weather-1-icon" class="weather-img" />
+                      </div>
+                    </div>
+                    <span id="weather-1-temp"></span
+                    ><span class="text-muted">&deg;C</span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row">
+                  <th class="key text-end align-middle">
+                    <span id="weather-2-dateTime"></span><span></span>
+                  </th>
+                  <td>
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="weather-2-icon" class="weather-img" />
+                      </div>
+                    </div>
+                    <span id="weather-2-temp"></span
+                    ><span class="text-muted">&deg;C</span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row">
+                  <th class="text-end align-middle">
+                    <span id="weather-3-dateTime"></span><span></span>
+                  </th>
+                  <td>
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="weather-3-icon" class="weather-img" />
+                      </div>
+                    </div>
+                    <span id="weather-3-temp"></span
+                    ><span class="text-muted">&deg;C</span>
+                  </td>
+                </tr>
+                <tr class="weather-row hide-row">
+                  <th class="key text-end align-middle">
+                    <span id="weather-4-dateTime"></span><span></span>
+                  </th>
+                  <td>
+                    <div class="weather-icon-parent-container">
+                      <div class="weather-icon-container">
+                        <img id="weather-4-icon" class="weather-img" />
+                      </div>
+                    </div>
+                    <span id="weather-4-temp"></span
+                    ><span class="text-muted">&deg;C</span>
+                  </td>
+                </tr>
+                <!-- END OF FORECAST -->
+                <tr>
+                  <th class="text-end">Area</th>
+                  <td>
+                    <span id="api-area"></span
+                    ><span class="text-muted">km<sup>2</sup></span>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="text-end">Latitude/Longitude</th>
+                  <td>
+                    <span id="api-latitude"></span
+                    ><span id="api-latitude-units" class="text-muted"></span
+                    >,&nbsp;<span id="api-longitude"></span
+                    ><span id="api-longitude-units" class="text-muted"> </span>
+                  </td>
+                </tr>
+                <tr></tr>
+              </table>
+            </div>
+          </div>
+          <!-- INFORMATION MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              <button
+                type="button"
+                id="modal-close"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <p
+                id="data-captured-at-style"
+                class="text-end text-secondary small mt-1 mb-0"
+              >
+                Data captured at:&nbsp;<span
+                  class="data-captured-at-text"
+                ></span>
+              </p>
+            </div>
+          </div>
+          <!-- END OF INFORMATION MODAL FOOTER -->
+        </div>
+      </div>
+    </div>
+
+    <!-- CITIES MODAL -->
+    <div
+      class="modal fade"
+      id="citiesModal"
+      tabindex="-1"
+      role="dialog"
+      data-bs-backdrop="false"
+      aria-labelledby="cities modal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <img class="api-flag" />
+            <h5 class="modal-title" id="">Cities Articles</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body pb-1">
+            <div id="cities-data"></div>
+          </div>
+          <!-- CITIES MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              <button
+                type="button"
+                id="modal-close"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <p
+                id="data-captured-at-style"
+                class="text-end text-secondary small mt-1 mb-0"
+              >
+                Data captured at:&nbsp;<span
+                  class="data-captured-at-text"
+                ></span>
+              </p>
+            </div>
+          </div>
+          <!-- CITIES MODAL FOOTER -->
+        </div>
+      </div>
+    </div>
+
+    <!-------- WIKI MODAL ---------------->
+    <div
+      class="modal fade"
+      id="wikiModal"
+      tabindex="-1"
+      role="dialog"
+      data-bs-backdrop="false"
+      aria-labelledby="wiki modal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <img class="api-flag" />
+            <h5 class="modal-title" id="">Wikipedia Articles</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body pb-1">
+            <div id="wiki-data"></div>
+          </div>
+          <!-- WIKI MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              <button
+                type="button"
+                id="modal-close"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <p
+                id="data-captured-at-style"
+                class="text-end text-secondary small mt-1 mb-0"
+              >
+                Data captured at:&nbsp;<span
+                  class="data-captured-at-text"
+                ></span>
+              </p>
+            </div>
+          </div>
+          <!-- END OF MODAL FOOTER -->
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWS MODAL -->
+    <div
+      class="modal fade"
+      id="newsModal"
+      tabindex="-1"
+      role="dialog"
+      data-bs-backdrop="false"
+      aria-labelledby="news modal"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <img class="api-flag" />
+            <h5 class="modal-title" id="">News</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body pb-1">
+            <div id="news-data"></div>
+          </div>
+          <!-- NEWS MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              <button
+                type="button"
+                id="modal-close"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <p
+                id="data-captured-at-style"
+                class="text-end text-secondary small mt-1 mb-0"
+              >
+                Data captured at:&nbsp;<span
+                  class="data-captured-at-text"
+                ></span>
+              </p>
+            </div>
+          </div>
+          <!-- END OF NEWS MODAL FOOTER -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT MODAL -->
+    <div class="modal fade" id="aboutModal" data-backdrop="false">
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <!-- <img class="api-flag" /> -->
+            <h5 class="modal-title" id="about-modal-title">About</h5>
+            <button class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body py-1">
+            <table class="table table-striped table-borderless">
+              <thead></thead>
+              <tbody>
+                <tr>
+                  <td class="text-center w-50 border-top-0">
+                    <span
+                      class="fa-solid fa-earth-asia about-modal-icons"
+                    ></span>
+                  </td>
+                  <td class="border-top-0">About</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <span
+                      id="general-info-icon"
+                      class="fas fa-info about-modal-icons"
+                    ></span>
+                  </td>
+                  <td>General Information</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <span class="fab fa-wikipedia-w about-modal-icons"></span>
+                  </td>
+                  <td>Wikipedia</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <span class="fas fa-newspaper about-modal-icons"></span>
+                  </td>
+                  <td>News</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <span
+                      class="fa-solid fa-location-crosshairs about-modal-icons"
+                    ></span>
+                  </td>
+                  <td>Recenter</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <span
+                      class="fa-solid fa-angle-left about-modal-icons"
+                    ></span
+                    ><span
+                      class="fa-solid fa-angle-right about-modal-icons"
+                    ></span>
+                  </td>
+                  <td>Back/forward</td>
+                </tr>
+                <tr>
+                  <td class="text-center w-50">
+                    <img id="about-modal-flag" />
+                  </td>
+                  <td>Refresh country data</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="container">
+              <h5 class="mt-5 mb-3">Languages, libraries and APIs</h5>
+              <dl class="">
+                <div class="container">
+                  <dt class="">Front End</dt>
+                  <div class="container">
+                    <dd>
+                      <a href="https://html.spec.whatwg.org/">HTML,</a>&nbsp;<a
+                        href="https://www.w3.org/TR/CSS/#css"
+                        >CSS,</a
+                      >&nbsp;<a
+                        href="https://www.ecma-international.org/publications-and-standards/standards/ecma-262/"
+                        >javaScript,</a
+                      >&nbsp;<a href="https://getbootstrap.com/">Bootstrap,</a
+                      >&nbsp;and&nbsp;<a href="https://jquery.com/">jQuery.</a>
+                    </dd>
+                  </div>
+                </div>
+
+                <dt class="">Back End</dt>
+                <dd><a href="https://www.php.net/">PHP</a></dd>
+                <dt class="">Maps and Interface</dt>
+                <dd>
+                  <a href="https://leafletjs.com/" target="_blank"
+                    >Leaflet.js,</a
+                  >&nbsp;<a
+                    href="http://danielmontague.com/projects/easyButton.js"
+                    target="_blank"
+                    >easyButton.js,</a
+                  >&nbsp;<a
+                    href="https://github.com/Leaflet/Leaflet.markercluster"
+                    target="_blank"
+                    >Leaflet.markercluster,</a
+                  >&nbsp;<a
+                    href="https://mapicons.mapsmarker.com/"
+                    target="_blank"
+                    >Map Icons,</a
+                  >&nbsp;and&nbsp;<a href="https://fontawesome.com/"
+                    >Font Awesome.</a
+                  >
+                </dd>
+                <dt class="">Country Data</dt>
+                <dd>
+                  <a href="https://www.geonames.org" target="_blank"
+                    >GeoNames,</a
+                  >&nbsp;<a href="https://newsapi.org" target="_blank"
+                    >News API,</a
+                  >&nbsp;<a href="https://opencagedata.com/" target="_blank"
+                    >OpenCage,</a
+                  >&nbsp;<a
+                    href="https://openexchangerates.org/"
+                    target="_blank"
+                    >Open Exchange Rates,</a
+                  >&nbsp;<a href="https://openweathermap.org/" target="_blank"
+                    >OpenWeather,</a
+                  >&nbsp;<a href="https://restcountries.com/" target="_blank"
+                    >REST countries,</a
+                  >&nbsp;and&nbsp;<a
+                    href="https://volcano.si.edu/"
+                    target="_blank"
+                    >Global Volcanism Program, Smithsonian Institution.</a
+                  >
+                </dd>
+                <dt>Country Images</dt>
+                <dd>
+                  <a href="https://unsplash.com/" target="_blank">Unsplash</a>
+                </dd>
+                <dt class="">Hosted By</dt>
+                <dd>
+                  <a href="https://heroku.com" target="_blank">Heroku</a>
+                </dd>
+              </dl>
+            </div>
+          </div>
+          <!-- ABOUT MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              <button
+                type="button"
+                id="modal-close"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <p
+                id="data-captured-at-style"
+                class="text-end text-secondary small mt-1 mb-0"
+              >
+                Data captured at:&nbsp;<span
+                  class="data-captured-at-text"
+                ></span>
+              </p>
+            </div>
+          </div>
+          <!-- END OF ABOUT MODAL FOOTER -->
+        </div>
+      </div>
+    </div>
+    <!-- PROGRESS/LOADING MODAL -->
+    <div class="modal fade" id="progressModal" data-backdrop="false">
+      <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body pb-3">
+            <div id="loading-message" class="alert alert-primary">
+              <p>
+                <span id="country-selected-text">Country selected: </span
+                ><span id="loading-message-country"></span>
+              </p>
+              <p id="loading-message-text-1"></p>
+              <p id="loading-message-text-2"></p>
+              <div id="error-retrieving-messages">
+                <p id="error-cities" class="display-none">
+                  Cities data not currently available
+                </p>
+                <p id="error-geoJSON" class="display-none">
+                  Country outline not currently available
+                </p>
+                <p id="error-country-details" class="">
+                  Some country information may not be available
+                </p>
+                <p id="error-wikipedia" class="display-none">
+                  Wikipedia articles currently unavailable
+                </p>
+                <p id="error-news" class="display-none">
+                  News articles currently unavailable
+                </p>
+                <p id="error-current-weather" class="display-none">
+                  Current weather information currently unavailable
+                </p>
+                <p id="error-weather-forecast" class="display-none">
+                  Weather forecast currently unavailable
+                </p>
+                <p id="error-volcanoes" class="display-none">
+                  Information on volcanoes currently unavailable
+                </p>
+                <p id="error-country-images" class="display-none">
+                  Country images currently unavailable
+                </p>
+                <p id="error-earthquakes" class="display-none">
+                  Information on earthquakes currently unavailable
+                </p>
+              </div>
+            </div>
+            <div id="loading-progress-bar-container" class="progress">
+              <div
+                class="progress-bar-striped progress-bar-animated bg-dark"
+                id="loading-progress-bar"
+              ></div>
+            </div>
+            <div id="request-permission" class="display-none">
+              <p>Allow access to your current location?</p>
+              <button
+                id="location-consent-given"
+                class="btn btn-secondary"
+                type="button"
+              >
+                Yes
+              </button>
+              <button
+                id="location-consent-declined"
+                class="btn btn-secondary"
+                type="button"
+              >
+                No
+              </button>
+            </div>
+            <div id="select-progress-div" class="display-none">
+              <select
+                id="select-progress"
+                class="bg-secondary text-light custom-select"
+              ></select>
+            </div>
+          </div>
+          <div
+            id="progress-modal-footer"
+            class="modal-footer border-0 display-none"
+          >
+            <button
+              id="try-again"
+              class="btn btn-secondary display-none"
+              type="button"
+            >
+              Try Again
+            </button>
+            <button
+              id="choose-another"
+              class="btn btn-secondary display-none"
+              type="button"
+              data-dismiss="modal"
+            >
+              Choose Another Country
+            </button>
+            <button
+              id="close-progress-modal"
+              class="btn btn-secondary display-none"
+              type="button"
+              data-dismiss="modal"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JS SCRIPTS -->
+    <script
+      type="application/javascript"
+      src="libs/js/jquery-3.6.0.min.js"
+    ></script>
+    <script
+      type="application/javascript"
+      src="libs/js/bootstrap.min.js"
+    ></script>
+    <script src="libs/js/leaflet.js"></script>
+    <script
+      type="application/javascript"
+      src="libs/js/leaflet.markercluster.js"
+    ></script>
+    <script type="application/javascript" src="libs/js/easy-button.js"></script>
+    <script type="application/javascript" src="libs/js/script2.js"></script>
+  </body>
+</html>

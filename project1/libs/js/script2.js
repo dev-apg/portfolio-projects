@@ -132,6 +132,18 @@ const generalInfoButton = L.easyButton({
   ],
 }).addTo(map);
 
+const imagesButton = L.easyButton({
+  states: [
+    {
+      icon: "<span class='fa-solid fa-images' ></span>",
+      onClick: function () {
+        $("#imagesModal").modal("show");
+      },
+      id: "general-info-easybutton",
+    },
+  ],
+}).addTo(map);
+
 const citiesButton = L.easyButton({
   states: [
     {
@@ -195,12 +207,13 @@ const recenterButton = L.easyButton({
 //---------------------NAV BAR BUTTONS/SELECT--------------
 
 $("#select").change(function () {
-  locationData($("#select").val());
+  ll.getData($("#select").val());
+  //console.log($("#select").val());
 });
 
 //click on flag to refresh selected country data
 $(".nav-flag-div").on("click", function () {
-  locationData($("#select").val());
+  ll.getData($("#select").val());
 });
 
 //launch "about" modal
@@ -212,7 +225,21 @@ $("#logo").on("click", function () {
   $("#aboutModal").modal("show");
 });
 
-//--------------------------Progress Modal error buttons-------------------------//
+//--------------------------Progress Modal -------------------------//
+
+const progressModal = new bootstrap.Modal(
+  document.getElementById("progressModal"),
+  {
+    keyboard: false,
+  }
+);
+
+const citiesModal = new bootstrap.Modal(
+  document.getElementById("citiesModal"),
+  {
+    keyboard: false,
+  }
+);
 
 $("#try-again").on("click", function () {
   locationData($("#select").val());
@@ -227,15 +254,6 @@ $("#select-progress").change(function () {
   locationData($("#select-progress").val());
   $("#select-progress-div").addClass("display-none");
 });
-
-//--------------DECLARE NEW MODAL-------------------------
-
-const progressModal = new bootstrap.Modal(
-  document.getElementById("progressModal"),
-  {
-    keyboard: false,
-  }
-);
 
 // ---------------------DATA NODE AND LINKED LIST-------//
 // Node that contains country data for linked list
@@ -255,7 +273,7 @@ class DataNode {
   }
 }
 
-//---------------------------------LINKED LIST/DATA NODE------
+//---------------------------------LINKED LIST------
 
 class LinkedList {
   constructor() {
@@ -264,36 +282,97 @@ class LinkedList {
     this.current = null;
   }
 
-  newDataNode(countryCodeISO2, lat, lng) {
+  getData(countryCodeISO2, lat, lng) {
     //if nodes exist, loop through to find a match
-    if (this.head) {
-      let current = this.head;
-      while (current) {
-        if (current.data.countryCodeISO2 === countryCodeISO2) {
-          // create new node
-          let node = new DataNode(countryCodeISO2, lat, lng);
-          //swap out the new node
-          //first by taking it's
-          //*******could be an async problem here********
-          node.next = current.next;
-          node.previous = current.previous;
-          this.current = node;
-          return;
-        }
-      }
-    } else {
+    if (!this.head) {
       let node = new DataNode();
       this.current = node;
-      getData(null, lat, lng);
+      this.head = node;
+      this.tail = node;
+      opencageCall(lat, lng).then(() => APICalls());
+      return;
     }
-    // let node = new DataNode(countryCodeISO2);
+    let current = this.head;
+    while (current) {
+      if (current.data.countryCodeISO2 === countryCodeISO2) {
+        let node = new DataNode(countryCodeISO2, lat, lng);
+        node.next = current.next;
+        node.previous = current.previous;
+        this.current = node;
+        this.current.data.countryCodeISO2 = countryCodeISO2;
+        APICalls();
+        return;
+      }
+      current = current.next;
+    }
+    let node = new DataNode();
+    this.tail.next = node;
+    node.previous = this.tail;
+    this.tail = node;
+    this.current = node;
+    this.current.data.countryCodeISO2 = countryCodeISO2;
+    clearHTML(ll.current.data);
+    APICalls();
   }
 
+  forward() {
+    if (!this.current.next) return;
+    //1) clear HTML
+    this.current = this.current.next;
+    //3) addtoHTML
+    setSelected(this.current.data.countryCodeISO2);
+    setNavButtons(this.current);
+    //6) this.recenter
+  }
+  backward() {
+    if (!this.current.previous) return;
+    //1) clearHTML
+    this.current = this.current.previous;
+    //3) addtoHTML
+    setSelected(this.current.data.countryCodeISO2);
+    setNavButtons(this.current);
+    //6) this.recenter
+  }
+
+  recenter() {
+    if (
+      this.current.data.countryName === "Russia" ||
+      this.current.data.countryName === "United States"
+    ) {
+      map.fitBounds(this.current.data.geojsonCountryOutline.getBounds(), {
+        padding: [3, 3],
+      });
+      return;
+    }
+    map.fitBounds(
+      [
+        [this.current.data.south, this.current.data.west],
+        [this.current.data.north, this.current.data.east],
+      ],
+      {
+        padding: [3, 3],
+      }
+    );
+  }
   printData() {
     console.log(this.current);
   }
 }
 
+//--------------------- FORWARD/BACKWARD BUTTONS ----------
+
+const backButton = document.getElementById("left-bracket");
+const forwardButton = document.getElementById("right-bracket");
+
+backButton.addEventListener("click", function () {
+  ll.backward();
+});
+
+forwardButton.addEventListener("click", function () {
+  ll.forward();
+});
+
+//------------------
 const ll = new LinkedList();
 populateSelect();
 
@@ -311,7 +390,7 @@ populateSelect();
     //on consent given
     function success(pos) {
       var crd = pos.coords;
-      ll.newDataNode(null, crd.latitude, crd.longitude);
+      ll.getData(null, crd.latitude, crd.longitude);
     }
 
     //consent declined
@@ -324,30 +403,22 @@ populateSelect();
   }
 })();
 
-//------------GET DATA FUNCTION
+//------------API CALLS FUNCTION
 
-function getData(countryCodeISO2 = null, lat = null, lng = null) {
-  if (ll.current) ll.current.clearData();
-  if (!countryCodeISO2) {
-    opencageCall(lat, lng).then(() => APIcalls());
-    return;
-  }
-  APIcalls();
-  // addToHTML()
-}
-
-//------------------------API CALLS-----------------------//
-
-function APIcalls() {
-  Promise.all([getGeoJSONData(), geonamesCountryInfoCall()])
+function APICalls() {
+  Promise.all([
+    setSelected(ll.current.data.countryCodeISO2),
+    getGeoJSONData(),
+    geonamesCountryInfoCall(),
+  ])
     .then(() => restCountriesCall())
     .then(() => opencageCall())
     .then(() =>
       Promise.all([
-        apiVolcanoesCall(),
-        // openExchangeRatesCall(), /* 1k starting from 6th of the mont*/
+        // apiVolcanoesCall(),
+        // openExchangeRatesCall() /* 1k starting from 6th of the mont*/,
         geonamesCitiesCall(),
-        geonamesEarthquakesCall(),
+        // geonamesEarthquakesCall(),
         geonamesWikiCall(),
         // openweather 1M calls per month
         // apiOpenWeatherCurrentCall(),
@@ -356,16 +427,16 @@ function APIcalls() {
         getDateTime(),
       ])
     )
-    .then(() => console.log(ll.current.data));
+    .then(() => console.log(ll.current.data))
+    .then(() => updateHTML())
+    .then(() => setNavButtons())
+    .catch((e) => console.log(e));
 }
+
+//------------------------API CALLS-----------------------//
 
 async function opencageCall(lat, lon) {
   if (ll.current.data.countryCodeISO2) return;
-  if (!lat || !lon) {
-    console.log("there was no lat/lon");
-    // errorRetrievingData("error-country-details", infoStore);
-    return;
-  }
   return $.ajax({
     url: "libs/php/api-opencage.php",
     type: "POST",
@@ -780,6 +851,50 @@ function getDateTime() {
   ll.current.data.dataCapturedAt = printDate;
 }
 
+//----------------------UPDATE HTML-----------------
+
+function updateHTML() {
+  //GENERAL INFO TABLE
+  const data = ll.current.data;
+  const table = document.querySelector("#general-info-table");
+  table.classList = "table table-borderless";
+  addRow("Country", data.countryName);
+  addRow("Capital", data.capital);
+  addRow("Population", data.population);
+  addRow("Languages", data.languages);
+  addRow("Continent", data.continent);
+  addCurrencyRow("Currency", data.currencyName, data.currencySymbol);
+  data.exchangeRate && addRow("$1 USD", data.exchangeRate.toFixed(2));
+  addLocalTimeRow("Local date and Time", data.localTime);
+  addRow("GMT offset", data.offset_string);
+  addWeatherRow("Current Weather", data.weatherTemp);
+  addAreaRow("Land Area", data.area);
+  addLatLngRow("Latitude/Longitude", data.latitude, data.longitude);
+  dataCapturedAtText(data);
+
+  //COUNTRY IMAGES CAROUSEL
+  addCarouselImages(data);
+
+  addCities(data);
+}
+
+function clearHTML(data) {
+  console.log("clear HTML");
+  const generalInfoTableData = document.querySelector(
+    "#general-info-table tbody"
+  );
+  generalInfoTableData.remove();
+  const countryImagesCarousel = document.querySelector(".carousel-inner");
+  countryImagesCarousel.remove();
+  const citiesListUl = document.querySelectorAll("#cities-list li");
+  citiesListUl.forEach((li) => {
+    li.remove();
+  });
+
+  //clear map pins
+  featureGroup1.eachLayer((layer) => layer.clearLayers());
+}
+
 //---------------------OTHER FUNCTIONS
 
 function progressBar(input) {
@@ -788,8 +903,24 @@ function progressBar(input) {
 
 //----------------set select input to match that of current country
 
-function setSelected(twoLetterCountryCode) {
-  $(`#select option[value=${twoLetterCountryCode}]`).prop("selected", true);
+function setSelected(countryCodeISO2) {
+  $(`#select option[value=${countryCodeISO2}]`).prop("selected", true);
+}
+
+function setNavButtons() {
+  if (!ll.current.previous) {
+    // backButton.removeClass("active-icon");
+    backButton.classList.remove("active-icon");
+  } else {
+    backButton.classList.add("active-icon");
+  }
+  if (!ll.current.next) {
+    // forwardButton.removeClass("active-icon");
+    forwardButton.classList.remove("active-icon");
+  } else {
+    // forwardButton.addClass("active-icon");
+    forwardButton.classList.add("active-icon");
+  }
 }
 
 //------populates select tag list of countries--------------//
@@ -915,4 +1046,459 @@ function forecastTime(timestamp, offset) {
     hours = hours + "am";
   }
   return hours;
+}
+
+function fixLatLon(num) {
+  num = Math.abs(num);
+  return num.toFixed(0);
+}
+
+function getLatitudeUnit(lat) {
+  lat = parseInt(lat);
+  if (lat < 0) {
+    return "\u00B0S";
+  } else {
+    return "\u00B0N";
+  }
+}
+
+function getLongitudeUnit(lon) {
+  lon = parseInt(lon);
+  if (lon < 0) {
+    return "\u00B0W";
+  } else {
+    return "\u00B0E";
+  }
+}
+
+function reduceText(text) {
+  if (text === null) return (text = "");
+  if (text.length > 30) {
+    let words = 10;
+    let newText = text;
+    while (newText.length > 60) {
+      newText = newText.split(" ").slice(0, words).join(" ");
+      words--;
+    }
+
+    return newText + "...";
+  }
+  return text;
+}
+
+//---makes population figures readable----//
+function makeNumberReadable(num) {
+  if (num === undefined) {
+    return "n/a";
+  } else {
+    num = num.toString();
+    if (num === "0") {
+      return "n/a";
+    } else if (num.length < 4) {
+      return num;
+    } else if (num.length <= 6) {
+      let thousands = num.slice(0, -3);
+      let hundreds = num.slice(-3);
+      num = thousands + "," + hundreds;
+    } else if (num.length <= 9) {
+      num = num.slice(0, -4);
+      num = num / 100;
+      num = num.toFixed(1);
+      num = num + " million";
+    } else {
+      num = num.slice(0, -7);
+      num = num / 100;
+      num = num.toFixed(1);
+      num = num + " billion";
+    }
+    return (num = num.replace(".0", ""));
+  }
+}
+
+//GENERAL INFO MODAL FUNCTIONS
+function addRow(cellTitle, cellInfo) {
+  if (!cellInfo) return;
+  const table = document.querySelector("#general-info-table");
+  const row = table.insertRow();
+  const cell1 = document.createElement("th");
+  cell1.classList = "text-end";
+  row.appendChild(cell1);
+  const cell2 = row.insertCell();
+  let text1 = document.createTextNode(cellTitle);
+  let text2 = document.createTextNode(cellInfo);
+  cell1.appendChild(text1);
+  cell2.appendChild(text2);
+}
+
+function addCurrencyRow(cellTitle, cellInfo, symbol) {
+  if (!cellInfo) return;
+  const table = document.querySelector("#general-info-table");
+  const row = table.insertRow();
+  const cell1 = document.createElement("th");
+  cell1.classList = "text-end";
+  row.appendChild(cell1);
+  const cell2 = row.insertCell();
+  let text1 = document.createTextNode(cellTitle);
+  let text2 = document.createTextNode(cellInfo);
+  cell1.appendChild(text1);
+  cell2.appendChild(text2);
+  const span = document.createElement("span");
+  const currencySymbol = document.createTextNode(`(${symbol})`);
+  span.appendChild(currencySymbol);
+  span.classList = "text-muted";
+  cell2.appendChild(span);
+}
+
+function addLocalTimeRow(cellTitle, cellInfo) {
+  if (!cellInfo) return;
+  const table = document.querySelector("#general-info-table");
+  const row = table.insertRow();
+  const cell1 = document.createElement("th");
+  cell1.classList = "text-end";
+  const text1 = document.createTextNode(cellTitle);
+  cell1.appendChild(text1);
+  row.appendChild(cell1);
+
+  const cell2 = row.insertCell();
+  row.appendChild(cell2);
+  const text2 = document.createTextNode(cellInfo.replace(/am|pm/, ""));
+  cell2.appendChild(text2);
+  const span = document.createElement("span");
+  span.classList = "text-muted";
+  const text3 = document.createTextNode(cellInfo.slice(-2));
+  span.appendChild(text3);
+  cell2.appendChild(span);
+}
+
+function addWeatherRow(cellTitle, cellInfo) {
+  if (!cellInfo) return;
+  const table = document.querySelector("#general-info-table");
+  const row = table.insertRow();
+  const cell1 = document.createElement("th");
+  cell1.classList = "text-end";
+  row.appendChild(cell1);
+  let text1 = document.createTextNode(cellTitle);
+  cell1.appendChild(text1);
+
+  const cell2 = row.insertCell();
+  const outerDiv = document.createElement("div");
+  cell2.appendChild(outerDiv);
+  outerDiv.classList = "weather-icon-parent-container";
+  const innerDiv = document.createElement("div");
+  innerDiv.classList = "weather-icon-container";
+  outerDiv.appendChild(innerDiv);
+  const img = document.createElement("img");
+  innerDiv.appendChild(img);
+  img.id = "current-weather-icon";
+  img.classList = "weather-img";
+  img.src = `libs/imgs/${data.weatherIcon}@2x.png`;
+  const temp = document.createTextNode(cellInfo);
+  cell2.appendChild(temp);
+  const span = document.createElement("span");
+  cell2.appendChild(span);
+  const spanText = document.createTextNode("°C");
+  span.classList = "text-muted";
+  span.appendChild(spanText);
+}
+
+function addAreaRow(cellTitle, cellInfo) {
+  if (!cellInfo) return;
+  const table = document.querySelector("#general-info-table");
+  const row = table.insertRow();
+
+  const cell1 = document.createElement("th");
+  cell1.classList = "text-end";
+  row.appendChild(cell1);
+  let text1 = document.createTextNode(cellTitle);
+  cell1.appendChild(text1);
+
+  const cell2 = row.insertCell();
+  let text2 = document.createTextNode(cellInfo);
+  const span = document.createElement("span");
+  const km = document.createTextNode("km");
+  span.appendChild(km);
+  span.classList = "text-muted";
+  const sup = document.createElement("sup");
+  const number2 = document.createTextNode("2");
+  sup.appendChild(number2);
+  sup.classList = "text-muted";
+  cell2.appendChild(text2);
+  cell2.appendChild(span);
+  cell2.appendChild(sup);
+}
+
+function addLatLngRow(cellTitle, lat, lng) {
+  if (!lat || !lng) return;
+  const table = document.querySelector("#general-info-table");
+  const row = table.insertRow();
+
+  const cell1 = document.createElement("th");
+  row.appendChild(cell1);
+  cell1.classList = "text-end";
+  const text = document.createTextNode(cellTitle);
+  cell1.appendChild(text);
+
+  const cell2 = row.insertCell();
+  row.appendChild(cell2);
+  const span1 = document.createElement("span");
+  const latText = document.createTextNode(fixLatLon(lat));
+  span1.appendChild(latText);
+  cell2.appendChild(span1);
+
+  const span2 = document.createElement("span");
+  cell2.appendChild(span2);
+  span2.textContent = getLatitudeUnit(lat);
+
+  const span3 = document.createElement("span");
+  span3.textContent = ", ";
+  cell2.appendChild(span3);
+
+  const span4 = document.createElement("span");
+  const lngText = document.createTextNode(fixLatLon(lng));
+  span4.appendChild(lngText);
+  cell2.appendChild(span4);
+
+  const span5 = document.createElement("span");
+  cell2.appendChild(span5);
+  span5.textContent = getLongitudeUnit(lng);
+}
+
+function dataCapturedAtText(data) {
+  const capturedAtArray = document.querySelectorAll(".data-captured-at-text");
+  capturedAtArray.forEach((element) => {
+    element.textContent = data.dataCapturedAt;
+  });
+}
+
+//IMAGES CAROUSEL FUNCTION
+function addCarouselImages(data) {
+  if (data.countryImages) {
+    const carousel = document.getElementById("country-images-carousel");
+    const carouselInner = document.createElement("div");
+    carousel.appendChild(carouselInner);
+    carouselInner.classList = "carousel-inner";
+
+    data.countryImages.forEach((image) => {
+      //carouselItemDiv
+      const carouselItemDiv = document.createElement("div");
+      carouselInner.appendChild(carouselItemDiv);
+      carouselItemDiv.classList = "carousel-item";
+      carouselItemDiv.setAttribute("data-bs-interval", "4000");
+
+      //imageParentDiv
+      const imageParentDiv = document.createElement("div");
+      carouselItemDiv.appendChild(imageParentDiv);
+      imageParentDiv.classList =
+        "carousel-img-parent d-flex justify-content-center";
+      //img
+      const img = document.createElement("img");
+      imageParentDiv.appendChild(img);
+      img.classList = "d-block w-100";
+      img.classList = "carousel-img-size";
+      img.src = image.url;
+      img.setAttribute(
+        "title",
+        `${
+          image.description ? image.description + ": " : data.countryName + ": "
+        }${image.alt_description ? image.alt_description : ""}`
+      );
+
+      //captionDiv
+      const captionDiv = document.createElement("div");
+      carouselItemDiv.appendChild(captionDiv);
+      captionDiv.classList = "carousel-caption p-0 m-0";
+      //title
+      const title = document.createElement("h5");
+      captionDiv.appendChild(title);
+      title.textContent = reduceText(image.description);
+      //alt_description
+      const altDescription = document.createElement("p");
+      captionDiv.appendChild(altDescription);
+      altDescription.textContent = reduceText(image.alt_description);
+    });
+    const images = document.querySelectorAll(".carousel-item");
+    images[0].classList.add("active");
+    //CREATE BUTTONS
+    //PREV
+    const prevButton = document.createElement("button");
+    carouselInner.appendChild(prevButton);
+    prevButton.classList = "carousel-control-prev";
+    prevButton.type = "button";
+    prevButton.setAttribute("data-bs-target", "#country-images-carousel");
+    prevButton.setAttribute("data-bs-slide", "prev");
+    //SPANS
+    const prevSpan1 = document.createElement("span");
+    prevButton.appendChild(prevSpan1);
+    prevSpan1.classList = "carousel-control-prev-icon";
+    prevSpan1.setAttribute("aria-hidden", "true");
+    const prevSpan2 = document.createElement("span");
+    prevButton.appendChild(prevSpan2);
+    prevSpan2.classList = "visually-hidden";
+
+    //NEXT
+    const nextButton = document.createElement("button");
+    carouselInner.appendChild(nextButton);
+    nextButton.classList = "carousel-control-next";
+    nextButton.type = "button";
+    nextButton.setAttribute("data-bs-target", "#country-images-carousel");
+    nextButton.setAttribute("data-bs-slide", "next");
+    //SPANS
+    const nextSpan1 = document.createElement("span");
+    nextButton.appendChild(nextSpan1);
+    nextSpan1.classList = "carousel-control-next-icon";
+    nextSpan1.setAttribute("aria-hidden", "true");
+    const nextSpan2 = document.createElement("span");
+    nextButton.appendChild(nextSpan2);
+    nextSpan2.classList = "visually-hidden";
+  }
+}
+
+function addCities(data) {
+  data.cityMarkers = {};
+  if (data.cities) {
+    data.cities.forEach((city) => {
+      //set cityName also used for storing marker names
+      let cityName = city.name;
+      //remove spaces to create functional ids
+      while (cityName.includes(" ") || cityName.includes("'")) {
+        cityName = cityName.replace(" ", "-");
+        cityName = cityName.replace("'", "");
+        cityName = cityName.replace(")", "");
+        cityName = cityName.replace("(", "");
+      }
+
+      if (city.name !== data.capital) {
+        data.cityMarkers[cityName] = L.marker([city.lat, city.lng], {
+          icon: cityIcon,
+          riseOnHover: true,
+        })
+          .addTo(citiesMCG)
+          .bindPopup(
+            `<h6><span id="" class="font-weight-bold">${
+              city.name
+            }</span><br>Population: ${makeNumberReadable(city.population)}</h6>`
+          );
+      } else {
+        data.cityMarkers[cityName] = L.marker([city.lat, city.lng], {
+          icon: capitalCityIcon,
+          riseOnHover: true,
+        })
+          .addTo(capitalMCG)
+          .bindPopup(
+            `<h6><span id="" class="font-weight-bold">${
+              city.name
+            }<br>Capital City<br>Population: </span>${makeNumberReadable(
+              city.population
+            )}</h6>`
+          );
+        data.cityMarkers[cityName].openPopup();
+      }
+
+      //set up elements in cities modal
+      const citiesList = document.getElementById("cities-list");
+      const li = document.createElement("li");
+      citiesList.appendChild(li);
+      li.setAttribute("class", "mb-1");
+
+      //create button that toggles data
+      //button
+      const button = document.createElement("button");
+      li.appendChild(button);
+
+      // const buttonName = document.createTextNode(
+      //   `${city.name} (pop. ${city.population})`
+      // );
+      const buttonName = document.createTextNode(`${city.name}`);
+      button.appendChild(buttonName);
+      button.setAttribute("data-bs-toggle", "collapse");
+      button.setAttribute("data-bs-target", `#${cityName}-collapse`);
+      button.setAttribute(
+        "class",
+        "btn btn-toggle align-items-center rounded collapsed text-muted"
+      );
+      button.addEventListener("click", function () {
+        console.log("lets get some weather");
+      });
+      const cityDiv = document.createElement("div");
+      li.appendChild(cityDiv);
+
+      //cityDiv
+      cityDiv.setAttribute("class", "collapse");
+      cityDiv.setAttribute("id", `${cityName}-collapse`);
+      //create new ul and add to cityDiv
+      const cityDivUl = document.createElement("ul");
+      cityDiv.appendChild(cityDivUl);
+
+      //cityDivUl
+      cityDivUl.setAttribute(
+        "class",
+        "btn-toggle-nav list-unstyled fw-normal pb-1 small"
+      );
+
+      //cityName list item
+      const cityNameLi = document.createElement("li");
+      cityDivUl.appendChild(cityNameLi);
+      cityNameLi.setAttribute("class", "link-dark rounded");
+      const cityNameText = document.createTextNode(`  name: ${city.name}`);
+      cityNameLi.appendChild(cityNameText);
+
+      //cityPopulation list item
+      const cityPopulationLi = document.createElement("li");
+      cityDivUl.appendChild(cityPopulationLi);
+      cityPopulationLi.setAttribute("class", "link-dark rounded");
+      const cityPopulationText = document.createTextNode(
+        `  population: ${city.population}`
+      );
+      cityPopulationLi.appendChild(cityPopulationText);
+
+      //findCityOnMap list item
+      const findCityOnMap = document.createElement("li");
+      cityDivUl.appendChild(findCityOnMap);
+      findCityOnMap.classList = "text-primary fst-italic ms-5";
+      const goToText = document.createTextNode("Find on map  ");
+      findCityOnMap.appendChild(goToText);
+      const iconSpan = document.createElement("span");
+      findCityOnMap.appendChild(iconSpan);
+      // iconSpan.classList = "fa-solid fa-circle-arrow-right";
+      iconSpan.classList = "fa-solid fa-arrow-right-long";
+
+      //set zoom to city function
+      findCityOnMap.addEventListener("click", function (e) {
+        const innerHTML =
+          e.target.parentElement.parentElement.previousElementSibling.innerHTML;
+        console.log(innerHTML);
+        // const sliceAt = innerHTML.indexOf("(") - 1;
+        // const target = innerHTML.slice(0, sliceAt);
+        // console.log(target);
+        data.cities.find((city) => {
+          citiesModal.hide();
+          // if (city.name === target) {
+          if (city.name === innerHTML) {
+            map.flyTo([city.lat, city.lng], 12, [2, 2]);
+            let cityName = city.name;
+            while (cityName.includes(" ") || cityName.includes("'")) {
+              cityName = cityName.replace(" ", "-");
+              cityName = cityName.replace("'", "");
+              cityName = cityName.replace(")", "");
+              cityName = cityName.replace("(", "");
+            }
+            const marker = data.cityMarkers[cityName];
+
+            (function openPopupOnZoomLevel12() {
+              setTimeout(function () {
+                if (map.getZoom() === 12) {
+                  marker.openPopup();
+                } else {
+                  console.log(map.getZoom());
+                  openPopupOnZoomLevel12();
+                }
+              }, 750);
+            })();
+            marker.openPopup();
+            // callWeather(city.lat, city.lng, city.name);
+          }
+        });
+      });
+    });
+  }
 }

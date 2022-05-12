@@ -323,6 +323,70 @@ div.input-group {
 
 /* all modals */
 
+/* CITIES MODAL  */
+
+.bi {
+  vertical-align: -0.125em;
+  pointer-events: none;
+  fill: currentColor;
+}
+
+.btn-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.65);
+  background-color: transparent;
+  border: 0;
+}
+
+.btn-toggle:hover,
+.btn-toggle:focus {
+  color: rgba(0, 0, 0, 0.85);
+  background-color: #d2f4ea;
+}
+
+.btn-toggle::before {
+  width: 1.25em;
+  line-height: 0;
+  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+  transition: transform 0.35s ease;
+  transform-origin: 0.5em 50%;
+}
+
+.btn-toggle[aria-expanded="true"] {
+  color: rgba(0, 0, 0, 0.85);
+}
+.btn-toggle[aria-expanded="true"]::before {
+  transform: rotate(90deg);
+}
+
+.btn-toggle-nav li {
+  /* display: inline-flex; */
+  padding: 0.1875rem 0.5rem;
+  margin-top: 0.125rem;
+  margin-left: 1.25rem;
+  text-decoration: none;
+}
+
+.btn-toggle-nav a {
+  display: inline-flex;
+  padding: 0.1875rem 0.5rem;
+  margin-top: 0.125rem;
+  margin-left: 1.25rem;
+  text-decoration: none;
+}
+
+.btn-toggle-nav a:hover,
+.btn-toggle-nav a:focus {
+  background-color: #f2d2f4;
+}
+
+.fw-semibold {
+  font-weight: 600;
+}
+
 /* .modal-title {
   color: var(--orange);
   font-weight: bold;
@@ -342,6 +406,13 @@ div.modal-footer,
 } */
 
 /* infoModal */
+
+tr:nth-child(even) {
+  background: #9b65ff30;
+}
+tr:nth-child(odd) {
+  background: #fff;
+}
 
 /* .forecast td {
   background-color: var(--slightly-less-darker-grey);
@@ -419,17 +490,19 @@ a.leaflet-popup-close-button {
 
 /* infoModal image carousel */
 
-.parent {
-  height: 200px;
+.carousel-img-parent {
+  height: 350px;
 }
 
-.img-size {
+.carousel-img-size {
   object-fit: cover;
 }
 
 .carousel-caption {
   /* background-color: #343a4027; */
   text-transform: capitalize;
+  background: #00000029;
+  border-radius: 5px;
 }
 
 /* infoModal weather */
