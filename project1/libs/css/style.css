@@ -1,15 +1,10 @@
 :root {
   --primary-color: #00d8d6;
-  /* --primary-color: #17a2b8; */
-  /* --primary-color: #007bff; */
-  /* --light-grey: #d2dae2; */
-  /* --grey: #9fa6af; */
-  /* --dark-grey: #485460; */
-  /* --darker-grey: #1e272e; */
-  /* --slightly-less-darker-grey: #262f36; */
   --darker-grey-reduced-opacity: #1e272ed2;
-  /* --orange: #ff5e57; */
-  /* --orange: #d89e00; */
+  --blue-text: #36a2eb;
+  --weather-icon-light: #e9de82;
+  --weather-icon-dark: #5c606e;
+  --weather-icon-blue: #d9e3e9;
 }
 
 /* MAP CSS */
@@ -23,18 +18,13 @@ body {
   body {
     font-size: 14px;
   }
-  #show-hide-forecast {
-  }
 }
 
-@media only screen and (max-width: 310px) {
+/* @media only screen and (max-width: 310px) {
   body {
     font-size: 12px;
   }
-
-  #show-hide-forecast {
-  }
-}
+} */
 
 .map-wrapper {
   width: 100%;
@@ -71,19 +61,17 @@ body {
 }
 
 .leaflet-popup-content-wrapper {
-  border-radius: 3px;
-  background: var(--darker-grey-reduced-opacity);
-  color: var(--primary-color);
-  font-size: 12px;
+  border-radius: 14px;
+  padding: 7px;
 }
 
 .leaflet-popup-content {
   margin: 5px;
 }
 
-.leaflet-popup-tip {
+/* .leaflet-popup-tip {
   background: var(--darker-grey-reduced-opacity);
-}
+} */
 
 /* easy buttons with hover fix for mobile */
 
@@ -165,7 +153,6 @@ div.leaflet-control-layers-overlays {
 /* NAV/TITLE BAR CSS */
 /* outermost nav div */
 #nav-container-all {
-  /* box-shadow: 2px 2px 5px #1b789a; */
   box-shadow: 2px 2px 5px var(--bs-dark);
   background-color: var(--bs-dark);
   position: fixed;
@@ -273,6 +260,19 @@ div.input-group {
   border-radius: 3px;
 }
 
+.modal-icon {
+  background-color: var(--bs-dark);
+  color: var(--primary-color);
+  height: 35px;
+  width: 35px;
+  font-size: 16px;
+  padding-top: 9px;
+  margin-left: 5px;
+  margin-top: 3px;
+  margin-right: 10px;
+  border-radius: 3px;
+}
+
 #nav-icons {
   color: var(--bs-gray);
   position: absolute;
@@ -292,11 +292,6 @@ div.input-group {
     font-size: 22px;
   }
 }
-
-/* .active-nav-icon {
-  color: var(--light-grey);
-  cursor: pointer;
-} */
 
 /* END OF NAV/TITLE BAR CSS */
 
@@ -322,6 +317,35 @@ div.input-group {
 }
 
 /* all modals */
+
+/* modal tables */
+
+.blue-striped tr:nth-child(even) {
+  background: rgba(223, 242, 255, 0.2);
+  background-color: aliceblue;
+}
+
+.blue-striped th {
+  /* color: var(--blue-text); */
+}
+
+.blue-text,
+.blue-striped em {
+  /* color: var(--blue-text); */
+}
+
+.orange-striped em {
+  /* color: rgba(255, 99, 132, 1); */
+}
+
+.orange-striped th {
+  /* color: rgba(255, 99, 132, 1); */
+}
+
+.orange-striped tr:nth-child(even) {
+  /* background: rgba(255, 212, 222, 0.2); */
+  background-color: rgb(236 224 227 / 20%);
+}
 
 /* CITIES MODAL  */
 
@@ -363,7 +387,6 @@ div.input-group {
 }
 
 .btn-toggle-nav li {
-  /* display: inline-flex; */
   padding: 0.1875rem 0.5rem;
   margin-top: 0.125rem;
   margin-left: 1.25rem;
@@ -387,61 +410,61 @@ div.input-group {
   font-weight: 600;
 }
 
-/* .modal-title {
-  color: var(--orange);
-  font-weight: bold;
-} */
-
-/* div.modal-content,
-div.modal-body,
-div.modal-header,
-div.modal-footer,
-.table td {
-  padding: 0.5rem;
-  background: var(--darker-grey);
-  color: var(--light-grey);
-  border: none;
-  border-top: var(--darker-grey);
-  border-top: var(--primary-color);
-} */
-
-/* infoModal */
-
-tr:nth-child(even) {
-  background: #9b65ff30;
-}
-tr:nth-child(odd) {
-  background: #fff;
+#city-name-accordion-body {
+  top: -1px;
 }
 
-/* .forecast td {
-  background-color: var(--slightly-less-darker-grey);
-  border-bottom: 1px solid var(--dark-grey);
-} */
-
-/* .table td {
-  padding: 0.37rem;
+/* .skeleton {
+  animation: skeleton-loading 1s linear infinite alternate;
 }
 
-td.key {
-  color: var(--orange);
+@keyframes skeleton-loading {
+  0% {
+    background-color: blue;
+  }
+  100% {
+    background-color: beige;
+  }
 } */
 
-/* button.close {
-  text-shadow: none;
-  color: var(--light-grey);
-  opacity: 0.9;
+/* .skeleton-text {
+  width: 100%;
+  line-height: 0.5rem;
+  height: 0.5rem;
+  margin-bottom: 0.5rem;
 } */
 
-/* button.close:hover {
-  color: var(--light-grey);
+.find-on-map {
+  cursor: pointer;
+  position: relative;
 }
 
-a {
-  color: var(--light-grey);
+/* yelp */
+
+.yelp-image-div {
+  width: 5rem;
+  height: 5rem;
 }
 
- */
+.yelp-image {
+  object-fit: cover;
+  position: relative;
+  top: 2px;
+}
+
+.yelp-businesses:hover h5 {
+  color: var(--bs-dark);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .yelp-businesses:hover h5 {
+    color: #0a58ca;
+    text-decoration: underline;
+    text-decoration-color: var(--bs-blue);
+    text-decoration-color: #0a58ca;
+  }
+}
 
 a,
 a:hover {
@@ -490,6 +513,15 @@ a.leaflet-popup-close-button {
 
 /* infoModal image carousel */
 
+#country-flag {
+  height: 175px;
+  -webkit-box-shadow: 3px 3px 1px 1px rgba(0, 0, 0, 0.56);
+  box-shadow: 3px 3px 1px 1px rgba(0, 0, 0, 0.56);
+  /* outline: 1px solid rgba(223, 242, 255, 0.2); */
+  outline: 1px solid black;
+  border-radius: 5px;
+}
+
 .carousel-img-parent {
   height: 350px;
 }
@@ -499,62 +531,66 @@ a.leaflet-popup-close-button {
 }
 
 .carousel-caption {
-  /* background-color: #343a4027; */
   text-transform: capitalize;
   background: #00000029;
   border-radius: 5px;
 }
 
 /* infoModal weather */
-
-.weather-icon-parent-container {
-  display: inline-block;
-  overflow: clip;
+/* 
+#icon-div {
+  height: 12rem;
+  background-color: aliceblue;
 }
 
-.weather-icon-container {
+*/
+#current-weather-icon {
+  font-size: 6rem;
+}
+
+/* .weather-icon-parent-container {
+  display: inline-block;
+  overflow: clip;
+} */
+
+/* .weather-icon-container {
   height: 19px;
   width: 27px;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: clip;
-}
+} */
 
-.weather-img {
-  height: 39px;
+/* .weather-img {
+  height: 32px;
   position: relative;
   bottom: -1px;
-}
+}  */
 
-#show-hide-forecast {
-  /* font-size: 0.8rem; */
+/* #show-hide-forecast {
   color: var(--orange);
   cursor: pointer;
 }
 
 #local-time-message {
-  /* font-size: 0.8rem; */
   color: var(--gray);
 }
 
 .hide-row {
   display: none;
-}
+} */
 
 /* wiki and news modals */
+
+#wiki-data,
+#news-data {
+  text-align: justify;
+}
 
 .news-image,
 .wiki-thumbnail {
   width: 160px;
-  float: left;
-  margin-right: 15px;
-}
-
-div#wiki-data hr,
-div#news-data hr,
-#about-data hr {
-  /* border: 1px solid var(--dark-grey); */
 }
 
 div#wiki-data .lead,
@@ -568,6 +604,28 @@ div#news-data .lead {
 
 .news-story-date {
   color: var(--gray);
+}
+
+/* weather modal */
+
+.weather-icon-light {
+  color: var(--weather-icon-light);
+}
+
+.weather-icon-dark {
+  color: var(--weather-icon-dark);
+}
+
+.weather-icon-blue {
+  color: var(--weather-icon-blue);
+}
+
+caption {
+  caption-side: top;
+}
+
+#current-weather-card {
+  max-width: 10rem;
 }
 
 /* about modal */
@@ -595,6 +653,40 @@ div#news-data .lead {
 /* .first-column {
   width: 26px;
 } */
+
+/* CITIES MODAL */
+
+.text-yellow {
+  color: var(--bs-yellow);
+}
+
+.text-orange {
+  color: var(--bs-orange);
+}
+
+.text-violet {
+  color: var(--bs-purple);
+}
+
+.unclickable {
+  cursor: wait;
+  user-select: none;
+  background: blue;
+}
+.unclickable * {
+  pointer-events: none;
+}
+
+/* COVID MODAL */
+
+@media only screen and (max-width: 350px) {
+  #confirmed-deaths-per-day {
+    display: none !important;
+  }
+  #covid-infections-per-day {
+    display: none !important;
+  }
+}
 
 /* END OF MODALS CSS */
 

@@ -8,7 +8,7 @@ error_reporting(E_ALL);
 
 $executionStartTime = microtime(true);
 
-$url = "https://api.opencagedata.com/geocode/v1/json?q={$_REQUEST['lat']}+{$_REQUEST['lon']}&key=9f095f0ccd50463d93f420de10d4218f";
+$url = "https://api.opencagedata.com/geocode/v1/json?q={$_REQUEST['lat']}+{$_REQUEST['lng']}&key=9f095f0ccd50463d93f420de10d4218f";
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

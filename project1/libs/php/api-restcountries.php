@@ -7,7 +7,6 @@
 
 	$executionStartTime = microtime(true);
     
-	// $url = "https://restcountries.com/v2/alpha/{$_REQUEST['countryCodeISO3']}";
 	$url = "https://restcountries.com/v2/alpha/{$_REQUEST['countryCodeISO3']}";
 
 	$ch = curl_init();
@@ -31,5 +30,4 @@
 
 
 
-	echo json_encode($output); 
-?>
+	echo json_encode($output);

@@ -25,9 +25,9 @@
         <div>
           <i id="globe-icon" class="fa-solid fa-earth-asia"></i>
           <img
-            src="libs/imgs/Gazetteer@2x.png"
-            id="logo"
-            class="fluid align-self-start"
+          src="libs/imgs/Gazetteer@2x.png"
+          id="logo"
+          class="fluid align-self-start"
             alt=""
           />
         </div>
@@ -35,8 +35,8 @@
           <div class="input-group">
             <label class="input-group-text nav-flag-div" for="select"></label>
             <select
-              id="select"
-              class="form-select bg-secondary text-light"
+            id="select"
+            class="form-select bg-secondary text-light"
             ></select>
           </div>
         </div>
@@ -46,182 +46,99 @@
         </div>
       </div>
     </nav>
-
+    
     <!-- GENERAL INFO MODAL -->
     <div
-      class="modal fade"
-      id="infoModal"
-      tabindex="-1"
-      role="dialog"
-      data-bs-backdrop="false"
-      aria-labelledby="info modal"
-      aria-hidden="true"
+    class="modal fade"
+    id="infoModal"
+    tabindex="-1"
+    role="dialog"
+    data-bs-backdrop="false"
+    aria-labelledby="info modal"
+    aria-hidden="true"
     >
-      <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <img class="api-flag" />
-            <h5 class="modal-title">General Information</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body pt-2 pb-1">
-            <div>
-              <table id="general-info-table" class="table">
-                <!-- FORECAST -->
-                <!-- <tr class="weather-row hide-row">
-                  <th class="text-end align-middle">
-                    <span id="local-time-message" class="font-weight-normal"
-                      ><sup>(local time)</sup></span
-                    >
-                    <span id="weather-0-dateTime"></span><span></span>
-                  </th>
-                  <td>
-                    <div class="weather-icon-parent-container">
-                      <div class="weather-icon-container">
-                        <img id="weather-0-icon" class="weather-img" />
-                      </div>
-                    </div>
-                    <span id="weather-0-temp"></span
-                    ><span class="text-muted">&deg;C</span>
-                  </td>
-                </tr>
-                <tr class="weather-row hide-row">
-                  <th class="text-end align-middle">
-                    <span id="weather-1-dateTime"></span><span></span>
-                  </th>
-                  <td>
-                    <div class="weather-icon-parent-container">
-                      <div class="weather-icon-container">
-                        <img id="weather-1-icon" class="weather-img" />
-                      </div>
-                    </div>
-                    <span id="weather-1-temp"></span
-                    ><span class="text-muted">&deg;C</span>
-                  </td>
-                </tr>
-                <tr class="weather-row hide-row">
-                  <th class="key text-end align-middle">
-                    <span id="weather-2-dateTime"></span><span></span>
-                  </th>
-                  <td>
-                    <div class="weather-icon-parent-container">
-                      <div class="weather-icon-container">
-                        <img id="weather-2-icon" class="weather-img" />
-                      </div>
-                    </div>
-                    <span id="weather-2-temp"></span
-                    ><span class="text-muted">&deg;C</span>
-                  </td>
-                </tr>
-                <tr class="weather-row hide-row">
-                  <th class="text-end align-middle">
-                    <span id="weather-3-dateTime"></span><span></span>
-                  </th>
-                  <td>
-                    <div class="weather-icon-parent-container">
-                      <div class="weather-icon-container">
-                        <img id="weather-3-icon" class="weather-img" />
-                      </div>
-                    </div>
-                    <span id="weather-3-temp"></span
-                    ><span class="text-muted">&deg;C</span>
-                  </td>
-                </tr>
-                <tr class="weather-row hide-row">
-                  <th class="key text-end align-middle">
-                    <span id="weather-4-dateTime"></span><span></span>
-                  </th>
-                  <td>
-                    <div class="weather-icon-parent-container">
-                      <div class="weather-icon-container">
-                        <img id="weather-4-icon" class="weather-img" />
-                      </div>
-                    </div>
-                    <span id="weather-4-temp"></span
-                    ><span class="text-muted">&deg;C</span>
-                  </td>
-                </tr> -->
-                <!-- END OF FORECAST -->
-              </table>
-            </div>
-          </div>
-          <!-- INFORMATION MODAL FOOTER -->
-          <div class="modal-footer pb-0 pt-2">
-            <div class="d-flex flex-column align-items-end">
-              <button
-                type="button"
-                id="modal-close"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <p
-                id="data-captured-at-style"
-                class="text-end text-secondary small mt-1 mb-0"
-              >
-                Data captured at:&nbsp;<span
-                  class="data-captured-at-text"
-                ></span>
-              </p>
-            </div>
-          </div>
-          <!-- END OF INFORMATION MODAL FOOTER -->
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img class="api-flag" />
+          <h5 class="modal-title">General Information</h5>
+          <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          ></button>
         </div>
+        <div data-modal="general-info" class="modal-body px-1 pt-2 pb-1">
+        </div>
+        <!-- INFORMATION MODAL FOOTER -->
+        <div class="modal-footer pb-0 pt-2">
+          <div class="d-flex flex-column align-items-end">
+            <button
+            type="button"
+            id="modal-close"
+            class="btn btn-sm btn-secondary"
+            data-bs-dismiss="modal"
+            >
+            Close
+          </button>
+          <p
+          id="data-captured-at-style"
+          class="text-end text-secondary small mt-1 mb-0"
+          >
+          Data captured at:&nbsp;<span
+          class="data-captured-at-text"
+          ></span>
+        </p>
       </div>
     </div>
+    <!-- END OF INFORMATION MODAL FOOTER -->
+  </div>
+</div>
+</div>
 
-    <!-- IMAGES MODAL -->
-    <div
-      class="modal fade"
-      id="imagesModal"
-      tabindex="-1"
-      role="dialog"
-      data-bs-backdrop="false"
-      aria-labelledby="images modal"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <img class="api-flag" />
-            <h5 class="modal-title" id="">Images</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body pb-1">
-            <div
-              id="country-images-carousel"
-              class="carousel slide carousel-fade"
-              data-bs-ride="carousel"
-            ></div>
-          </div>
-          <!-- IMAGES MODAL FOOTER -->
-          <div class="modal-footer pb-0 pt-2">
-            <div class="d-flex flex-column align-items-end">
-              <button
-                type="button"
-                id="modal-close"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <p
-                id="data-captured-at-style"
-                class="text-end text-secondary small mt-1 mb-0"
-              >
-                Data captured at:&nbsp;<span
-                  class="data-captured-at-text"
+<!-- IMAGES MODAL -->
+<div
+class="modal fade"
+id="imagesModal"
+tabindex="-1"
+role="dialog"
+data-bs-backdrop="false"
+aria-labelledby="images modal"
+aria-hidden="true"
+>
+<div class="modal-dialog modal-dialog-scrollable">
+  <div class="modal-content">
+    <div class="modal-header">
+      <img class="api-flag" />
+      <h5 class="modal-title" id="">Images</h5>
+      <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+      ></button>
+    </div>
+    <div id="images-content" data-modal="images" class="modal-body p-1">
+            
+    </div>
+    <!-- IMAGES MODAL FOOTER -->
+    <div class="modal-footer pb-0 pt-2">
+      <div class="d-flex flex-column align-items-end">
+        <button
+        type="button"
+        id="modal-close"
+        class="btn btn-sm btn-secondary"
+        data-bs-dismiss="modal"
+        >
+        Close
+      </button>
+      <p
+      id="data-captured-at-style"
+      class="text-end text-secondary small mt-1 mb-0"
+      >
+      Data captured at:&nbsp;<span
+      class="data-captured-at-text"
                 ></span>
               </p>
             </div>
@@ -230,49 +147,48 @@
         </div>
       </div>
     </div>
-
+    
     <!-- CITIES MODAL -->
     <div
-      class="modal fade"
-      id="citiesModal"
-      tabindex="-1"
-      role="dialog"
-      data-bs-backdrop="false"
-      aria-labelledby="cities modal"
-      aria-hidden="true"
+    class="modal fade"
+    id="citiesModal"
+    tabindex="-1"
+    role="dialog"
+    data-bs-backdrop="false"
+    aria-labelledby="cities modal"
+    aria-hidden="true"
     >
-      <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <img class="api-flag" />
-            <h5 class="modal-title" id="">Cities</h5>
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img class="api-flag" />
+          <h5 class="modal-title" id="">Cities</h5>
+          <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          ></button>
+        </div>
+        <div data-modal="cities" id="cities-content" class="modal-body p-0">
+        </div>
+        <!-- CITIES MODAL FOOTER -->
+        <div class="modal-footer pb-0 pt-2">
+          <div class="d-flex flex-column align-items-end">
             <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body pb-1">
-            <ul id="cities-list" class="list-unstyled ps-0"></ul>
-          </div>
-          <!-- CITIES MODAL FOOTER -->
-          <div class="modal-footer pb-0 pt-2">
-            <div class="d-flex flex-column align-items-end">
-              <button
-                type="button"
-                id="modal-close"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <p
-                id="data-captured-at-style"
+            type="button"
+            id="modal-close"
+            class="btn btn-secondary btn-sm"
+            data-bs-dismiss="modal"
+            >
+            Close
+          </button>
+          <p
+          id="data-captured-at-style"
                 class="text-end text-secondary small mt-1 mb-0"
               >
                 Data captured at:&nbsp;<span
-                  class="data-captured-at-text"
+                class="data-captured-at-text"
                 ></span>
               </p>
             </div>
@@ -281,49 +197,48 @@
         </div>
       </div>
     </div>
-
+    
     <!-------- WIKI MODAL ---------------->
     <div
-      class="modal fade"
-      id="wikiModal"
-      tabindex="-1"
-      role="dialog"
-      data-bs-backdrop="false"
-      aria-labelledby="wiki modal"
-      aria-hidden="true"
+    class="modal fade"
+    id="wikiModal"
+    tabindex="-1"
+    role="dialog"
+    data-bs-backdrop="false"
+    aria-labelledby="wiki modal"
+    aria-hidden="true"
     >
-      <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <img class="api-flag" />
-            <h5 class="modal-title" id="">Wikipedia Articles</h5>
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img class="api-flag" />
+          <h5 class="modal-title" id="">Wikipedia Articles</h5>
+          <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          ></button>
+        </div>
+        <div data-modal="wiki" id="wiki-data" class="modal-body p-1">
+        </div>
+        <!-- WIKI MODAL FOOTER -->
+        <div class="modal-footer pb-0 pt-2">
+          <div class="d-flex flex-column align-items-end">
             <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body pb-1">
-            <div id="wiki-data"></div>
-          </div>
-          <!-- WIKI MODAL FOOTER -->
-          <div class="modal-footer pb-0 pt-2">
-            <div class="d-flex flex-column align-items-end">
-              <button
-                type="button"
+            type="button"
                 id="modal-close"
-                class="btn btn-secondary"
+                class="btn btn-sm btn-secondary"
                 data-bs-dismiss="modal"
-              >
+                >
                 Close
               </button>
               <p
-                id="data-captured-at-style"
-                class="text-end text-secondary small mt-1 mb-0"
+              id="data-captured-at-style"
+              class="text-end text-secondary small mt-1 mb-0"
               >
-                Data captured at:&nbsp;<span
-                  class="data-captured-at-text"
+              Data captured at:&nbsp;<span
+              class="data-captured-at-text"
                 ></span>
               </p>
             </div>
@@ -335,118 +250,338 @@
 
     <!-- NEWS MODAL -->
     <div
-      class="modal fade"
-      id="newsModal"
-      tabindex="-1"
-      role="dialog"
-      data-bs-backdrop="false"
-      aria-labelledby="news modal"
-      aria-hidden="true"
+    class="modal fade"
+    id="newsModal"
+    tabindex="-1"
+    role="dialog"
+    data-bs-backdrop="false"
+    aria-labelledby="news modal"
+    aria-hidden="true"
     >
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img class="api-flag" />
+          <h5 class="modal-title" id="">News</h5>
+          <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+          ></button>
+        </div>
+        <div data-modal="news" id="news-data" class="modal-body p-1">
+        </div>
+        <!-- NEWS MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              <button
+              type="button"
+              id="modal-close"
+              class="btn btn-sm btn-secondary"
+                data-bs-dismiss="modal"
+                >
+                Close
+              </button>
+              <p
+              id="data-captured-at-style"
+              class="text-end text-secondary small mt-1 mb-0"
+              >
+              Data captured at:&nbsp;<span
+              class="data-captured-at-text"
+              ></span>
+            </p>
+          </div>
+        </div>
+        <!-- END OF NEWS MODAL FOOTER -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- WEATHER MODAL-->
+  <div
+  class="modal fade"
+  id="weatherModal24hr"
+  tabindex="-1"
+  role="dialog"
+  data-bs-backdrop="false"
+  aria-labelledby="weather modal"
+      aria-hidden="true"
+      >
       <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
             <img class="api-flag" />
-            <h5 class="modal-title" id="">News</h5>
+            <h5 class="modal-title" id="">Weather</h5>
             <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body pb-1">
-            <div id="news-data"></div>
+          <div data-modal="weather" class="modal-body p-0">
           </div>
-          <!-- NEWS MODAL FOOTER -->
+          
+          <!-- WEATHER MODAL FOOTER -->
+          <div class="modal-footer pb-0 pt-2">
+            <div class="d-flex flex-column align-items-end">
+              
+              <button
+              type="button"
+              id="modal-close"
+              class="btn btn-sm btn-secondary"
+              data-bs-dismiss="modal"
+              >
+              Close
+            </button>
+            <p
+            id="data-captured-at-style"
+            class="text-end text-secondary small mt-1 mb-0"
+            >
+            Data captured at:&nbsp;<span
+            class="data-captured-at-text"
+            ></span>
+          </p>
+        </div>
+      </div>
+      <!-- END OF WEATHER MODAL FOOTER -->
+    </div>
+  </div>
+</div>
+
+<!-- DATES MODAL -->
+<div
+class="modal fade"
+id="datesModal"
+tabindex="-1"
+role="dialog"
+data-bs-backdrop="false"
+aria-labelledby="public holidays modal"
+aria-hidden="true"
+>
+<div class="modal-dialog modal-dialog-scrollable">
+  <div class="modal-content h-100">
+    <div class="modal-header">
+      <img class="api-flag" />
+      <h5 class="modal-title" id="">Dates</h5>
+      <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+      ></button>
+    </div>
+    <div  data-modal="dates" id="dates-content" class="modal-body p-1">
+    </div>
+    <!-- DATES MODAL FOOTER -->
+    <div class="modal-footer p-0">
+            <div class="border-bottom w-100 pb-1 m-0">
+              <div class="accordion accordion-flush" id="dates-options-accordion">
+                <div class="accordion-item">
+                  <h2 id="dates-options-header" class="accordion-header" >
+                    <button id="dates-options-button" class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#dates-options-accordion-item" aria-expanded="false" aria-controls="flush-collapseOne">
+                      Options
+                    </button>
+                  </h2>
+                  <div id="dates-options-accordion-item" class="accordion-collapse collapse" aria-labelledby="dates-options-accordion-item" data-bs-parent="#accordionFlushExample">
+                    <div class="container">
+                      <div id="date-options-container" class="row mt-3">
+                        <div data-modal="date options col" id="date-options-col-one" class="col"></div>
+                        <div data-modal="date options col" id="date-options-col-two" class="col"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex flex-column align-items-end px-3">
+              <button
+              type="button"
+              id="modal-close"
+              class="btn btn-sm btn-secondary"
+              data-bs-dismiss="modal"
+              >
+              Close
+            </button>
+            <p
+            id="data-captured-at-style"
+            class="text-end text-secondary small mt-1 mb-0"
+            >
+            Data captured at:&nbsp;<span
+            class="data-captured-at-text"
+            ></span>
+          </p>
+        </div>
+      </div>
+      <!-- END OF DATES MODAL FOOTER -->
+    </div>
+  </div>
+</div>
+
+<!-- COVID MODAL-->
+<div
+class="modal fade"
+id="covidModal"
+tabindex="-1"
+role="dialog"
+data-bs-backdrop="false"
+aria-labelledby="covid modal"
+aria-hidden="true"
+>
+<div class="modal-dialog modal-dialog-scrollable">
+  <div class="modal-content">
+    <div class="modal-header">
+      <img class="api-flag" />
+      <h5 class="modal-title" id="">Covid 19</h5>
+      <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+            ></button>
+          </div>
+          <div data-modal="covid" class="modal-body p-1"></div>
+          <!-- COVID MODAL FOOTER -->
           <div class="modal-footer pb-0 pt-2">
             <div class="d-flex flex-column align-items-end">
               <button
-                type="button"
-                id="modal-close"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
+              type="button"
+              id="modal-close"
+              class="btn btn-sm btn-secondary small"
+              data-bs-dismiss="modal"
               >
-                Close
-              </button>
-              <p
+              Close
+            </button>
+            <p
                 id="data-captured-at-style"
                 class="text-end text-secondary small mt-1 mb-0"
               >
-                Data captured at:&nbsp;<span
-                  class="data-captured-at-text"
-                ></span>
-              </p>
-            </div>
+              Data captured at:&nbsp;<span
+              class="data-captured-at-text"
+              ></span>
+            </p>
           </div>
-          <!-- END OF NEWS MODAL FOOTER -->
         </div>
+        <!-- END OF COVID MODAL FOOTER -->
       </div>
     </div>
-
-    <!-- ABOUT MODAL -->
-    <div class="modal fade" id="aboutModal" data-backdrop="false">
-      <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <!-- <img class="api-flag" /> -->
-            <h5 class="modal-title" id="about-modal-title">About</h5>
-            <button class="close" data-dismiss="modal">&times;</button>
-          </div>
-          <div class="modal-body py-1">
-            <table class="table table-striped table-borderless">
-              <thead></thead>
-              <tbody>
+  </div>
+  
+  
+  <!-- ABOUT MODAL -->
+  <div
+  class="modal fade"
+  id="aboutModal"
+  tabindex="-1"
+  role="dialog"
+  data-bs-backdrop="false"
+  aria-labelledby="About modal"
+  aria-hidden="true"
+  >
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="about-modal-title">About</h5>
+        <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+        >
+      </button>
+    </div>
+    <div class="modal-body py-1">
+      <table class="table mt-0">
+        <!-- <thead></thead> -->
+        <tbody>
                 <tr>
-                  <td class="text-center w-50 border-top-0">
+                  <td class="text-center w-25 border-top-0">
                     <span
-                      class="fa-solid fa-earth-asia about-modal-icons"
+                    class="fa-solid fa-earth-asia about-modal-icons"
                     ></span>
                   </td>
                   <td class="border-top-0">About</td>
                 </tr>
                 <tr>
-                  <td class="text-center w-50">
+                  <td class="text-center w-25">
                     <span
-                      id="general-info-icon"
+                    id="general-info-icon"
                       class="fas fa-info about-modal-icons"
-                    ></span>
+                      ></span>
+                    </td>
+                    <td>General Information</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center w-25">
+                      <span
+                      id="general-info-icon"
+                      class="fa-solid fa-images about-modal-icons"
+                      ></span>
+                    </td>
+                    <td>Images</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center w-25">
+                    <span class="fa-solid fa-cloud-sun about-modal-icons"></span>
                   </td>
-                  <td>General Information</td>
+                  <td>Weather</td>
                 </tr>
                 <tr>
-                  <td class="text-center w-50">
-                    <span class="fab fa-wikipedia-w about-modal-icons"></span>
+                  <td class="text-center w-25">
+                    <span class="fa-solid fa-calendar-days about-modal-icons"></span>
                   </td>
-                  <td>Wikipedia</td>
+                  <td>Dates</td>
                 </tr>
+                 
+                  <tr>
+                    <td class="text-center w-25">
+                      <span class="fab fa-wikipedia-w about-modal-icons"></span>
+                    </td>
+                    <td>Wikipedia</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center w-25">
+                      <span class="fas fa-newspaper about-modal-icons"></span>
+                    </td>
+                    <td>News</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center w-25">
+                      <span class="fa-solid fa-virus about-modal-icons"></span>
+                    </td>
+                    <td>Coronavirus</td>
+                  </tr>
+                  <tr>
+                    <td class="text-center w-25">
+                      <span
+                      id="general-info-icon"
+                      class="fa-solid fa-city about-modal-icons"
+                      ></span>
+                    </td>
+                    <td>Cities</td>
+                  </tr>
                 <tr>
-                  <td class="text-center w-50">
-                    <span class="fas fa-newspaper about-modal-icons"></span>
-                  </td>
-                  <td>News</td>
-                </tr>
-                <tr>
-                  <td class="text-center w-50">
+                  <td class="text-center w-25">
                     <span
-                      class="fa-solid fa-location-crosshairs about-modal-icons"
+                    class="fa-solid fa-location-crosshairs about-modal-icons"
                     ></span>
                   </td>
                   <td>Recenter</td>
                 </tr>
                 <tr>
-                  <td class="text-center w-50">
+                  <td class="text-center w-25">
                     <span
-                      class="fa-solid fa-angle-left about-modal-icons"
+                    class="fa-solid fa-angle-left about-modal-icons"
                     ></span
-                    ><span
-                      class="fa-solid fa-angle-right about-modal-icons"
+                    >&nbsp;<span
+                    class="fa-solid fa-angle-right about-modal-icons"
                     ></span>
                   </td>
                   <td>Back/forward</td>
                 </tr>
                 <tr>
-                  <td class="text-center w-50">
+                  <td class="text-center w-25">
                     <img id="about-modal-flag" />
                   </td>
                   <td>Refresh country data</td>
@@ -454,76 +589,96 @@
               </tbody>
             </table>
             <div class="container">
-              <h5 class="mt-5 mb-3">Languages, libraries and APIs</h5>
+              <h5 class="text-center mt-3 mb-3">Languages, libraries and APIs</h5>
               <dl class="">
                 <div class="container">
                   <dt class="">Front End</dt>
                   <div class="container">
                     <dd>
-                      <a href="https://html.spec.whatwg.org/">HTML,</a>&nbsp;<a
-                        href="https://www.w3.org/TR/CSS/#css"
-                        >CSS,</a
+                      <a target="_blank" href="https://html.spec.whatwg.org/">HTML,</a>&nbsp;<a
+                      href="https://www.w3.org/TR/CSS/#css"
+                      >CSS,</a
                       >&nbsp;<a
-                        href="https://www.ecma-international.org/publications-and-standards/standards/ecma-262/"
-                        >javaScript,</a
-                      >&nbsp;<a href="https://getbootstrap.com/">Bootstrap,</a
-                      >&nbsp;and&nbsp;<a href="https://jquery.com/">jQuery.</a>
+                      target="_blank" href="https://www.ecma-international.org/publications-and-standards/standards/ecma-262/"
+                      >javaScript,</a
+                      >&nbsp;<a target="_blank" href="https://getbootstrap.com/">Bootstrap,</a
+                        >&nbsp;<a target="_blank" href="https://www.chartjs.org/">Chart.js,</a
+                        >&nbsp;and&nbsp;<a target="_blank" href="https://jquery.com/">jQuery.</a>
+                      </dd>
+                    </div>
+                  </div>
+                  <div class="container">
+                    <dt class="">Back End</dt>
+                    <div class="container">
+                      <dd><a target="_blank" href="https://www.php.net/">PHP</a></dd>
+                    </div>
+                  </div>
+                  <div class="container">
+                    <dt class="">Maps and Interface</dt>
+                    <div class="container">
+                      <dd>
+                        <a target="_blank" href="https://leafletjs.com/" target="_blank"
+                        >Leaflet.js,</a
+                        >&nbsp;<a
+                        href="http://danielmontague.com/projects/easyButton.js"
+                        target="_blank"
+                        >easyButton.js,</a
+                        >&nbsp;<a
+                        href="https://github.com/Leaflet/Leaflet.markercluster"
+                        target="_blank"
+                        >Leaflet.markercluster,</a
+                        >&nbsp;<a
+                        href="https://mapicons.mapsmarker.com/"
+                        target="_blank"
+                        >Map Icons,</a
+                        >&nbsp;and&nbsp;<a href="https://fontawesome.com/"
+                        >Font Awesome.</a
+                        >
+                      </dd>
+                    </div>
+                  </div>
+                  <div class="container">
+                    <dt class="">Data</dt>
+                    <div class="container">
+                      <dd>
+                        <a href="https://www.geonames.org" target="_blank"
+                        >GeoNames,</a
+                        >&nbsp;<a href="https://newsapi.org" target="_blank"
+                        >News API,</a
+                        >&nbsp;<a href="https://opencagedata.com/" target="_blank"
+                        >OpenCage,</a
+                        >&nbsp;<a
+                        href="https://openexchangerates.org/"
+                        target="_blank"
+                        >Open Exchange Rates,</a
+                        >&nbsp;<a href="https://openweathermap.org/" target="_blank"
+                        >OpenWeather,</a
+                      >&nbsp;<a href="https://restcountries.com/" target="_blank"
+                      >REST countries,</a
+                      ><a
+                      href="https://volcano.si.edu/"
+                      target="_blank"
+                      >Global Volcanism Program, Smithsonian Institution,&nbsp;</a
+                      ><a target="_blank" href="https://covid19api.com/">Covid19 API,</a>&nbsp;and&nbsp;<a href="https://rapidapi.com/apininjas/api/holidays-by-api-ninjas/">Holidays by API-Ninjas.</a>
+                    </div>
+                  </dd>
+                </div>
+                <div class="container">
+                  <dt>Images</dt>
+                  <div class="container">
+                    <dd>
+                      <a href="https://unsplash.com/" target="_blank">Unsplash,&nbsp;</a><a href="https://api.windy.com/" target="_blank">Windy API</a>
                     </dd>
                   </div>
                 </div>
-
-                <dt class="">Back End</dt>
-                <dd><a href="https://www.php.net/">PHP</a></dd>
-                <dt class="">Maps and Interface</dt>
-                <dd>
-                  <a href="https://leafletjs.com/" target="_blank"
-                    >Leaflet.js,</a
-                  >&nbsp;<a
-                    href="http://danielmontague.com/projects/easyButton.js"
-                    target="_blank"
-                    >easyButton.js,</a
-                  >&nbsp;<a
-                    href="https://github.com/Leaflet/Leaflet.markercluster"
-                    target="_blank"
-                    >Leaflet.markercluster,</a
-                  >&nbsp;<a
-                    href="https://mapicons.mapsmarker.com/"
-                    target="_blank"
-                    >Map Icons,</a
-                  >&nbsp;and&nbsp;<a href="https://fontawesome.com/"
-                    >Font Awesome.</a
-                  >
-                </dd>
-                <dt class="">Country Data</dt>
-                <dd>
-                  <a href="https://www.geonames.org" target="_blank"
-                    >GeoNames,</a
-                  >&nbsp;<a href="https://newsapi.org" target="_blank"
-                    >News API,</a
-                  >&nbsp;<a href="https://opencagedata.com/" target="_blank"
-                    >OpenCage,</a
-                  >&nbsp;<a
-                    href="https://openexchangerates.org/"
-                    target="_blank"
-                    >Open Exchange Rates,</a
-                  >&nbsp;<a href="https://openweathermap.org/" target="_blank"
-                    >OpenWeather,</a
-                  >&nbsp;<a href="https://restcountries.com/" target="_blank"
-                    >REST countries,</a
-                  >&nbsp;and&nbsp;<a
-                    href="https://volcano.si.edu/"
-                    target="_blank"
-                    >Global Volcanism Program, Smithsonian Institution.</a
-                  >
-                </dd>
-                <dt>Country Images</dt>
-                <dd>
-                  <a href="https://unsplash.com/" target="_blank">Unsplash</a>
-                </dd>
-                <dt class="">Hosted By</dt>
-                <dd>
-                  <a href="https://heroku.com" target="_blank">Heroku</a>
-                </dd>
+                <div class="container">
+                  <dt class="">Hosted By</dt>
+                  <div class="container">
+                    <dd>
+                      <a href="https://heroku.com" target="_blank">Heroku</a>
+                    </dd>
+                  </div>
+                </div>
               </dl>
             </div>
           </div>
@@ -531,19 +686,19 @@
           <div class="modal-footer pb-0 pt-2">
             <div class="d-flex flex-column align-items-end">
               <button
-                type="button"
-                id="modal-close"
-                class="btn btn-secondary"
-                data-dismiss="modal"
+              type="button"
+              id="modal-close"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
               >
-                Close
-              </button>
-              <p
+              Close
+            </button>
+            <p
                 id="data-captured-at-style"
                 class="text-end text-secondary small mt-1 mb-0"
-              >
+                >
                 Data captured at:&nbsp;<span
-                  class="data-captured-at-text"
+                class="data-captured-at-text"
                 ></span>
               </p>
             </div>
@@ -552,128 +707,70 @@
         </div>
       </div>
     </div>
-    <!-- PROGRESS/LOADING MODAL -->
-    <div class="modal fade" id="progressModal" data-backdrop="false">
-      <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+    
+    <!-- START MODAL -->
+    <div id="startModal" data-bs-backdrop="false" class="modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <div class="modal-body pb-3">
-            <div id="loading-message" class="alert alert-primary">
-              <p>
-                <span id="country-selected-text">Country selected: </span
-                ><span id="loading-message-country"></span>
-              </p>
-              <p id="loading-message-text-1"></p>
-              <p id="loading-message-text-2"></p>
-              <div id="error-retrieving-messages">
-                <p id="error-cities" class="display-none">
-                  Cities data not currently available
-                </p>
-                <p id="error-geoJSON" class="display-none">
-                  Country outline not currently available
-                </p>
-                <p id="error-country-details" class="">
-                  Some country information may not be available
-                </p>
-                <p id="error-wikipedia" class="display-none">
-                  Wikipedia articles currently unavailable
-                </p>
-                <p id="error-news" class="display-none">
-                  News articles currently unavailable
-                </p>
-                <p id="error-current-weather" class="display-none">
-                  Current weather information currently unavailable
-                </p>
-                <p id="error-weather-forecast" class="display-none">
-                  Weather forecast currently unavailable
-                </p>
-                <p id="error-volcanoes" class="display-none">
-                  Information on volcanoes currently unavailable
-                </p>
-                <p id="error-country-images" class="display-none">
-                  Country images currently unavailable
-                </p>
-                <p id="error-earthquakes" class="display-none">
-                  Information on earthquakes currently unavailable
-                </p>
-              </div>
-            </div>
-            <div id="loading-progress-bar-container" class="progress">
-              <div
-                class="progress-bar-striped progress-bar-animated bg-dark"
-                id="loading-progress-bar"
-              ></div>
-            </div>
-            <div id="request-permission" class="display-none">
-              <p>Allow access to your current location?</p>
+          <div class="modal-body">
+            <h3 id="welcome-message"class="text-center mb-4">Welcome to Gazatteer...</h3>
+            <h5 class="error-message text-center d-none">Unable to get your location</h5>
+            <h5 class="error-message text-center d-none">Care to choose a country?</h5>
+            <div class="d-grid gap-3">
               <button
-                id="location-consent-given"
-                class="btn btn-secondary"
-                type="button"
+              id="get-location-btn"
+              class="btn btn-primary"
+              type="button"
               >
-                Yes
-              </button>
-              <button
-                id="location-consent-declined"
-                class="btn btn-secondary"
-                type="button"
-              >
-                No
-              </button>
-            </div>
-            <div id="select-progress-div" class="display-none">
-              <select
-                id="select-progress"
-                class="bg-secondary text-light custom-select"
-              ></select>
-            </div>
+              Get my location
+            </button>
+            <select id="select-start" class="form-select text-center">
+              <option>Choose a country</option>
+            </select>
           </div>
+        </div>
+    </div>
+  </div>
+</div>
+<!-- PROGRESS/LOADING MODAL -->
+<div class="modal fade" id="progressModal" tabindex="-1" data-bs-backdrop="false" role="dialog" aria-labelledby="progress modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body pb-3">
+        <div id="loading-message" class=""></div>
+        <div id="loading-progress-bar-container" class="progress">
           <div
-            id="progress-modal-footer"
-            class="modal-footer border-0 display-none"
-          >
-            <button
-              id="try-again"
-              class="btn btn-secondary display-none"
-              type="button"
-            >
-              Try Again
-            </button>
-            <button
-              id="choose-another"
-              class="btn btn-secondary display-none"
-              type="button"
-              data-dismiss="modal"
-            >
-              Choose Another Country
-            </button>
-            <button
-              id="close-progress-modal"
-              class="btn btn-secondary display-none"
-              type="button"
-              data-dismiss="modal"
-            >
-              Continue
-            </button>
-          </div>
+          class="progress-bar-striped progress-bar-animated bg-dark"
+          id="loading-progress-bar"
+          ></div>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
     <!-- JS SCRIPTS -->
     <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"
+    integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+      ></script>
+<!-- <script type="application/javaScript" src="libs/js/chart.min.js"></script> -->
+      <script
       type="application/javascript"
       src="libs/js/jquery-3.6.0.min.js"
-    ></script>
-    <script
+      ></script>
+      <script
       type="application/javascript"
       src="libs/js/bootstrap.min.js"
-    ></script>
+      ></script>
     <script src="libs/js/leaflet.js"></script>
     <script
-      type="application/javascript"
-      src="libs/js/leaflet.markercluster.js"
+    type="application/javascript"
+    src="libs/js/leaflet.markercluster.js"
     ></script>
     <script type="application/javascript" src="libs/js/easy-button.js"></script>
     <script type="application/javascript" src="libs/js/script2.js"></script>
   </body>
-</html>
+  </html>
