@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 
 $executionStartTime = microtime(true);
 
-$url = "https://api.covid19api.com/total/country/{$_REQUEST['countrycode']}/status/confirmed";
+$url = "https://api.covid19api.com/total/country/{$_REQUEST['countryCodeISO2']}/status/confirmed";
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

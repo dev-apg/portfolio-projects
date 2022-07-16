@@ -36,7 +36,7 @@
             <label class="input-group-text nav-flag-div" for="select"></label>
             <select
             id="select"
-            class="form-select bg-secondary text-light"
+            class="form-select select-country-options bg-secondary text-light"
             ></select>
           </div>
         </div>
@@ -492,7 +492,7 @@ aria-hidden="true"
       </button>
     </div>
     <div class="modal-body py-1">
-      <table class="table mt-0">
+      <table class="table table-borderless blue-striped mt-0">
         <!-- <thead></thead> -->
         <tbody>
                 <tr>
@@ -589,7 +589,7 @@ aria-hidden="true"
               </tbody>
             </table>
             <div class="container">
-              <h5 class="text-center mt-3 mb-3">Languages, libraries and APIs</h5>
+              <h3 class="text-center mt-3 mb-3">Languages, libraries and APIs</h3>
               <dl class="">
                 <div class="container">
                   <dt class="">Front End</dt>
@@ -709,7 +709,7 @@ aria-hidden="true"
     </div>
     
     <!-- START MODAL -->
-    <div id="startModal" data-bs-backdrop="false" class="modal" tabindex="-1">
+    <!-- <div id="startModal" data-bs-backdrop="false" class="modal" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-body">
@@ -724,39 +724,59 @@ aria-hidden="true"
               >
               Get my location
             </button>
-            <select id="select-start" class="form-select text-center">
+            <select id="select-start" class="form-select select-country-options text-center">
               <option>Choose a country</option>
             </select>
           </div>
         </div>
     </div>
   </div>
-</div>
+</div> -->
+
 <!-- PROGRESS/LOADING MODAL -->
 <div class="modal fade" id="progressModal" tabindex="-1" data-bs-backdrop="false" role="dialog" aria-labelledby="progress modal" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-body pb-3">
-        <div id="loading-message" class=""></div>
+      <div data-modal="progress" class="modal-body pb-3">
+        <!-- <div id="loading-message" class=""></div>
         <div id="loading-progress-bar-container" class="progress">
           <div
           class="progress-bar-striped progress-bar-animated bg-dark"
           id="loading-progress-bar"
           ></div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </div>
 
+<!-- ERROR MODAL -->
+
+<!-- <div id="errorsModal" data-bs-backdrop="false" class="modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h3 id="welcome-message"class="text-center mb-4">Oh no, something unexpected happened...</h3>
+        <h5 class="text-center">Not all data was retrieved</h5>
+        <div class="d-grid gap-3">
+        <button
+        id="retry-btn"
+        class="btn btn-primary"
+        type="button"
+        >
+      </button>
+        <select id="select-errorModal" class="select-country-options form-select text-center">
+          <option>Choose another country</option>
+        </select>
+      </div>
+    </div>
+</div>
+</div>
+</div> -->
+
     <!-- JS SCRIPTS -->
-    <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"
-    integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-      ></script>
-<!-- <script type="application/javaScript" src="libs/js/chart.min.js"></script> -->
+   
+<script type="application/javaScript" src="libs/js/chart.min.js"></script>
       <script
       type="application/javascript"
       src="libs/js/jquery-3.6.0.min.js"

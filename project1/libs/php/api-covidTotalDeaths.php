@@ -7,7 +7,7 @@
 
 	$executionStartTime = microtime(true);
     
-	$url = "https://api.covid19api.com/total/country/{$_REQUEST['countrycode']}/status/deaths";
+	$url = "https://api.covid19api.com/total/country/{$_REQUEST['countryCodeISO2']}/status/deaths";
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

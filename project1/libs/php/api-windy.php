@@ -7,7 +7,7 @@
 
 	$executionStartTime = microtime(true);
     
-	$url = "https://api.windy.com/api/webcams/v2/list/country={$_REQUEST['countrycode']}?show=webcams:location,image,player&key=t8cdPYGwXqKuRxuDltlYM6t5xOLhfCte";
+	$url = "https://api.windy.com/api/webcams/v2/list/country={$_REQUEST['countryCodeISO2']}?show=webcams:location,image,player&key=t8cdPYGwXqKuRxuDltlYM6t5xOLhfCte";
 
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

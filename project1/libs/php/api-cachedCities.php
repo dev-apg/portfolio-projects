@@ -75,7 +75,7 @@ return $results;
 
 function get_cities() {
     $executionStartTime = microtime(true);
-    $expires = time() - 24*60*60;
+    $expires = time() - 30*24*60*60;
     $cache_file = '../resources/cities15000.txt';
 
     if (!file_exists($cache_file)) {
@@ -91,7 +91,10 @@ function get_cities() {
     $output['status']['description'] = "success";
     $output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
     $output['data'] = $results;
-    $encoded_output = json_encode($output);
+
+	header('Content-Type: application/json; charset=UTF-8');
+
+    $encoded_output = json_encode($output,true);
     echo $encoded_output;
 
 }
@@ -164,7 +167,7 @@ function name_array_keys($number) {
     
 
 
-get_cities()
+get_cities();
 
     ?>
 

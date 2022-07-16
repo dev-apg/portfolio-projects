@@ -14,11 +14,11 @@ body {
   height: 100%;
 }
 
-@media only screen and (max-width: 345px) {
+/* @media only screen and (max-width: 345px) {
   body {
     font-size: 14px;
   }
-}
+} */
 
 /* @media only screen and (max-width: 310px) {
   body {
@@ -61,7 +61,7 @@ body {
 }
 
 .leaflet-popup-content-wrapper {
-  border-radius: 14px;
+  border-radius: 0.25rem;
   padding: 7px;
 }
 
@@ -172,8 +172,6 @@ div.leaflet-control-layers-overlays {
 }
 
 .custom-select {
-  /* background-color: var(--dark-grey); */
-  /* color: var(--light-grey); */
   border: 1px solid var(--bs-light);
 }
 
@@ -193,28 +191,31 @@ div.leaflet-control-layers-overlays {
 }
 
 #logo {
-  height: 49px;
+  /* height: 49px; */
   position: absolute;
-  top: -3px;
-  left: 48px;
+  /* top: -3px; */
+  left: 54px;
+  height: 30px;
+  top: 6px;
   cursor: pointer;
 }
 
-@media only screen and (max-width: 660px) {
+/* @media only screen and (max-width: 660px) {
   #logo {
     height: 35px;
     top: 4px;
   }
-}
+} */
 
-@media only screen and (max-width: 570px) {
+/* @media only screen and (max-width: 570px) {
   #logo {
     height: 30px;
     top: 6px;
+    left: 48px;
   }
-}
+} */
 
-@media only screen and (max-width: 530px) {
+@media only screen and (max-width: 570px) {
   #logo {
     display: none;
   }
@@ -316,34 +317,25 @@ div.input-group {
   background-color: #dff9fb;
 }
 
+/* PINS */
+/* volcanoes */
+[data-summary]:hover::before {
+  background-color: white;
+  content: attr(data-summary);
+  position: absolute;
+  top: 30px;
+  width: 100px;
+}
+
 /* all modals */
 
 /* modal tables */
 
 .blue-striped tr:nth-child(even) {
-  background: rgba(223, 242, 255, 0.2);
   background-color: aliceblue;
 }
 
-.blue-striped th {
-  /* color: var(--blue-text); */
-}
-
-.blue-text,
-.blue-striped em {
-  /* color: var(--blue-text); */
-}
-
-.orange-striped em {
-  /* color: rgba(255, 99, 132, 1); */
-}
-
-.orange-striped th {
-  /* color: rgba(255, 99, 132, 1); */
-}
-
 .orange-striped tr:nth-child(even) {
-  /* background: rgba(255, 212, 222, 0.2); */
   background-color: rgb(236 224 227 / 20%);
 }
 
@@ -537,13 +529,12 @@ a.leaflet-popup-close-button {
 }
 
 /* infoModal weather */
-/* 
+
 #icon-div {
   height: 12rem;
   background-color: aliceblue;
 }
 
-*/
 #current-weather-icon {
   font-size: 6rem;
 }
@@ -598,9 +589,9 @@ div#news-data .lead {
   font-weight: bold;
 }
 
-.articles-container {
+/* .articles-container {
   overflow: clip;
-}
+} */
 
 .news-story-date {
   color: var(--gray);

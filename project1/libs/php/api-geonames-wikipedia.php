@@ -23,26 +23,22 @@
 
 	$array = array();
 
-	foreach($result as $entry) {
+	foreach($result as $xml) {
 		$tempArray=array();
-		array_push($tempArray,$entry->title);
-		array_push($tempArray,$entry->summary);
-		array_push($tempArray,$entry->wikipediaUrl);
-		array_push($tempArray,$entry->thumbnailImg);
+		foreach($xml->children() as $child) {
+			array_push($tempArray,$child->__toString());
+		}
 		array_push($array, $tempArray);
 	}
-
-	$encoded = json_encode($array);
 
 	$output['status']['code'] = "200";
 	$output['status']['name'] = "ok";
 	$output['status']['description'] = "success";
 	$output['status']['returnedIn'] = intval((microtime(true) - $executionStartTime) * 1000) . " ms";
-	$output['data'] = $encoded;
+	$output['data'] = $array;
 	
 	header('Content-Type: application/json; charset=UTF-8');
 
-	// echo json_encode($output); 
-	echo json_encode($output); 
+	echo json_encode($output);
 
 ?>

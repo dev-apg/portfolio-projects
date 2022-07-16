@@ -4,10 +4,6 @@ if (location.href !== "http://localhost/portfolio/project1/") {
   }
 }
 
-const startModal = new bootstrap.Modal(document.getElementById("startModal"), {
-  keyboard: false,
-});
-
 $(window).on("load", function () {
   //preload handler
   if ($("#preloader").length) {
@@ -17,7 +13,7 @@ $(window).on("load", function () {
         $(this).remove();
       });
   }
-  startModal.show();
+  progressModal_start();
 });
 
 //----------------------SET UP MAP
@@ -69,8 +65,6 @@ const streetTiles = L.tileLayer(
 //     maxZoom: 15,
 //   }
 // ).addTo(map);
-
-// let incLoadingBarWidth = 0;
 
 //----------------------------MAP ICONS
 
@@ -241,6 +235,8 @@ const recenterButton = L.easyButton({
   ],
 }).addTo(map);
 
+//-------------------MAP FUNCTIONS
+
 function flyToPin(e) {
   map.flyTo([e.target._latlng.lat, e.target._latlng.lng], 12, [2, 2]);
   (function openPopupOnZoomLevel12() {
@@ -248,7 +244,6 @@ function flyToPin(e) {
       if (map.getZoom() === 12) {
         e.target.openPopup();
       } else {
-        // console.log(map.getZoom());
         openPopupOnZoomLevel12();
       }
     }, 750);
@@ -260,18 +255,18 @@ function flyToPin(e) {
 $("#select").change(function (e) {
   const select = e.target;
   const countryCodeISO2 = select.value;
+  prvsSelected_CountryCodeISO2 = select.value;
   const countryName = select.item(select.selectedIndex).textContent;
-  console.log(countryName);
+
   ll.getData(countryCodeISO2, countryName);
 });
 
-$("#select-start").change(function (e) {
-  const select = e.target;
-  const countryCodeISO2 = select.value;
-  const countryName = select.item(select.selectedIndex).textContent;
-  ll.getData(countryCodeISO2, countryName);
-  startModal.hide();
-});
+// $("#select-start").change(function (e) {
+//   const select = e.target;
+//   const countryCodeISO2 = select.value;
+//   const countryName = select.item(select.selectedIndex).textContent;
+//   ll.getData(countryCodeISO2, countryName);
+// });
 
 $(".nav-flag-div").on("click", function () {
   const select = document.getElementById("select");
@@ -291,14 +286,265 @@ $("#logo").on("click", function () {
 
 //--------------------------Progress Modal -------------------------//
 
+let countriesArr = [];
+
+let selected_CountryCodeISO2 = null;
+let selected_CountryName = null;
+let dataMissing = false;
+let errors = [];
+let continueAnimation = true;
+
+function progressModal_start() {
+  const modal = document.querySelector('[data-modal="progress"]');
+  const children = modal.children;
+  if (children) {
+    Array.from(children).forEach((child) => {
+      child.remove();
+    });
+  }
+  const welcomeMessage = document.createElement("h3");
+  welcomeMessage.textContent = "Welcome to Gazatteer";
+  welcomeMessage.id = "welcome-message";
+  welcomeMessage.classList = "text-center mb-4";
+
+  const buttonsContainer = document.createElement("div");
+  buttonsContainer.classList = "d-grid gap-3";
+
+  const getLocationBtn = document.createElement("button");
+  getLocationBtn.id = "get-location-btn";
+  getLocationBtn.textContent = "Get user location";
+  getLocationBtn.classList = "btn btn-primary";
+  getLocationBtn.type = "button";
+  getLocationBtn.addEventListener("click", function () {
+    getUserLocation();
+  });
+
+  const select = document.createElement("select");
+  select.id = "select-start";
+  select.classList = "form-select select-country-options text-center";
+  const firstOption = document.createElement("option");
+  firstOption.textContent = "Choose a country";
+  select.append(firstOption);
+
+  countriesArr.forEach((country) => {
+    const option = document.createElement("option");
+    option.textContent = country[0];
+    option.value = country[1];
+    select.append(option);
+  });
+
+  select.addEventListener("change", function (e) {
+    const select = e.target;
+    const countryCodeISO2 = select.value;
+    prvsSelected_CountryCodeISO2 = select.value;
+    const countryName = select.item(select.selectedIndex).textContent;
+    ll.getData(countryCodeISO2, countryName);
+  });
+
+  modal.append(welcomeMessage, buttonsContainer);
+  buttonsContainer.append(getLocationBtn, select);
+  progressModal.show();
+}
+
+//---------------ProgressModal Errors
+
+function progressModal_userLocationFailed() {
+  const modal = document.querySelector('[data-modal="progress"]');
+  const children = modal.children;
+  if (children) {
+    Array.from(children).forEach((child) => {
+      child.remove();
+    });
+  }
+}
+
+function progressModal_gettingData(data) {
+  const modal = document.querySelector('[data-modal="progress"]');
+  continueAnimation = true;
+  const children = modal.children;
+  if (children) {
+    Array.from(children).forEach((child) => {
+      child.remove();
+    });
+  }
+
+  const messageDiv = document.createElement("div");
+  messageDiv.id = "loading-message-div";
+
+  const progressBarContainer = document.createElement("div");
+  progressBarContainer.classList = "progress";
+  progressBarContainer.id = "loading-progress-bar-container";
+
+  const progressBar = document.createElement("div");
+  progressBar.id = "progress-bar";
+  progressBar.classList = "progress-bar-striped progress-bar-animated bg-dark";
+
+  const loadingMessage = document.createElement("h3");
+  loadingMessage.id = "loading-message";
+  const messageTextArr = ["With you shortly...", "Comin' up!", "One second..."];
+  const messageText =
+    messageTextArr[Math.floor(Math.random() * messageTextArr.length)];
+  loadingMessage.innerHTML = messageText;
+
+  const footprints = document.createElement("p");
+  footprints.classList = "text-center d-flex justify-content-evenly";
+  footprints.id = "footprints";
+
+  for (let i = 0; i < 7; i++) {
+    const span = document.createElement("span");
+    span.classList = "mx-1 fa-solid fa-shoe-prints";
+    footprints.append(span);
+  }
+
+  const para = document.createElement("p");
+  para.id = "retrieving-data-for";
+  !data.countryName
+    ? (para.innerText = `Retrieving data for your location`)
+    : (para.innerText = `Retrieving data for ${data.countryName}`);
+
+  modal.append(messageDiv, progressBarContainer);
+  messageDiv.append(footprints, loadingMessage, para);
+  progressBarContainer.append(progressBar);
+  progressModal.show();
+}
+
+function progressModal_someDataMissing() {
+  const modal = document.querySelector('[data-modal="progress"]');
+  const children = modal.children;
+  if (children) {
+    Array.from(children).forEach((child) => {
+      child.remove();
+    });
+  }
+  const messageDiv = document.createElement("div");
+  messageDiv.classList = "alert alert-primary";
+  const text = document.createElement("p");
+  text.textContent = "Some data missing:";
+
+  const list = document.createElement("ul");
+
+  errors.forEach((error) => {
+    const li = document.createElement("li");
+    li.textContent = error;
+    list.append(li);
+  });
+
+  const buttonsContainer = document.createElement("div");
+  buttonsContainer.classList = "d-grid gap-3";
+
+  const closeModalBtn = document.createElement("button");
+  closeModalBtn.id = "get-location-btn";
+  closeModalBtn.textContent = "Ok";
+  closeModalBtn.classList = "btn btn-primary";
+  closeModalBtn.type = "button";
+  closeModalBtn.setAttribute("data-bs-dismiss", "modal");
+
+  modal.append(messageDiv, buttonsContainer);
+  messageDiv.append(text, list);
+  buttonsContainer.append(closeModalBtn);
+}
+
+function progressModal_APIfailure(e) {
+  console.log(e);
+  progressModal.show();
+  const modal = document.querySelector('[data-modal="progress"]');
+  const children = modal.children;
+  if (children) {
+    Array.from(children).forEach((child) => {
+      child.remove();
+    });
+  }
+
+  const messageDiv = document.createElement("div");
+  messageDiv.classList = "alert alert-danger";
+  const text = document.createElement("p");
+  text.textContent = "There was an error retrieving data";
+
+  const buttonsContainer = document.createElement("div");
+  buttonsContainer.classList = "d-grid gap-3";
+
+  const tryAgainBtn = document.createElement("button");
+  tryAgainBtn.id = "try-again-btn";
+  tryAgainBtn.textContent = "Try again?";
+  tryAgainBtn.classList = "btn btn-primary";
+  tryAgainBtn.type = "button";
+  tryAgainBtn.addEventListener("click", function () {
+    ll.getData(selected_CountryCodeISO2, selected_CountryName);
+  });
+
+  const select = document.createElement("select");
+  select.id = "select-start";
+  select.classList = "form-select select-country-options text-center";
+  const firstOption = document.createElement("option");
+  firstOption.textContent = "Choose another country";
+  select.append(firstOption);
+
+  countriesArr.forEach((country) => {
+    const option = document.createElement("option");
+    option.textContent = country[0];
+    option.value = country[1];
+    select.append(option);
+  });
+
+  select.addEventListener("change", function (e) {
+    const select = e.target;
+    const countryCodeISO2 = select.value;
+    prvsSelected_CountryCodeISO2 = select.value;
+    const countryName = select.item(select.selectedIndex).textContent;
+    ll.getData(countryCodeISO2, countryName);
+  });
+
+  modal.append(messageDiv, buttonsContainer);
+  messageDiv.append(text);
+  buttonsContainer.append(tryAgainBtn, select);
+}
+
+function modalFootprints() {
+  const prints = document.querySelectorAll(".fa-shoe-prints");
+  (function animateFootprints(prints) {
+    prints.forEach((print) => {
+      print.style.color = "white";
+    });
+    setTimeout(function () {
+      prints[0].style.color = "black";
+      prints[0].style.transform = "rotate(5deg)";
+    }, 800);
+    setTimeout(function () {
+      prints[1].style.color = "black";
+      prints[1].style.transform = "rotate(-5deg)";
+    }, 1600);
+    setTimeout(function () {
+      prints[2].style.color = "black";
+      prints[2].style.transform = "rotate(5deg)";
+    }, 2400);
+    setTimeout(function () {
+      prints[3].style.color = "black";
+      prints[3].style.transform = "rotate(-5deg)";
+    }, 3200);
+    setTimeout(function () {
+      prints[4].style.color = "black";
+      prints[4].style.transform = "rotate(-5deg)";
+    }, 4000);
+    setTimeout(function () {
+      if (continueAnimation) {
+        animateFootprints(prints);
+        console.log("footprints continue");
+      } else {
+        console.log("footprints stop");
+        prints.forEach((print) => {
+          print.style.color = "white";
+        });
+      }
+    }, 4800);
+  })(prints, continueAnimation);
+}
+
 const progressModal = new bootstrap.Modal(
   document.getElementById("progressModal"),
   {
     keyboard: false,
   }
 );
-
-const loadingBar = document.getElementById("loading-progress-bar");
 
 const citiesModal = new bootstrap.Modal(
   document.getElementById("citiesModal"),
@@ -307,43 +553,12 @@ const citiesModal = new bootstrap.Modal(
   }
 );
 
-// $("#try-again").on("click", function () {
-//   locationData($("#select").val());
-// });
-
-// $("#choose-another").on("click", function () {
-//   $("#progressModal").modal("hide");
-// });
-
-// $("#select-progress").change(function () {
-//   setSelected($("#select-progress").val());
-//   locationData($("#select-progress").val());
-//   $("#select-progress-div").addClass("display-none");
-// });
-
-// const covidChartDailyInfectionsCanvas = document
-//   .getElementById("covid-chart-daily-infections")
-//   .getContext("2d");
-// const covidChartDailyInfections = new Chart(covidChartDailyInfectionsCanvas, {
-//   type: "bar",
-//   data: {},
-//   options: {
-//     scales: {
-//       x: {},
-//       y: {
-//         beginAtZero: true,
-//       },
-//     },
-//     plugins: {
-//       legend: {
-//         display: false,
-//         labels: {
-//           color: "rgb(255, 99, 132)",
-//         },
-//       },
-//     },
-//   },
-// });
+// const errorsModal = new bootstrap.Modal(
+//   document.getElementById("errorsModal"),
+//   {
+//     keyboard: false,
+//   }
+// );
 
 // ---------------------DATA NODE AND LINKED LIST-------//
 // Node that contains country data for linked list
@@ -354,13 +569,6 @@ class DataNode {
     this.next = null;
     this.previous = null;
   }
-  // printData() {
-  //   console.log(ll.current.data);
-  // }
-
-  // clearData() {
-  //   this.data = {};
-  // }
 }
 
 //---------------------------------LINKED LIST------
@@ -373,8 +581,9 @@ class LinkedList {
   }
 
   getData(countryCodeISO2, countryName, lat, lng) {
-    loadingBar.style.width = 0;
-    progressModal.show();
+    selected_CountryCodeISO2 = countryCodeISO2;
+    selected_CountryName = countryName;
+
     //on first call create a head node
     if (!this.head) {
       let node = new DataNode();
@@ -426,9 +635,6 @@ class LinkedList {
     updateHTML(this.current.data);
     setNavButtons();
     setSelected(this.current.data.countryCodeISO2);
-    // setSelected(this.current.data.countryCodeISO2);
-    // setNavButtons(this.current);
-    //6) this.recenter
   }
   backward() {
     if (!this.current.previous) return;
@@ -440,10 +646,6 @@ class LinkedList {
     updateHTML(this.current.data);
     setNavButtons();
     setSelected(this.current.data.countryCodeISO2);
-
-    // setSelected(this.current.data.countryCodeISO2);
-    // setNavButtons(this.current);
-    //6) this.recenter
   }
 
   recenter() {
@@ -490,10 +692,10 @@ populateSelect();
 
 //-----------------------------REQUEST USER LOCATION
 
-const getLocationBtn = document.getElementById("get-location-btn");
-getLocationBtn.addEventListener("click", function () {
-  getUserLocation();
-});
+// const getLocationBtn = document.getElementById("get-location-btn");
+// getLocationBtn.addEventListener("click", function () {
+//   getUserLocation();
+// });
 
 function getUserLocation() {
   var options = {
@@ -504,7 +706,6 @@ function getUserLocation() {
 
   //on consent given
   function success(pos) {
-    startModal.hide();
     var crd = pos.coords;
     ll.getData(null, null, crd.latitude, crd.longitude);
   }
@@ -514,78 +715,22 @@ function getUserLocation() {
     document.getElementById("welcome-message").classList.add("d-none");
     getLocationBtn.setAttribute("disabled", true);
     const errMessages = document.querySelectorAll(".error-message");
-    errMessages.forEach((message) => {
-      message.classList.remove("d-none");
-    });
+    // errMessages.forEach((message) => {
+    //   message.classList.remove("d-none");
+    // });
     console.warn(`ERROR(${err.code}): ${err.message}`);
   }
   navigator.geolocation.getCurrentPosition(success, error, options);
 }
 
 //------------API CALLS FUNCTION
-
 function countryAPICalls(data) {
-  setProgressModal(data);
-  function setProgressModal(data) {
-    //get div - append to id = loading-messasge
-    const messagediv = document.getElementById("loading-message");
-    const loadingMessage = document.createElement("h3");
-    messagediv.appendChild(loadingMessage);
-    const messageTextArr = ["With you shortly", "Un momento", "One second"];
-    const messageText =
-      messageTextArr[Math.floor(Math.random() * messageTextArr.length)];
-    loadingMessage.innerHTML = `${messageText}...&nbsp;&nbsp;`;
-
-    const footprints = document.createElement("h3");
-    footprints.classList = "text-center d-flex justify-content-evenly";
-    loadingMessage.before(footprints);
-
-    for (let i = 0; i < 5; i++) {
-      const span = document.createElement("span");
-      span.classList = "mx-1 fa-solid fa-shoe-prints";
-      footprints.append(span);
-    }
-
-    const para = document.createElement("p");
-    messagediv.appendChild(para);
-    para.innerText = `Retrieving data for ${data.countryName}`;
-
-    const prints = document.querySelectorAll(".fa-shoe-prints");
-    continueAnimation = true;
-
-    (function animateFootprints(prints) {
-      console.log("animate footprints...");
-      prints.forEach((footprint) => {
-        footprint.style.color = "white";
-      });
-      console.log("here we go again");
-      setTimeout(function () {
-        prints[0].style.color = "black";
-        prints[0].style.transform = "rotate(5deg)";
-      }, 800);
-      setTimeout(function () {
-        prints[1].style.color = "black";
-        prints[1].style.transform = "rotate(-5deg)";
-      }, 1600);
-      setTimeout(function () {
-        prints[2].style.color = "black";
-        prints[2].style.transform = "rotate(5deg)";
-      }, 2400);
-      setTimeout(function () {
-        prints[3].style.color = "black";
-        prints[3].style.transform = "rotate(-5deg)";
-      }, 3200);
-      setTimeout(function () {
-        prints[4].style.color = "black";
-        prints[4].style.transform = "rotate(-5deg)";
-      }, 4000);
-      setTimeout(function () {
-        if (continueAnimation) {
-          animateFootprints(prints);
-        }
-      }, 4800);
-    })(prints, continueAnimation);
-  }
+  // data.countryCodeISO2 = "xxx";
+  closeProgressModal = true;
+  dataMissing = false;
+  errors = [];
+  progressModal_gettingData(data);
+  modalFootprints();
 
   opencageCall(data)
     .then(() =>
@@ -596,18 +741,16 @@ function countryAPICalls(data) {
         holidayAPICall(data),
         apiCovidTotalDeathsCall(data),
         apiCovidTotalConfirmedCall(data),
-        apiWindyCall(data.countryCodeISO2),
+        apiWindyCall(data),
       ])
     )
     .then(() => restCountriesCall(data))
     .then(() => opencageCall(data))
     .then(() =>
-      Promise.all([
+      Promise.allSettled([
         apiVolcanoesCall(data),
-        ,
-        /*openExchangeRatesCall(data) 1k starting from 6th of the mont*/ geonamesCitiesCall(
-          data
-        ),
+        geonamesCitiesCall(data),
+        openExchangeRatesCall(data), // 1k starting from 6th of the month
         geonamesEarthquakesCall(data),
         geonamesWikiCall(data),
         apiOpenWeatherOneCall(data), // openweather 1M calls per month
@@ -620,31 +763,44 @@ function countryAPICalls(data) {
     .then(() => removeFocusFromSelect())
     .then(() => updateHTML(data))
     .then(() => setNavButtons())
-    .then(() => progressModal.hide())
     .then(() => (continueAnimation = false))
-    .catch((e) => console.log(e));
+    .then(() =>
+      dataMissing ? progressModal_someDataMissing() : progressModal.hide()
+    )
+    .catch((e) => {
+      continueAnimation = false;
+      progressModal_APIfailure(e);
+    });
 }
 
 //------------------------API CALLS-----------------------//
 
 async function opencageCall(data) {
-  //don't run if lat/lng not present
-  if (!data.lat && !data.lng) return;
+  //don't run if lat/lng not set
+  if (!data.lat && !data.lng && !data.latitude && !data.longitude) {
+    // console.log("opencageCall - lat/lng not defined");
+    // errors.push("general info");
+    // dataMissing = true;
+    // incLoadingBar(6.25);
+    return;
+  }
   //don't run if it's already ran
   if (data.offset_sec) return;
+  const lat = data.latitude || data.lat;
+  const lng = data.longitude || data.lng;
   return $.ajax({
     url: "libs/php/api-opencage.php",
     type: "POST",
     dataType: "json",
     data: {
-      lat: data.lat,
-      lng: data.lng,
+      lat: lat,
+      lng: lng,
     },
     success: function (result) {
       incLoadingBar(6.25);
       if (result.data.results.length === 0) {
-        // errorRetrievingData("error-country-details");
-        return;
+        errors.push("general information");
+        dataMissing = true;
       }
       data.countryCodeISO2 =
         result.data.results[0].components["ISO_3166-1_alpha-2"];
@@ -654,7 +810,6 @@ async function opencageCall(data) {
       data.offset_sec = result.data.results[0].annotations.timezone.offset_sec;
       data.localTime = currentDayTime(ll.current.data.offset_sec);
       data.unix = Date.now();
-      // console.log(result.data.results[0].components.political_union);
       data.countryName = result.data.results[0].components.country;
       result.data.results[0].components.political_union
         ? (data.political_union =
@@ -669,8 +824,8 @@ async function opencageCall(data) {
         : null;
     },
     error: function (jqXHR, textStatus, errorThrown) {
-      // fatalError();
       incLoadingBar(6.25);
+      console.log({ opencageCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
@@ -678,22 +833,25 @@ async function opencageCall(data) {
 async function getGeoJSONData(data) {
   if (!data.countryCodeISO2) {
     console.log("country code not defined");
-    // fatalError();
+    errors.push("country outline");
+    dataMissing = true;
+    incLoadingBar(6.25);
     return;
   }
   return $.ajax({
     url: "libs/php/countryBorders-geoJSON.php",
     type: "GET",
     dataType: "json",
-    data: { countryCode: data.countryCodeISO2 },
+    data: { countryCodeISO2: data.countryCodeISO2 },
     success: function (result) {
       incLoadingBar(6.25);
-      if (!result) {
-        // errorRetrievingData("error-geoJSON", infoStore);
+      if (result.data.length === 0) {
+        errors.push("country outline");
+        dataMissing = true;
         return;
       }
-      data.geoJSON = result;
-      data.geojsonCountryOutline = L.geoJSON(result, {
+      data.geoJSON = result.data;
+      data.geojsonCountryOutline = L.geoJSON(result.data, {
         style: function (feature) {
           return { color: "rgba(15, 188, 249, 0.548)" };
         },
@@ -701,28 +859,33 @@ async function getGeoJSONData(data) {
       data.boundingBox = data.geojsonCountryOutline.getBounds();
     },
     error: function (jqXHR, textStatus, errorThrown) {
-      console.log(jqXHR, textStatus, errorThrown);
-      // fatalError();
       incLoadingBar(6.25);
+      console.log({ getGeoJSONData: jqXHR, textStatus, errorThrown });
     },
   });
 }
 
 function geonamesCountryInfoCall(data) {
-  let countryCodeISO2 = data.countryCodeISO2;
-  if (!countryCodeISO2) console.log("ISO2 not defined");
+  if (!data.countryCodeISO2) {
+    console.log("Geonames-countryInfo - ISO2 not defined");
+    errors.push("country info");
+    dataMissing = true;
+    incLoadingBar(6.25);
+    return;
+  }
   return $.ajax({
     url: "libs/php/api-geonames-countryInfo.php",
     type: "POST",
     dataType: "json",
     data: {
-      countryCodeISO2: countryCodeISO2,
+      countryCodeISO2: data.countryCodeISO2,
     },
     success: function (result) {
       incLoadingBar(6.25);
-      if (result.data.length !== 1) {
-        errorRetrievingData("error-country-details", infoStore);
-        console.log("geonamescountryinfocall");
+      if (result.data.length === 0) {
+        dataMissing = true;
+        errors.push("country info");
+        dataMissing = true;
         return;
       }
       data.countryName = result.data[0].countryName;
@@ -740,37 +903,47 @@ function geonamesCountryInfoCall(data) {
     },
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      // fatalError();
+      console.log({ geonamesCountryInfoCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
 
 function holidayAPICall(data) {
-  let countryCodeISO2 = data.countryCodeISO2;
-  if (!countryCodeISO2) console.log("ISO2 not defined");
+  if (!data.countryCodeISO2) {
+    console.log("holidayAPICall - ISO2 not defined");
+    errors.push("dates");
+    dataMissing = true;
+    incLoadingBar(6.25);
+    return;
+  }
   return $.ajax({
     url: "libs/php/api-holidayapi.php",
     type: "POST",
     dataType: "json",
     data: {
-      countryCodeISO2: countryCodeISO2,
+      countryCodeISO2: data.countryCodeISO2,
     },
     success: function (result) {
       incLoadingBar(6.25);
       data.dates = result.data;
+      if (result.data.length === 0) {
+        errors.push("dates");
+        dataMissing = true;
+        return;
+      }
     },
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      // fatalError();
+      console.log({ holidayAPICall: jqXHR, textStatus, errorThrown });
     },
   });
 }
 
 function restCountriesCall(data) {
-  const countryCodeISO3 = data.countryCodeISO3;
-  if (!countryCodeISO3) {
-    errorRetrievingData("error-country-details", infoStore);
-    console.log(restCountriesCall);
+  if (!data.countryCodeISO3) {
+    console.log("restCountriesCall - ISO3 not defined");
+    errors.push("general country information");
+    dataMissing = true;
     incLoadingBar(6.25);
     return;
   }
@@ -778,12 +951,12 @@ function restCountriesCall(data) {
     url: "libs/php/api-restcountries.php",
     type: "POST",
     dataType: "json",
-    data: { countryCodeISO3: countryCodeISO3 },
+    data: { countryCodeISO3: data.countryCodeISO3 },
     success: function (result) {
       incLoadingBar(7);
-      if (result.data.status === 400) {
-        errorRetrievingData("error-country-details", infoStore);
-        console.log("restcountries");
+      if (result.data.message === "Bad Request") {
+        errors.push("general country information");
+        dataMissing = true;
         return;
       }
       data.languages = result.data.languages[0].name;
@@ -795,16 +968,17 @@ function restCountriesCall(data) {
       data.currencySymbol = result.data.currencies[0].symbol;
     },
     error: function (jqXHR, textStatus, errorThrown) {
+      console.log({ restCountriesCall: jqXHR, textStatus, errorThrown });
       incLoadingBar(6.25);
-      fatalError();
     },
   });
 }
 
 function apiVolcanoesCall(data) {
-  const countryName = data.countryName;
-  if (!countryName) {
-    errorRetrievingData("error-volcanoes", infoStore);
+  if (!data.countryName) {
+    console.log("apiVolcanoesCall - ISO2 not defined");
+    errors.push("volcanoes");
+    dataMissing = true;
     incLoadingBar(6.25);
     return;
   }
@@ -813,24 +987,31 @@ function apiVolcanoesCall(data) {
     type: "POST",
     dataType: "json",
     data: {
-      countryname: countryName,
+      countryname: data.countryName,
     },
     success: function (result) {
       incLoadingBar(6.25);
+      if (result.data.length === 0) {
+        // errors.push("volcanoes");
+        // dataMissing = true;
+        return;
+      }
       data.volcanoes = result.data;
     },
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      fatalError();
+      console.log({ apiVolcanoesCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
 
 function openExchangeRatesCall(data) {
-  const currencyISO3Code = data.currencyISO3Code;
-  if (!currencyISO3Code) {
-    errorRetrievingData("error-country-details", infoStore);
-    console.log("openexchangerates");
+  if (!data.countryCodeISO3) {
+    console.log("openExchangeRatesCall - ISO2 not defined");
+    errors.push("exchange rate");
+    dataMissing = true;
+    incLoadingBar(6.25);
+    return;
   }
   return $.ajax({
     url: "libs/php/api-openexchangerates.php",
@@ -838,46 +1019,57 @@ function openExchangeRatesCall(data) {
     dataType: "json",
     success: function (result) {
       incLoadingBar(6.25);
-      if (!result.data) {
-        errorRetrievingData("error-country-details", infoStore);
-        console.log("openexchangerates");
+      if (Object.keys(result.data).length === 0) {
+        errors.push("exchange rate");
+        dataMissing = true;
         return;
       }
-      data.exchangeRate = result.data[currencyISO3Code];
+      data.exchangeRate = result.data[data.currencyISO3Code];
     },
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      fatalError();
+      console.log({ openExchangeRatesCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
 
 function geonamesCitiesCall(data) {
-  const countryCodeISO2 = data.countryCodeISO2;
+  if (!data.countryCodeISO2) {
+    console.log("geonamesCitiesCall - ISO2 not defined");
+    errors.push("cities");
+    dataMissing = true;
+    incLoadingBar(6.25);
+    return;
+  }
   return $.ajax({
     url: "libs/php/api-cachedCities.php",
     type: "POST",
     dataType: "json",
     data: {
-      countryCodeISO2: countryCodeISO2,
+      countryCodeISO2: data.countryCodeISO2,
     },
     success: function (result) {
       incLoadingBar(6.25);
+      if (result.data.length === 0) {
+        errors.push("cities");
+        dataMissing = true;
+      }
+
       data.cities = result.data;
     },
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      // fatalError();
-      console.log(jqXHR, textStatus, errorThrown);
+      console.log({ geonamesCitiesCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
 
 function geonamesEarthquakesCall(data) {
-  const boundingBox = data.boundingBox;
-  if (!boundingBox) {
+  if (!data.boundingBox) {
+    console.log("geonamesEarthquakesCall - boundingBox not defined");
+    errors.push("earthquakes");
+    dataMissing = true;
     incLoadingBar(6.25);
-    errorRetrievingData("error-earthquakes");
     return;
   }
   return $.ajax({
@@ -885,30 +1077,32 @@ function geonamesEarthquakesCall(data) {
     type: "POST",
     dataType: "json",
     data: {
-      north: boundingBox._northEast.lat,
-      south: boundingBox._southWest.lat,
-      east: boundingBox._northEast.lng,
-      west: boundingBox._southWest.lng,
+      north: data.boundingBox._northEast.lat,
+      south: data.boundingBox._southWest.lat,
+      east: data.boundingBox._northEast.lng,
+      west: data.boundingBox._southWest.lng,
     },
     success: function (result) {
       incLoadingBar(6.25);
-      if (!result.data) {
-        errorRetrievingData("error-volcanoes", infoStore);
+      if (result.data === null) {
+        errors.push("earthquakes");
+        dataMissing = true;
+        return;
       }
       data.earthquakes = result.data;
     },
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      fatalError();
+      console.log({ geonamesEarthquakesCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
 
 function geonamesWikiCall(data) {
-  if (!data.boundingBox) return;
-  const boundingBox = data.boundingBox;
-  if (!boundingBox) {
-    errorRetrievingData("error-wikipedia", infoStore);
+  if (!data.boundingBox) {
+    console.log("geonamesWikiCall - boundingBox not defined");
+    errors.push("wikipedia articles");
+    dataMissing = true;
     incLoadingBar(6.25);
     return;
   }
@@ -917,22 +1111,23 @@ function geonamesWikiCall(data) {
     type: "POST",
     dataType: "json",
     data: {
-      north: boundingBox._northEast.lat,
-      south: boundingBox._southWest.lat,
-      east: boundingBox._northEast.lng,
-      west: boundingBox._southWest.lng,
+      north: data.boundingBox._northEast.lat,
+      south: data.boundingBox._southWest.lat,
+      east: data.boundingBox._northEast.lng,
+      west: data.boundingBox._southWest.lng,
     },
     success: function (result) {
       incLoadingBar(6.25);
-      if (result.data.length === 1) {
-        errorRetrievingData("error-wikipedia", infoStore);
+      if (result.data.length === 0) {
+        errors.push("wikipedia articles");
+        dataMissing = true;
         return;
       }
-      ll.current.data.wikipediaArticles = JSON.parse(result.data);
+      data.wikipediaArticles = result.data;
     },
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      fatalError();
+      console.log({ geonamesWikiCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
@@ -941,7 +1136,9 @@ async function apiOpenWeatherOneCall(data) {
   const lat = data.latitude || data.lat;
   const lng = data.longitude || data.lng;
   if (!lat || !lng) {
-    errorRetrievingData("error-current-weather", infoStore);
+    console.log("apiOpenWeatherOneCall - lat/lng not defined");
+    errors.push("weather");
+    dataMissing = true;
     incLoadingBar(6.25);
     return;
   }
@@ -956,86 +1153,25 @@ async function apiOpenWeatherOneCall(data) {
     success: function (result) {
       incLoadingBar(6.25);
       if (result.data.cod) {
-        errorRetrievingData("error-current-weather", infoStore);
+        errors.push("weather");
+        dataMissing = true;
         return;
       }
-      // data.weatherDescription = result.data.current.weather[0].description;
-      // data.weatherIcon = result.data.current.weather[0].icon;
-      // data.weatherTemp = result.data.current.temp;
-      // data.uvi = result.data.current.uvi;
       data.weather = result.data;
     },
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      fatalError();
+      console.log({ apiOpenWeatherOneCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
 
-// function apiOpenWeatherForecastCall() {
-//   const latitude = ll.current.data.latitude;
-//   const longitude = ll.current.data.longitude;
-//   if (!latitude || !longitude) {
-//     errorRetrievingData("error-weather-forecast", infoStore);
-//     incLoadingBar(8);
-//     return;
-//   }
-//   return $.ajax({
-//     url: "libs/php/api-openweatherForecast.php",
-//     type: "POST",
-//     dataType: "json",
-//     data: {
-//       latitude: latitude,
-//       longitude: longitude,
-//     },
-//     success: function (result) {
-//       incLoadingBar(8);
-//       if (result.data.cod !== "200") {
-//         errorRetrievingData("error-weather-forecast", infoStore);
-//         return;
-//       }
-
-//       const forecast = result.data.list;
-//       ll.current.data.weather = [];
-//       for (let i = 0; i < 5; i++) {
-//         const obj = {};
-//         if (i === 0) {
-//           obj.dateTime = forecastDayAndTime(
-//             forecast[i].dt,
-//             ll.current.data.offset_sec
-//           );
-//         } else if (
-//           i > 0 &&
-//           forecastDay(forecast[i].dt, ll.current.data.offset_sec) ===
-//             forecastDay(forecast[i - 1].dt, ll.current.data.offset_sec)
-//         ) {
-//           obj.dateTime = forecastTime(
-//             forecast[i].dt,
-//             ll.current.data.offset_sec
-//           );
-//         } else {
-//           obj.dateTime = forecastDayAndTime(
-//             forecast[i].dt,
-//             ll.current.data.offset_sec
-//           );
-//         }
-//         obj.description = forecast[i].weather[0].description;
-//         obj.icon = forecast[i].weather[0].icon;
-//         obj.temp = forecast[i].main.temp;
-//         ll.current.data.weather.push(obj);
-//       }
-//     },
-//     error: function (jqXHR, textStatus, errorThrown) {
-//       incLoadingBar(8);
-//       fatalError();
-//     },
-//   });
-// }
-
 async function apiOpenweatherAirPollution(data) {
   const lat = data.latitude || data.lat;
   const lng = data.longitude || data.lng;
-
+  if (!lat || !lng) {
+    return;
+  }
   return $.ajax({
     url: "libs/php/api-openweatherAirPollution.php",
     type: "POST",
@@ -1046,32 +1182,18 @@ async function apiOpenweatherAirPollution(data) {
     },
     success: function (result) {
       if (result.data.cod) {
-        errorRetrievingData("error-current-weather", infoStore);
         return;
       }
-
-      // data.airPollution = [];
-
-      // for (const [key, value] of Object.entries(
-      //   result.data.list[0].components
-      // )) {
-      //   data.airPollution.push({ [key]: value });
-      // }
-      // console.log(data.airPollution);
-      // data.airPollution.co = result.data.list[0].components.co;
-      // data.airPollution.nh3 = result.data.list[0].components.nh3;
-      // data.airPollution.no = result.data.list[0].components.no;
-      // data.airPollution.no2 = result.data.list[0].components.no2;
-      // data.airPollution.o3 = result.data.list[0].components.o3;
-      // data.airPollution.pm1_5 = result.data.list[0].components.pm1_5;
-      // data.airPollution.pm10 = result.data.list[0].components.pm10;
-      // data.airPollution.so2 = result.data.list[0].components.so2;
       data.airPollution = result.data.list[0].main.aqi;
     },
 
     error: function (jqXHR, textStatus, errorThrown) {
-      incLoadingBar(8);
-      fatalError();
+      incLoadingBar(6.25);
+      console.log({
+        apiOpenweatherAirPollution: jqXHR,
+        textStatus,
+        errorThrown,
+      });
     },
   });
 }
@@ -1079,7 +1201,9 @@ async function apiOpenweatherAirPollution(data) {
 function apiUnsplashCall(data) {
   const countryName = data.countryName;
   if (!countryName) {
-    errorRetrievingData("country-images", infoStore);
+    console.log("apiUnsplashCall - ISO2 not defined");
+    errors.push("dates");
+    dataMissing = true;
     incLoadingBar(6.25);
     return;
   }
@@ -1093,7 +1217,8 @@ function apiUnsplashCall(data) {
     success: function (result) {
       incLoadingBar(6.25);
       if (result.data.length === 0) {
-        // errorRetrievingData("country-images", infoStore);
+        errors.push("dates");
+        dataMissing = true;
         return;
       }
       data.countryImages = [];
@@ -1105,49 +1230,66 @@ function apiUnsplashCall(data) {
         data.countryImages.push(obj);
       });
     },
-
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      fatalError();
+      console.log({ apiUnsplashCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
 
 function apiCovidTotalDeathsCall(data) {
+  if (!data.countryCodeISO2) {
+    console.log("ISO2 not defined");
+    console.log("apiCovidTotalDeathsCall - ISO2 not defined");
+    errors.push("Covid information (confirmed deaths)");
+    dataMissing = true;
+    incLoadingBar(6.25);
+    return;
+  }
   return $.ajax({
     url: "libs/php/api-covidTotalDeaths.php",
     type: "POST",
     dataType: "json",
     data: {
-      countrycode: data.countryCodeISO2,
+      countryCodeISO2: data.countryCodeISO2,
     },
     success: function (result) {
       incLoadingBar(6.25);
-      if (result.data.length === 0) {
+      if (result.data.message === "Not Found") {
+        errors.push("Covid information (total deaths)");
+        dataMissing = true;
         return;
       }
       data.covidTotalDeaths = result.data;
     },
-
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      fatalError();
+      console.log({ apiCovidTotalDeathsCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
 
 function apiCovidTotalConfirmedCall(data) {
+  if (!data.countryCodeISO2) {
+    console.log("ISO2 not defined");
+    console.log("apiCovidTotalConfirmedCall - ISO2 not defined");
+    errors.push("Covid information (confirmed cases)");
+    dataMissing = true;
+    incLoadingBar(6.25);
+    return;
+  }
   return $.ajax({
     url: "libs/php/api-covidTotalConfirmed.php",
     type: "POST",
     dataType: "json",
     data: {
-      countrycode: data.countryCodeISO2,
+      countryCodeISO2: data.countryCodeISO2,
     },
     success: function (result) {
       incLoadingBar(6.25);
-      if (result.data.length === 0) {
-        // errorRetrievingData("country-images", infoStore);
+      if (result.data.message === "Not Found") {
+        errors.push("Covid information (total cases)");
+        dataMissing = true;
         return;
       }
       data.covidTotalConfirmed = result.data;
@@ -1155,15 +1297,21 @@ function apiCovidTotalConfirmedCall(data) {
 
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      fatalError();
+      console.log({
+        apiCovidTotalConfirmedCall: jqXHR,
+        textStatus,
+        errorThrown,
+      });
     },
   });
 }
 
 function apiNewsCall(data) {
   if (!data.countryName) {
+    console.log("apiNewsCall - country name not defined");
+    errors.push("news articles");
+    dataMissing = true;
     incLoadingBar(6.25);
-    errorRetrievingData("error-news", infoStore);
     return;
   }
   return $.ajax({
@@ -1174,57 +1322,61 @@ function apiNewsCall(data) {
       countryname: data.countryName,
     },
     success: function (result) {
+      incLoadingBar(6.25);
+      if (result.data.articles.length === 0) {
+        errors.push("news articles");
+        dataMissing = true;
+      }
       data.newsArticles = result.data.articles;
-      // incLoadingBar(8);
     },
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      fatalError();
+      console.log({ apiNewsCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
 
-function getDateTime() {
-  let date = Date();
-  const printDate = date.split(" ").slice(0, 5).join(" ");
-  ll.current.data.dataCapturedAt = printDate;
-}
-
-function apiWindyCall(countryCodeISO2) {
-  // if (!countryName) {
-  //   errorRetrievingData("country-images", infoStore);
-  //   incLoadingBar(8);
-  //   return;
-  // }
+function apiWindyCall(data) {
+  if (!data.countryCodeISO2) {
+    console.log("ISO2 not defined");
+    console.log("apiWindyCall - ISO2 not defined");
+    errors.push("webcams");
+    dataMissing = true;
+    incLoadingBar(6.25);
+    return;
+  }
   return $.ajax({
     url: "libs/php/api-windy.php",
     type: "POST",
     dataType: "json",
     data: {
-      countrycode: countryCodeISO2,
+      countryCodeISO2: data.countryCodeISO2,
     },
     success: function (result) {
       incLoadingBar(6.25);
-      if (result.data.length === 0) {
-        // errorRetrievingData("country-images", infoStore);
+      if (result.data.result.webcams === 0) {
+        errors.push("webcams");
+        dataMissing = true;
         return;
       }
-      ll.current.data.cameras = result.data.result.webcams;
+      data.cameras = result.data.result.webcams;
     },
 
     error: function (jqXHR, textStatus, errorThrown) {
       incLoadingBar(6.25);
-      fatalError();
+      console.log({
+        apiWindyCall: jqXHR,
+        textStatus,
+        errorThrown,
+      });
     },
   });
 }
 
 function apiYelpCall(data) {
-  // if (!countryName) {
-  //   errorRetrievingData("country-images", infoStore);
-  //   incLoadingBar(8);
-  //   return;
-  // }
+  if (!data.lat && !data.lng) {
+    return;
+  }
   return $.ajax({
     url: "libs/php/api-yelp.php",
     type: "GET",
@@ -1236,15 +1388,13 @@ function apiYelpCall(data) {
     success: function (result) {
       incLoadingBar(6.25);
       if (result.data.length === 0) {
-        // errorRetrievingData("country-images", infoStore);
         return;
       }
       data.yelp = result.data.businesses;
     },
 
     error: function (jqXHR, textStatus, errorThrown) {
-      incLoadingBar(6.25);
-      fatalError();
+      console.log({ apiYelpCall: jqXHR, textStatus, errorThrown });
     },
   });
 }
@@ -1260,10 +1410,12 @@ function updateHTML(data) {
   addVolcanoes(data);
 
   //searchbar flag
-  const searchbarFlag = document.querySelector(".nav-flag-div");
-  searchbarFlag.style.backgroundImage = `url(${data.flag})`;
+  document.querySelector(
+    ".nav-flag-div"
+  ).style.backgroundImage = `url(${data.flag})`;
 
   //modals
+  // ALL MODALS
   const modalFlags = document.querySelectorAll(".api-flag");
   modalFlags.forEach((flag) => (flag.src = data.flag));
   dataCapturedAtText(data);
@@ -1351,7 +1503,6 @@ function addVolcanoes(data) {
   const volcanoes = data.volcanoes;
 
   volcanoes.forEach((volcano) => {
-    // data.volcanoes.forEach((volcano) => {
     L.marker([volcano.properties.Latitude, volcano.properties.Longitude], {
       icon: volcanoIcon,
       riseOnHover: true,
@@ -1361,44 +1512,24 @@ function addVolcanoes(data) {
         `<h6><strong>Volcano</strong><br>${volcano.properties.Volcano_Name}</h6>`
       )
       .addEventListener("click", (e) => flyToPin(e));
-    // });
   });
 }
 
 function addGeneralInfoData(data) {
   const modal = document.querySelector('[data-modal="general-info"]');
-  // const flagCard = document.createElement("div");
-  // flagCard.classList = "border shadow-sm rounded";
-  // modal.appendChild(flagCard);
 
-  // const countryName = document.createElement("strong");
-  // countryName.classList = "mb-1 ms-3 text-primary";
-  // countryName.textContent = data.countryName;
-  // modal.appendChild(countryName);
-
-  // const heading = document.createElement("div");
-  // heading.classList = "ms-2 mb-1 text-muted";
-  // heading.textContent = "National Flag";
-  // flagCard.appendChild(heading);
-
-  const flagContainer = document.createElement("div");
-  flagContainer.classList = "container mt-2 mb-4";
-  modal.appendChild(flagContainer);
-  const flag = document.createElement("img");
-  flag.classList = "mx-auto d-block img-fluid";
-  flag.id = "country-flag";
-  flag.src = data.flag;
-  flag.alt = `Flag of ${data.countryName}`;
-  flagContainer.appendChild(flag);
-
-  // const infoCard = document.createElement("div");
-  // infoCard.classList = "border shadow-sm rounded";
-  // modal.appendChild(infoCard);
-
-  // const infoCardHeading = document.createElement("div");
-  // infoCardHeading.classList = "ms-2 mb-1 text-muted";
-  // infoCardHeading.textContent = "General Info";
-  // flagCard.appendChild(infoCardHeading);
+  if (data.flag && data.countryName) {
+    const flagContainer = document.createElement("div");
+    flagContainer.classList = "container mt-2 mb-4";
+    modal.appendChild(flagContainer);
+    const flag = document.createElement("img");
+    flag.classList = "mx-auto d-block img-fluid";
+    flag.id = "country-flag";
+    flag.src = data.flag;
+    flag.alt = `Flag of ${data.countryName}`;
+    flag.title = `Flag of ${data.countryName}`;
+    flagContainer.appendChild(flag);
+  }
 
   const table = document.createElement("table");
   modal.appendChild(table);
@@ -1417,13 +1548,10 @@ function addGeneralInfoData(data) {
     ` (${data.currencySymbol})`,
     table
   );
-  // data.regionalBlocs
-  //   ? addRow("Regional Bloc", data.regionalBlocs, table)
-  //   : null;
+
   data.political_union
     ? addRow("Politcal Union", data.political_union, table)
     : null;
-  // data.county ? addRow("County", data.county, table) : null;
   addRow("Continent", data.continent, table);
   addRow("Language", data.languages, table);
   addRow("Population", makeNumberReadable(data.population), table);
@@ -1438,7 +1566,7 @@ function addNewsArticles(newsArticles) {
   let marginClass = "me-2";
   newsArticles.forEach((article) => {
     const container = document.createElement("div");
-    container.classList = "container rounded pt-1 pb-1 articles-container";
+    container.classList = "container rounded pt-1 pb-1 mb-2 articles-container";
     modal.appendChild(container);
     const link = document.createElement("a");
     container.appendChild(link);
@@ -1456,6 +1584,8 @@ function addNewsArticles(newsArticles) {
       const img = document.createElement("img");
       img.classList = `news-image ${floatClass} ${marginClass}`;
       img.src = article.urlToImage;
+      img.title = article.description;
+      img.alt = article.description;
       link.appendChild(img);
     }
     floatClass === "float-start"
@@ -1469,6 +1599,7 @@ function addNewsArticles(newsArticles) {
 }
 
 function addWikipediaArticles(wikipediaArticles) {
+  if (!wikipediaArticles) return;
   const modal = document.querySelector('[data-modal="wiki"]');
   let floatClass = "float-start";
   let marginClass = "me-2";
@@ -1478,29 +1609,29 @@ function addWikipediaArticles(wikipediaArticles) {
       "container rounded pt-1 pb-1 articles-container";
     modal.appendChild(articleContainer);
     const link = document.createElement("a");
-    link.href = article[2][0];
+    link.href = article[8];
     link.target = "_blank";
     link.classList = "text-dark";
     articleContainer.appendChild(link);
     const title = document.createElement("h5");
-    title.textContent = article[0][0];
+    title.textContent = article[1];
     link.appendChild(title);
     const img = document.createElement("img");
     img.classList = `wiki-thumbnail ${floatClass} ${marginClass}`;
-    img.src = article[3][0] ? article[3][0] : "";
+    img.src = article[9] ? article[9] : "";
     link.appendChild(img);
     floatClass === "float-start"
       ? (floatClass = "float-end")
       : (floatClass = "float-start");
     marginClass === "me-2" ? (marginClass = "ms-2") : (marginClass = "me-2");
     const para = document.createElement("p");
-    para.textContent = article[1][0];
+    para.textContent = article[2];
     link.appendChild(para);
   });
 }
 
 function addGeoJSONOutline(geoJSON) {
-  // country outline
+  if (!geoJSON) return;
   const outline = L.geoJSON(geoJSON, {
     style: function (feature) {
       return { color: "rgba(13, 110, 253, 0.5)" };
@@ -1509,6 +1640,7 @@ function addGeoJSONOutline(geoJSON) {
 }
 
 function createCurrentForecast(data, offset) {
+  if (!data) return;
   const modal = document.querySelector('[data-modal="weather"]');
   const accordion = document.createElement("div");
   accordion.id = "weather-accordion";
@@ -1551,10 +1683,6 @@ function createCurrentForecast(data, offset) {
   const accordionBody = document.createElement("div");
   accordionBody.classList = "accordion-body";
   accordionCollapseDiv.appendChild(accordionBody);
-  //card
-  // const card = document.createElement("div");
-  // card.classList = "card";
-  // accordionBody.appendChild(card);
 
   //card body
   const cardBody = document.createElement("div");
@@ -1573,7 +1701,7 @@ function createCurrentForecast(data, offset) {
 
   const title = document.createElement("em");
   title.textContent = data.current.weather[0].description;
-  title.classList = "mt-1 display-6 text-center text-capitalize";
+  title.classList = "mt-1 lead text-center text-capitalize";
   iconDiv.appendChild(title);
 
   const span = document.createElement("span");
@@ -1602,8 +1730,6 @@ function createCurrentForecast(data, offset) {
   //-------------table
   const table = document.createElement("table");
   table.classList = "table table-borderless table-sm";
-  // cardBody.appendChild(table);
-  // addUVIRow(cellTitle, cellInfo, table, colSpan = 0)
   let colspan = 0;
   let classList = "w-50";
   addRowWithUnits(
@@ -1625,6 +1751,7 @@ function createCurrentForecast(data, offset) {
 }
 
 function create48hrForecast(data, offset) {
+  if (!data) return;
   //outer div one
   const accordionContainer = document.getElementById("weather-accordion");
   //outer div two
@@ -1698,6 +1825,7 @@ function create48hrForecast(data, offset) {
 }
 
 function create8DayForecast(data, offset) {
+  if (!data) return;
   //outer div one
   const accordionContainer = document.getElementById("weather-accordion");
   //outer div two
@@ -1786,12 +1914,10 @@ function createCovidDeathsTable(data) {
 
   for (let i = arrLength - 7; i < arrLength; i++) {
     lastSevenDaysDeaths += deathsArr[i].Cases - deathsArr[i - 1].Cases;
-    console.log(lastSevenDaysDeaths);
   }
 
   for (let i = arrLength - 14; i < arrLength - 7; i++) {
     prvSevenDaysAvgDeaths += deathsArr[i].Cases - deathsArr[i - 1].Cases;
-    console.log(prvSevenDaysAvgDeaths);
   }
 
   lastSevenDaysDeaths = (lastSevenDaysDeaths / 7).toFixed();
@@ -1833,8 +1959,6 @@ function createCovidCasesTable(data) {
 
   const confirmedArr = data.covidTotalConfirmed;
   const latestConfirmed = confirmedArr[confirmedArr.length - 1];
-
-  console.log(latestConfirmed);
 
   const arrLength = confirmedArr.length;
 
@@ -1923,8 +2047,6 @@ function addCovidChart_deathsPerDay(data) {
     }
   });
 
-  console.log(years);
-
   // add labels to labels array
   deathsArr.forEach((item) => {
     labels.push(item.Date.slice(5, 10));
@@ -1983,10 +2105,6 @@ function addCovidChart_deathsPerDay(data) {
   while (chartData[0].length < 365) {
     chartData[0].unshift(0);
   }
-
-  chartData.forEach((item) => {
-    console.log(item);
-  });
 
   const backgroundColors = [
     "rgba(255, 99, 132, 0.2)",
@@ -2098,8 +2216,6 @@ function addCovidChart_deathsPerYear(data) {
       deathsData[i] = endOfYearFigures[i].Cases - endOfYearFigures[i - 1].Cases;
     }
   }
-
-  console.log({ deathsData });
 
   chart.data = {
     labels: years,
@@ -2285,8 +2401,6 @@ function datesCheckboxesEvent() {
   if (upcomingOnly.checked) {
     filteredDates = filteredDates.filter((date) => date.date >= dateString);
   }
-
-  console.log(filteredDates);
   createDatesTable(filteredDates);
 }
 
@@ -2310,17 +2424,6 @@ function createDatesUpcomingOnlyCheckbox() {
   label.classList = "form-check-label";
   label.textContent = "Upcoming only";
   input.addEventListener("change", datesCheckboxesEvent);
-}
-
-function formatType(type) {
-  type = type.toLowerCase();
-  const upperCaseLetter = type.charAt(0).toUpperCase();
-  type = type.replace(type.charAt(0), upperCaseLetter);
-
-  while (type.includes("_")) {
-    type = type.replace("_", " ");
-  }
-  return type;
 }
 
 function createDatesTable(dates) {
@@ -2398,11 +2501,6 @@ function clearHTML(data) {
     }
   });
 
-  let children = document.getElementById("loading-message").children;
-  Array.from(children).forEach((child) => {
-    child.remove();
-  });
-
   //clear map pins
   featureGroup1.eachLayer((layer) => layer.clearLayers());
 
@@ -2420,14 +2518,20 @@ function clearHTML(data) {
 //---------------------OTHER FUNCTIONS
 //increase loading bar size
 function incLoadingBar(input) {
-  let width = parseInt(loadingBar.style.width)
-    ? parseInt(loadingBar.style.width)
+  const progressBar = document.getElementById("progress-bar");
+  if (!progressBar) return;
+  let width = parseInt(progressBar.style.width)
+    ? parseInt(progressBar.style.width)
     : 0;
   width += input;
-  loadingBar.style.width = `${width}%`;
+  progressBar.style.width = `${width}%`;
 }
 
-//----------------set select input to match that of current country
+function getDateTime() {
+  let date = Date();
+  const printDate = date.split(" ").slice(0, 5).join(" ");
+  ll.current.data.dataCapturedAt = printDate;
+}
 
 function setSelected(countryCodeISO2) {
   const select = document.getElementById("select");
@@ -2465,14 +2569,15 @@ function populateSelect(countryCodeISO3) {
     success: function (result) {
       if (result.status.name === "ok") {
         result = JSON.parse(result.data);
+        countriesArr = result;
         result.forEach((country) => {
-          $("#select").append(
-            $("<option>", {
-              value: [country[1]],
-              text: [country[0]],
-            })
-          );
-          $("#select-start").append(
+          // $("#select").append(
+          //   $("<option>", {
+          //     value: [country[1]],
+          //     text: [country[0]],
+          //   })
+          // );
+          $(".select-country-options").append(
             $("<option>", {
               value: [country[1]],
               text: [country[0]],
@@ -2489,7 +2594,743 @@ function populateSelect(countryCodeISO3) {
   });
 }
 
+function addCities(data) {
+  if (!data.cities) return;
+  data.cityMarkers = {};
+
+  const modal = document.querySelector('[data-modal="cities"]');
+
+  //outer div one
+  const citiesList = document.createElement("div");
+  citiesList.classList = "accordion accordion-flush";
+  citiesList.id = "cities-list";
+  modal.appendChild(citiesList);
+
+  data.cities.forEach((city, index) => {
+    //set cityName also used for storing marker names
+    let cityName = cityNameValidCharactersOnly(city.name);
+
+    if (city.name !== data.capital) {
+      data.cityMarkers[cityName] = L.marker([city.lat, city.lng], {
+        icon: cityIcon,
+        riseOnHover: true,
+      })
+        .addTo(citiesMCG)
+        .bindPopup(
+          `<h6><strong id="" class="">
+          ${city.name}</strong><br>Pop. ${makeNumberReadable(
+            city.population
+          )}</h6>`
+        )
+        .addEventListener("click", (e) => flyToPin(e));
+    } else {
+      data.cityMarkers[cityName] = L.marker([city.lat, city.lng], {
+        icon: capitalCityIcon,
+        riseOnHover: true,
+      })
+        .addTo(capitalMCG)
+        .bindPopup(
+          `<h6><strong id="" class="">${
+            city.name
+          }</strong><br>Capital City<br>Pop. ${makeNumberReadable(
+            city.population
+          )}</h6>`
+        )
+        .addEventListener("click", (e) => flyToPin(e));
+      data.cityMarkers[cityName].openPopup();
+    }
+
+    //outer div two
+    const accordionItemDiv = document.createElement("div");
+    citiesList.appendChild(accordionItemDiv);
+    accordionItemDiv.classList = "accordion-item";
+
+    //h2 header
+    const header = document.createElement("h2");
+    accordionItemDiv.appendChild(header);
+    header.classList = "accordion-header";
+    header.id = `${city.name}-accordion-header`;
+
+    //create button
+    const button = document.createElement("button");
+    header.appendChild(button);
+    const buttonName = document.createTextNode(`${city.name}`);
+    button.appendChild(buttonName);
+    button.setAttribute("class", "accordion-button collapsed");
+    button.setAttribute("type", "button");
+    button.setAttribute("data-bs-toggle", "collapse");
+    button.setAttribute("data-bs-target", `#${cityName}-accordion`);
+    button.setAttribute("aria-expanded", "true");
+    button.setAttribute("aria-controls", `${city.name}-accordion`);
+    button.addEventListener("click", function (e) {
+      const targetCity = data.cities.find(
+        (city) => city.name === e.target.textContent
+      );
+
+      //if there is data already just remove the unclickable
+      if (!targetCity.clickedAlready) {
+        document.body.classList.add("unclickable");
+        cityAPICalls(targetCity, data.offset_sec);
+        setTimeout(function () {
+          document.body.classList.remove("unclickable");
+        }, 1000);
+      }
+    });
+
+    const accordionCollapseDiv = document.createElement("div");
+    accordionItemDiv.appendChild(accordionCollapseDiv);
+    accordionCollapseDiv.classList = "accordion-collapse collapse";
+    if (index === 0) {
+      accordionCollapseDiv.classList.add("open");
+    }
+    accordionCollapseDiv.id = `${cityNameValidCharactersOnly(
+      city.name
+    )}-accordion`;
+    accordionCollapseDiv.setAttribute(
+      "aria-labelledby",
+      `${city.name}-accordion-header`
+    );
+
+    const accordionBody = document.createElement("div");
+    accordionBody.classList = "accordion-body p-1";
+    accordionCollapseDiv.appendChild(accordionBody);
+
+    const cityNameAccBody = document.createElement("h3");
+    cityNameAccBody.id = "city-name-accordion-body";
+    cityNameAccBody.textContent = city.name;
+    cityNameAccBody.classList =
+      "shadow-sm bg-white sticky-top text-center py-3";
+    accordionBody.append(cityNameAccBody);
+
+    //create table
+    const table = document.createElement("table");
+    accordionBody.appendChild(table);
+    table.id = `${cityNameValidCharactersOnly(cityName)}-table`;
+    table.classList = "table table-borderless mt-3 blue-striped";
+
+    //findCityOnMap
+    const findOnMapDiv = document.createElement("div");
+    accordionBody.appendChild(findOnMapDiv);
+    findOnMapDiv.classList = "my-2 container d-flex justify-content-end";
+
+    const findOnMapbtn = document.createElement("button");
+    findOnMapbtn.textContent = `Go to ${city.name}  `;
+    findOnMapbtn.classList = "btn btn-sm btn-primary";
+    findOnMapDiv.appendChild(findOnMapbtn);
+
+    const iconSpan = document.createElement("span");
+    findOnMapbtn.appendChild(iconSpan);
+    iconSpan.classList = "fa-solid fa-arrow-right-long";
+
+    //set zoom to city function
+    findOnMapbtn.addEventListener("click", function (e) {
+      const innerHTML =
+        e.target.parentElement.parentElement.parentElement.previousElementSibling.querySelector(
+          "button"
+        ).textContent;
+
+      // console.log(innerHTML);
+      data.cities.find((city) => {
+        citiesModal.hide();
+        if (city.name === innerHTML) {
+          map.flyTo([city.lat, city.lng], 12, [2, 2]);
+          let cityName = cityNameValidCharactersOnly(city.name);
+          const marker = data.cityMarkers[cityName];
+
+          (function openPopupOnZoomLevel12() {
+            setTimeout(function () {
+              if (map.getZoom() === 12) {
+                marker.openPopup();
+              } else {
+                console.log(map.getZoom());
+                openPopupOnZoomLevel12();
+              }
+            }, 750);
+          })();
+          marker.openPopup();
+        }
+      });
+    });
+  });
+}
+
+function addCameras(data) {
+  if (!data.cameras) return;
+  data.cameras.forEach((camera) => {
+    const marker = L.marker(
+      [camera.location.latitude, camera.location.longitude],
+      {
+        icon: cameraIcon,
+        riseOnHover: true,
+      }
+    )
+      .addTo(camerasMCG)
+      .addEventListener("click", (e) => flyToPin(e));
+
+    const popup = L.DomUtil.create("div", "camera-popup");
+
+    popup.innerHTML = `<div><h6><strong>${
+      camera.title
+    }</strong></h6><iframe src=${
+      camera.player.day.embed
+    }></iframe><select id="camera-${
+      camera.id
+    }" class="form-select camera-select">${
+      camera.player.day.available
+        ? `<option value=${camera.player.day.embed}>Day</option>`
+        : null
+    }${
+      camera.player.month.available
+        ? `<option value=${camera.player.month.embed}>Month</option>`
+        : null
+    }${
+      camera.player.year.available
+        ? `<option value=${camera.player.year.embed}>Year</option>`
+        : null
+    }${
+      camera.player.lifetime.available
+        ? `<option value=${camera.player.lifetime.embed}>Lifetime</option>`
+        : null
+    }${
+      camera.player.live.available
+        ? `<option value=${camera.player.live.embed}>Live</option>`
+        : null
+    }<select></div>`;
+
+    marker.bindPopup(popup);
+
+    const selectBar = popup.querySelector(`#camera-${camera.id}`);
+
+    if (selectBar) {
+      selectBar.addEventListener("change", function (e) {
+        const parent = e.target.parentElement;
+        const iframe = parent.querySelector("iframe");
+        iframe.src = e.target.value;
+        // console.log(e.target.value);
+      });
+    } else {
+      console.log("can't find it sorry");
+    }
+  });
+}
+
+//IMAGES CAROUSEL FUNCTION
+function addCarouselImages(data) {
+  if (!data.countryImages) return;
+  const modal = document.querySelector('[data-modal="images"]');
+
+  // const carousel = document.getElementById("country-images-carousel");
+  const carousel = document.createElement("div");
+  carousel.id = "country-images-carousel";
+  carousel.classList = "carousel slide carousel-fade";
+  carousel.setAttribute("data-bs-ride", "carousel");
+  modal.appendChild(carousel);
+  const carouselInner = document.createElement("div");
+  carousel.appendChild(carouselInner);
+  carouselInner.classList = "carousel-inner";
+
+  data.countryImages.forEach((image) => {
+    //carouselItemDiv
+    const carouselItemDiv = document.createElement("div");
+    carouselInner.appendChild(carouselItemDiv);
+    carouselItemDiv.classList = "carousel-item";
+    carouselItemDiv.setAttribute("data-bs-interval", "4000");
+
+    //imageParentDiv
+    const imageParentDiv = document.createElement("div");
+    carouselItemDiv.appendChild(imageParentDiv);
+    imageParentDiv.classList =
+      "carousel-img-parent d-flex justify-content-center";
+    //img
+    const img = document.createElement("img");
+    imageParentDiv.appendChild(img);
+    // img.classList = "d-block w-100";
+    img.classList = "carousel-img-size";
+    img.src = image.url;
+    img.alt = image.alt_description
+      ? image.alt_description
+      : `Image from ${data.countryName}`;
+    img.setAttribute(
+      "title",
+      `${
+        image.description ? image.description + ": " : data.countryName + ": "
+      }${image.alt_description ? image.alt_description : ""}`
+    );
+
+    //captionDiv
+    const captionDiv = document.createElement("div");
+    carouselItemDiv.appendChild(captionDiv);
+    captionDiv.classList = "carousel-caption p-0 m-0";
+    //title
+    const title = document.createElement("h5");
+    captionDiv.appendChild(title);
+    title.textContent = reduceText(image.description, 60, "...");
+    //alt_description
+    const altDescription = document.createElement("p");
+    captionDiv.appendChild(altDescription);
+    altDescription.textContent = reduceText(image.alt_description, 60, "...");
+  });
+  const images = document.querySelectorAll(".carousel-item");
+  images[0].classList.add("active");
+  //CREATE BUTTONS
+  //PREV
+  const prevButton = document.createElement("button");
+  carouselInner.appendChild(prevButton);
+  prevButton.classList = "carousel-control-prev";
+  prevButton.type = "button";
+  prevButton.setAttribute("data-bs-target", "#country-images-carousel");
+  prevButton.setAttribute("data-bs-slide", "prev");
+  //SPANS
+  const prevSpan1 = document.createElement("span");
+  prevButton.appendChild(prevSpan1);
+  prevSpan1.classList = "carousel-control-prev-icon";
+  prevSpan1.setAttribute("aria-hidden", "true");
+  const prevSpan2 = document.createElement("span");
+  prevButton.appendChild(prevSpan2);
+  prevSpan2.classList = "visually-hidden";
+
+  //NEXT
+  const nextButton = document.createElement("button");
+  carouselInner.appendChild(nextButton);
+  nextButton.classList = "carousel-control-next";
+  nextButton.type = "button";
+  nextButton.setAttribute("data-bs-target", "#country-images-carousel");
+  nextButton.setAttribute("data-bs-slide", "next");
+  //SPANS
+  const nextSpan1 = document.createElement("span");
+  nextButton.appendChild(nextSpan1);
+  nextSpan1.classList = "carousel-control-next-icon";
+  nextSpan1.setAttribute("aria-hidden", "true");
+  const nextSpan2 = document.createElement("span");
+  nextButton.appendChild(nextSpan2);
+  nextSpan2.classList = "visually-hidden";
+}
+
+//---------------TABLE ROW FUNCTIONS-----------//
+function addRow(cellTitle, cellInfo, table, colSpan = "", classList = "") {
+  if (cellInfo === undefined) return;
+
+  const row = table.insertRow(0);
+  const cell1 = document.createElement("th");
+  cell1.classList = `text-end ${classList}`;
+  row.appendChild(cell1);
+  const cell2 = row.insertCell();
+  cell2.colSpan = colSpan;
+  let text1 = document.createTextNode(cellTitle);
+  let text2 = document.createTextNode(cellInfo);
+  cell1.appendChild(text1);
+  cell2.appendChild(text2);
+}
+
+function addRowWithUnits(
+  cellTitle,
+  cellInfo,
+  units,
+  table,
+  colSpan = "",
+  classList = ""
+) {
+  if (!cellInfo) return;
+  const row = table.insertRow(0);
+  const cell1 = document.createElement("th");
+  cell1.classList = `text-end ${classList}`;
+  row.appendChild(cell1);
+  const cell2 = row.insertCell();
+  let text1 = document.createTextNode(cellTitle);
+  let text2 = document.createTextNode(cellInfo);
+  cell1.appendChild(text1);
+  cell2.appendChild(text2);
+  const span = document.createElement("span");
+  const currencySymbol = document.createTextNode(`${units}`);
+  span.appendChild(currencySymbol);
+  span.classList = "text-muted";
+  cell2.appendChild(span);
+}
+
+function addLocalTimeRow(cellTitle, cellInfo, table) {
+  if (!cellInfo) return;
+  // const table = document.querySelector("#general-info-table");
+  const row = table.insertRow(0);
+  const cell1 = document.createElement("th");
+  cell1.classList = "text-end";
+  const text1 = document.createTextNode(cellTitle);
+  cell1.appendChild(text1);
+  row.appendChild(cell1);
+
+  const cell2 = row.insertCell();
+  row.appendChild(cell2);
+  const text2 = document.createTextNode(cellInfo.replace(/am|pm/, ""));
+  cell2.appendChild(text2);
+  const span = document.createElement("span");
+  span.classList = "text-muted";
+  const text3 = document.createTextNode(cellInfo.slice(-2));
+  span.appendChild(text3);
+  cell2.appendChild(span);
+}
+
+function addWeatherRow(
+  day,
+  textEnd,
+  time,
+  cellInfo,
+  description,
+  icon,
+  table,
+  position = undefined
+) {
+  if (!cellInfo) return;
+  const row = table.insertRow(position);
+  row.classList = "text-center";
+
+  const cell1 = document.createElement("th");
+  cell1.textContent = day;
+  textEnd === true ? (cell1.classList = "text-end") : null;
+  row.appendChild(cell1);
+
+  const cell2 = document.createElement("td");
+  cell2.classList = "";
+  row.appendChild(cell2);
+  const em = document.createElement("em");
+  let text1 = document.createTextNode(time);
+  em.appendChild(text1);
+  cell2.appendChild(em);
+
+  const cell3 = row.insertCell();
+  const tempContainer = document.createElement("strong");
+  cell3.appendChild(tempContainer);
+  const temp = document.createTextNode(cellInfo);
+  tempContainer.appendChild(temp);
+  const span1 = document.createElement("span");
+  cell3.appendChild(span1);
+  const spanText = document.createTextNode("°C");
+  span1.classList = "text-muted";
+  span1.appendChild(spanText);
+
+  const cell4 = row.insertCell();
+
+  // const weatherIcon = getWeatherIcon(icon);
+  const span2 = document.createElement("span");
+  // span2.classList = weatherIcon.classList;
+  span2.classList = getWeatherIcon(icon);
+  // span2.style.color = weatherIcon.color;
+  cell4.appendChild(span2);
+  const cell5 = row.insertCell();
+  cell5.textContent = description;
+}
+
+function addAreaRow(cellTitle, cellInfo, table) {
+  if (!cellInfo) return;
+  // const table = document.querySelector("#general-info-table");
+  const row = table.insertRow(0);
+
+  const cell1 = document.createElement("th");
+  cell1.classList = "text-end";
+  row.appendChild(cell1);
+  let text1 = document.createTextNode(cellTitle);
+  cell1.appendChild(text1);
+
+  const cell2 = row.insertCell();
+  let text2 = document.createTextNode(cellInfo);
+  const span = document.createElement("span");
+  const km = document.createTextNode("km");
+  span.appendChild(km);
+  span.classList = "text-muted";
+  const sup = document.createElement("sup");
+  const number2 = document.createTextNode("2");
+  sup.appendChild(number2);
+  sup.classList = "text-muted";
+  cell2.appendChild(text2);
+  cell2.appendChild(span);
+  cell2.appendChild(sup);
+}
+
+function addLatLngRow(cellTitle, lat, lng, table) {
+  if (!lat || !lng) return;
+  // const table = document.querySelector("#general-info-table");
+  const row = table.insertRow(0);
+
+  const cell1 = document.createElement("th");
+  row.appendChild(cell1);
+  cell1.classList = "text-end";
+  const text = document.createTextNode(cellTitle);
+  cell1.appendChild(text);
+
+  const cell2 = row.insertCell();
+  row.appendChild(cell2);
+  const span1 = document.createElement("span");
+  const latText = document.createTextNode(fixLatLon(lat));
+  span1.appendChild(latText);
+  cell2.appendChild(span1);
+
+  const span2 = document.createElement("span");
+  cell2.appendChild(span2);
+  span2.textContent = getLatitudeUnit(lat);
+  span2.classList.add("text-muted");
+
+  const span3 = document.createElement("span");
+  span3.textContent = ", ";
+  cell2.appendChild(span3);
+
+  const span4 = document.createElement("span");
+  const lngText = document.createTextNode(fixLatLon(lng));
+  span4.appendChild(lngText);
+  cell2.appendChild(span4);
+
+  const span5 = document.createElement("span");
+  cell2.appendChild(span5);
+  span5.textContent = getLongitudeUnit(lng);
+  span5.classList.add("text-muted");
+}
+
+function dataCapturedAtText(data) {
+  const capturedAtArray = document.querySelectorAll(".data-captured-at-text");
+  capturedAtArray.forEach((element) => {
+    element.textContent = data.dataCapturedAt;
+  });
+}
+
+function addUVIRow(cellTitle, cellInfo, table, colSpan = 0) {
+  if (cellInfo === undefined) return;
+  const row = table.insertRow(0);
+  const cell1 = document.createElement("th");
+  cell1.classList = "text-end";
+  row.appendChild(cell1);
+  const cell2 = row.insertCell();
+  cell2.colSpan = colSpan;
+  let text1 = document.createTextNode(cellTitle);
+  let text2 = cellInfo;
+  cell1.appendChild(text1);
+
+  if (cellInfo < 3) {
+    cell2.classList.add("text-success");
+    text2 = text2 + " (Low)";
+  } else if (cellInfo < 6) {
+    cell2.classList.add("text-yellow");
+    text2 = text2 + " (Moderate)";
+  } else if (cellInfo < 8) {
+    cell2.classList.add("text-orange");
+    text2 = text2 + " (High)";
+  } else if (cellInfo < 11) {
+    cell2.classList.add("text-danger");
+    text2 = text2 + " (Very High)";
+  } else if (cellInfo >= 11) {
+    cell2.classList.add("text-violet");
+    text2 = text2 + " (Extreme)";
+  }
+
+  cell2.textContent = text2;
+}
+
+function addAirPollutionRow(cellTitle, cellInfo, table, colSpan = 0) {
+  if (cellInfo === undefined) return;
+
+  const row = table.insertRow(0);
+  const cell1 = document.createElement("th");
+  cell1.classList = "text-end";
+  row.appendChild(cell1);
+  const cell2 = row.insertCell();
+  cell2.colSpan = colSpan;
+  let text1 = document.createTextNode(cellTitle);
+  cell1.appendChild(text1);
+
+  switch (cellInfo) {
+    case 1:
+      cell2.textContent = `${cellInfo} (Good)`;
+      cell2.classList = "text-success";
+      break;
+    case 2:
+      cell2.textContent = `${cellInfo} (Fair)`;
+      cell2.classList = "text-success";
+      break;
+    case 3:
+      cell2.textContent = `${cellInfo} (Moderate)`;
+      cell2.classList = "text-warning";
+      break;
+    case 4:
+      cell2.textContent = `${cellInfo} (Poor)`;
+      cell2.classList = "text-danger";
+      break;
+    case 5:
+      cell2.textContent = `${cellInfo} (Very Poor)`;
+      cell2.classList = "text-danger";
+      break;
+    default:
+      cell2.classList = "";
+  }
+}
+
+//----------------------------CITY API CALLS
+
+function cityAPICalls(data, offset) {
+  if (data.clickedAlready) return;
+  let cityName = cityNameValidCharactersOnly(data.name);
+  const table = document.querySelector(`#${cityName}-table`);
+
+  const outerDiv = document.createElement("div");
+  outerDiv.id = "spinner";
+  outerDiv.classList = "d-flex justify-content-center";
+  document.body.append(outerDiv);
+  const innerDiv = document.createElement("div");
+  innerDiv.classList = "spinner-border";
+  outerDiv.append(innerDiv);
+
+  table.after(outerDiv);
+  Promise.all([
+    apiOpenWeatherOneCall(data),
+    apiOpenweatherAirPollution(data),
+    opencageCall(data),
+    apiYelpCall(data),
+  ])
+    .then(() => {
+      updateCityInfoHTML(data, offset);
+    })
+    .catch((e) => console.log(e));
+}
+
+//---------------------------CITY  UPDATE HTML
+function updateCityInfoHTML(data, offset) {
+  let cityName = cityNameValidCharactersOnly(data.name);
+  const table = document.querySelector(`#${cityName}-table`);
+
+  const spinner = document.getElementById("spinner");
+  spinner.remove();
+
+  data.county ? addRow("County", data.county, table, 0) : null;
+
+  addAirPollutionRow("Air Quality Index", data.airPollution, table, 4);
+  addUVIRow("UVI", data.weather.current.uvi, table, 0);
+  data.state_district
+    ? addRow("State District", data.state_district, table, 0)
+    : null;
+  addRow("Population", makeNumberReadable(data.population), table, 0, "w-50");
+  data.clickedAlready = true;
+
+  const weatherTable = document.createElement("table");
+  weatherTable.classList = "table table-borderless blue-striped";
+  table.after(weatherTable);
+  const hourlyForecastArr = data.weather.hourly;
+
+  data.weather.hourly.forEach((item) => {
+    item.localisedTime = forecastTime(item.dt, offset);
+    item.localisedDay = forecastDay(item.dt, offset);
+  });
+
+  const weatherArr = hourlyForecastArr.filter(
+    (forecast) =>
+      forecast.localisedTime === "12pm" ||
+      forecast.localisedTime === "3pm" ||
+      forecast.localisedTime === "6pm" ||
+      forecast.localisedTime === "9pm" ||
+      forecast.localisedTime === "12am" ||
+      forecast.localisedTime === "3am" ||
+      forecast.localisedTime === "6am" ||
+      forecast.localisedTime === "9am"
+  );
+
+  const reducedWeatherArr = [];
+
+  for (let i = 0; i < 4; i++) {
+    reducedWeatherArr.push(weatherArr[i]);
+  }
+
+  let day = "";
+  for (let i = reducedWeatherArr.length - 1; i > -1; i--) {
+    if (i === 0 || reducedWeatherArr[i].localisedTime === "12am") {
+      day = reducedWeatherArr[i].localisedDay;
+    } else {
+      day = "";
+    }
+
+    let textEnd = true;
+
+    addWeatherRow(
+      day,
+      textEnd,
+      reducedWeatherArr[i].localisedTime,
+      reducedWeatherArr[i].temp,
+      reducedWeatherArr[i].weather[0].description,
+      reducedWeatherArr[i].weather[0].icon,
+      weatherTable,
+      0
+    );
+  }
+  if (data.yelp) {
+    const yelpContainer = document.createElement("div");
+    weatherTable.after(yelpContainer);
+    if (data.yelp.length > 0) {
+      data.yelp.forEach((business) => addYelpBusiness(business, yelpContainer));
+    } else {
+      const noBusinessesText = document.createElement("small");
+      noBusinessesText.textContent = "(No Yelp suggestions for this location)";
+      noBusinessesText.classList = "ms-2 text-primary";
+      yelpContainer.append(noBusinessesText);
+    }
+  }
+}
+
+function addYelpBusiness(business, yelpContainer) {
+  const businessContainer = document.createElement("div");
+  businessContainer.classList =
+    "yelp-businesses mx-0 my-1 d-flex p-2 bg-light rounded";
+
+  const link = document.createElement("a");
+  link.target = "_blank";
+  link.href = business.url;
+
+  const imgDiv = document.createElement("div");
+  imgDiv.classList =
+    "yelp-image-div flex-shrink-0 d-flex justify-content-center";
+  const img = document.createElement("img");
+  img.src = business.image_url;
+  img.classList = "yelp-image w-100";
+  img.alt = business.name;
+  imgDiv.append(img);
+
+  const textDiv = document.createElement("div");
+  textDiv.classList =
+    "text-div ms-1 flex-grow-1 d-flex flex-column justify-content-between text-dark";
+
+  const nameDiv = document.createElement("div");
+  nameDiv.classList = "name-div ms-2 d-flex flex-column";
+  const name = document.createElement("h5");
+  name.classList = "ms-1";
+  name.textContent = reduceText(business.name, 20);
+
+  const categoriesPara = document.createElement("small");
+  categoriesPara.classList = "ms-1 text-muted";
+  let catText = "";
+  business.categories.forEach((category) => {
+    catText += category.title + " | ";
+  });
+
+  catText = catText.slice(0, -2);
+
+  categoriesPara.textContent = catText;
+
+  const ratingDiv = document.createElement("div");
+  ratingDiv.classList = "rating-div ms-1 d-flex align-items-center";
+  const ratingImg = document.createElement("img");
+  ratingImg.src = getYelpRatingImg(business.rating);
+  ratingDiv.append(ratingImg);
+
+  textDiv.append(name, ratingDiv, categoriesPara);
+  businessContainer.append(imgDiv, textDiv);
+  link.append(businessContainer);
+  yelpContainer.append(link);
+}
+
 //-------------formatting functions--------------------//
+
+function formatType(type) {
+  type = type.toLowerCase();
+  const upperCaseLetter = type.charAt(0).toUpperCase();
+  type = type.replace(type.charAt(0), upperCaseLetter);
+
+  while (type.includes("_")) {
+    type = type.replace("_", " ");
+  }
+  return type;
+}
 
 function getYelpRatingImg(rating) {
   // if (window.innerWidth < 380) {
@@ -2515,29 +3356,6 @@ function getYelpRatingImg(rating) {
     default:
       return "libs/imgs/yelp/small_0.png";
   }
-  // }
-  // switch (rating) {
-  //   case 1:
-  //     return "libs/imgs/yelp/regular_1.png";
-  //   case 1.5:
-  //     return "libs/imgs/yelp/regular_1_half.png";
-  //   case 2:
-  //     return "libs/imgs/yelp/regular_2.png";
-  //   case 2.5:
-  //     return "libs/imgs/yelp/regular_2_half.png";
-  //   case 3:
-  //     return "libs/imgs/yelp/regular_3.png";
-  //   case 3.5:
-  //     return "libs/imgs/yelp/regular_3_half.png";
-  //   case 4:
-  //     return "libs/imgs/yelp/regular_4.png";
-  //   case 4.5:
-  //     return "libs/imgs/yelp/regular_4_half.png";
-  //   case 5:
-  //     return "libs/imgs/yelp/regular_5.png";
-  //   default:
-  //     return "libs/imgs/yelp/regular_0.png";
-  // }
 }
 
 function getWeatherIcon(iconRef) {
@@ -2734,7 +3552,6 @@ function getLongitudeUnit(lon) {
 
 function reduceText(text, maxChar, string = "") {
   if (text === null) return (text = "");
-  // if (text.length > 30) {
   let words = 10;
   let newText = text;
   while (newText.length > maxChar) {
@@ -2743,35 +3560,8 @@ function reduceText(text, maxChar, string = "") {
   }
 
   return newText + string;
-  // }
-  return text;
 }
 
-// function firstWordOnly(text) {
-//   text = text.split(" ");
-//   return text[0];
-// }
-
-// function formatCategories(category, maxChar = 60) {
-//   let changedCat = "";
-
-//   switch (category) {
-//     case "Landmarks & Historical Buildings":
-//       changedCat =
-//       break;
-//     case 2:
-//         console.log('number = 2');
-//       break;
-//     default:
-//     console.log('number = default');
-//   }
-
-//   changedCat = reduceText(category,maxChar);
-
-//   return changedCat;
-// }
-
-//---makes population figures readable----//
 function makeNumberReadable(num) {
   if (num === undefined) {
     return "n/a";
@@ -2814,750 +3604,4 @@ function cityNameValidCharactersOnly(inputCityName) {
     cityName = cityName.replace(")", "");
   }
   return cityName;
-}
-
-//---------------TABLE ROW FUNCTIONS-----------//
-function addRow(cellTitle, cellInfo, table, colSpan = "", classList = "") {
-  if (cellInfo === undefined) return;
-
-  const row = table.insertRow(0);
-  const cell1 = document.createElement("th");
-  cell1.classList = `text-end ${classList}`;
-  row.appendChild(cell1);
-  const cell2 = row.insertCell();
-  cell2.colSpan = colSpan;
-  let text1 = document.createTextNode(cellTitle);
-  let text2 = document.createTextNode(cellInfo);
-  cell1.appendChild(text1);
-  cell2.appendChild(text2);
-}
-
-function addRowWithUnits(
-  cellTitle,
-  cellInfo,
-  units,
-  table,
-  colSpan = "",
-  classList = ""
-) {
-  if (!cellInfo) return;
-  const row = table.insertRow(0);
-  const cell1 = document.createElement("th");
-  cell1.classList = `text-end ${classList}`;
-  row.appendChild(cell1);
-  const cell2 = row.insertCell();
-  let text1 = document.createTextNode(cellTitle);
-  let text2 = document.createTextNode(cellInfo);
-  cell1.appendChild(text1);
-  cell2.appendChild(text2);
-  const span = document.createElement("span");
-  const currencySymbol = document.createTextNode(`${units}`);
-  span.appendChild(currencySymbol);
-  span.classList = "text-muted";
-  cell2.appendChild(span);
-}
-
-function addLocalTimeRow(cellTitle, cellInfo, table) {
-  if (!cellInfo) return;
-  // const table = document.querySelector("#general-info-table");
-  const row = table.insertRow(0);
-  const cell1 = document.createElement("th");
-  cell1.classList = "text-end";
-  const text1 = document.createTextNode(cellTitle);
-  cell1.appendChild(text1);
-  row.appendChild(cell1);
-
-  const cell2 = row.insertCell();
-  row.appendChild(cell2);
-  const text2 = document.createTextNode(cellInfo.replace(/am|pm/, ""));
-  cell2.appendChild(text2);
-  const span = document.createElement("span");
-  span.classList = "text-muted";
-  const text3 = document.createTextNode(cellInfo.slice(-2));
-  span.appendChild(text3);
-  cell2.appendChild(span);
-}
-
-function addWeatherRow(
-  day,
-  textEnd,
-  time,
-  cellInfo,
-  description,
-  icon,
-  table,
-  position = undefined
-) {
-  if (!cellInfo) return;
-  const row = table.insertRow(position);
-  row.classList = "text-center";
-
-  const cell1 = document.createElement("th");
-  cell1.textContent = day;
-  textEnd === true ? (cell1.classList = "text-end") : null;
-  row.appendChild(cell1);
-
-  const cell2 = document.createElement("td");
-  cell2.classList = "";
-  row.appendChild(cell2);
-  const em = document.createElement("em");
-  let text1 = document.createTextNode(time);
-  em.appendChild(text1);
-  cell2.appendChild(em);
-
-  const cell3 = row.insertCell();
-  const tempContainer = document.createElement("strong");
-  cell3.appendChild(tempContainer);
-  const temp = document.createTextNode(cellInfo);
-  tempContainer.appendChild(temp);
-  const span1 = document.createElement("span");
-  cell3.appendChild(span1);
-  const spanText = document.createTextNode("°C");
-  span1.classList = "text-muted";
-  span1.appendChild(spanText);
-
-  const cell4 = row.insertCell();
-  // const outerDiv = document.createElement("div");
-  // cell4.appendChild(outerDiv);
-  // outerDiv.classList = "weather-icon-parent-container";
-  // const innerDiv = document.createElement("div");
-  // innerDiv.classList = "weather-icon-container";
-  // outerDiv.appendChild(innerDiv);
-  // const img = document.createElement("img");
-  // innerDiv.appendChild(img);
-  // img.id = "current-weather-icon";
-  // img.classList = "weather-img";
-  // img.src = `libs/imgs/${icon}@2x.png`;
-
-  // const weatherIcon = getWeatherIcon(icon);
-  const span2 = document.createElement("span");
-  // span2.classList = weatherIcon.classList;
-  span2.classList = getWeatherIcon(icon);
-  // span2.style.color = weatherIcon.color;
-  cell4.appendChild(span2);
-  const cell5 = row.insertCell();
-  cell5.textContent = description;
-}
-
-function addAreaRow(cellTitle, cellInfo, table) {
-  if (!cellInfo) return;
-  // const table = document.querySelector("#general-info-table");
-  const row = table.insertRow(0);
-
-  const cell1 = document.createElement("th");
-  cell1.classList = "text-end";
-  row.appendChild(cell1);
-  let text1 = document.createTextNode(cellTitle);
-  cell1.appendChild(text1);
-
-  const cell2 = row.insertCell();
-  let text2 = document.createTextNode(cellInfo);
-  const span = document.createElement("span");
-  const km = document.createTextNode("km");
-  span.appendChild(km);
-  span.classList = "text-muted";
-  const sup = document.createElement("sup");
-  const number2 = document.createTextNode("2");
-  sup.appendChild(number2);
-  sup.classList = "text-muted";
-  cell2.appendChild(text2);
-  cell2.appendChild(span);
-  cell2.appendChild(sup);
-}
-
-function addLatLngRow(cellTitle, lat, lng, table) {
-  if (!lat || !lng) return;
-  // const table = document.querySelector("#general-info-table");
-  const row = table.insertRow(0);
-
-  const cell1 = document.createElement("th");
-  row.appendChild(cell1);
-  cell1.classList = "text-end";
-  const text = document.createTextNode(cellTitle);
-  cell1.appendChild(text);
-
-  const cell2 = row.insertCell();
-  row.appendChild(cell2);
-  const span1 = document.createElement("span");
-  const latText = document.createTextNode(fixLatLon(lat));
-  span1.appendChild(latText);
-  cell2.appendChild(span1);
-
-  const span2 = document.createElement("span");
-  cell2.appendChild(span2);
-  span2.textContent = getLatitudeUnit(lat);
-  span2.classList.add("text-muted");
-
-  const span3 = document.createElement("span");
-  span3.textContent = ", ";
-  cell2.appendChild(span3);
-
-  const span4 = document.createElement("span");
-  const lngText = document.createTextNode(fixLatLon(lng));
-  span4.appendChild(lngText);
-  cell2.appendChild(span4);
-
-  const span5 = document.createElement("span");
-  cell2.appendChild(span5);
-  span5.textContent = getLongitudeUnit(lng);
-  span5.classList.add("text-muted");
-}
-
-function dataCapturedAtText(data) {
-  const capturedAtArray = document.querySelectorAll(".data-captured-at-text");
-  capturedAtArray.forEach((element) => {
-    element.textContent = data.dataCapturedAt;
-  });
-}
-
-function addUVIRow(cellTitle, cellInfo, table, colSpan = 0) {
-  if (cellInfo === undefined) return;
-  const row = table.insertRow(0);
-  const cell1 = document.createElement("th");
-  cell1.classList = "text-end";
-  row.appendChild(cell1);
-  const cell2 = row.insertCell();
-  cell2.colSpan = colSpan;
-  let text1 = document.createTextNode(cellTitle);
-  let text2 = cellInfo;
-  cell1.appendChild(text1);
-
-  if (cellInfo < 3) {
-    cell2.classList.add("text-success");
-    text2 = text2 + " (Low)";
-  } else if (cellInfo < 6) {
-    cell2.classList.add("text-yellow");
-    text2 = text2 + " (Moderate)";
-  } else if (cellInfo < 8) {
-    cell2.classList.add("text-orange");
-    text2 = text2 + " (High)";
-  } else if (cellInfo < 11) {
-    cell2.classList.add("text-danger");
-    text2 = text2 + " (Very High)";
-  } else if (cellInfo >= 11) {
-    cell2.classList.add("text-violet");
-    text2 = text2 + " (Extreme)";
-  }
-
-  cell2.textContent = text2;
-}
-
-function addAirPollutionRow(cellTitle, cellInfo, table, colSpan = 0) {
-  if (cellInfo === undefined) return;
-
-  const row = table.insertRow(0);
-  const cell1 = document.createElement("th");
-  cell1.classList = "text-end";
-  row.appendChild(cell1);
-  const cell2 = row.insertCell();
-  cell2.colSpan = colSpan;
-  let text1 = document.createTextNode(cellTitle);
-  cell1.appendChild(text1);
-
-  switch (cellInfo) {
-    case 1:
-      cell2.textContent = `${cellInfo} (Good)`;
-      cell2.classList = "text-success";
-      break;
-    case 2:
-      cell2.textContent = `${cellInfo} (Fair)`;
-      cell2.classList = "text-success";
-      break;
-    case 3:
-      cell2.textContent = `${cellInfo} (Moderate)`;
-      cell2.classList = "text-warning";
-      break;
-    case 4:
-      cell2.textContent = `${cellInfo} (Poor)`;
-      cell2.classList = "text-danger";
-      break;
-    case 5:
-      cell2.textContent = `${cellInfo} (Very Poor)`;
-      cell2.classList = "text-danger";
-      break;
-    default:
-      cell2.classList = "";
-  }
-}
-
-//IMAGES CAROUSEL FUNCTION
-function addCarouselImages(data) {
-  if (!data.countryImages) return;
-  const modal = document.querySelector('[data-modal="images"]');
-
-  // const carousel = document.getElementById("country-images-carousel");
-  const carousel = document.createElement("div");
-  carousel.id = "country-images-carousel";
-  carousel.classList = "carousel slide carousel-fade";
-  carousel.setAttribute("data-bs-ride", "carousel");
-  modal.appendChild(carousel);
-  const carouselInner = document.createElement("div");
-  carousel.appendChild(carouselInner);
-  carouselInner.classList = "carousel-inner";
-
-  data.countryImages.forEach((image) => {
-    //carouselItemDiv
-    const carouselItemDiv = document.createElement("div");
-    carouselInner.appendChild(carouselItemDiv);
-    carouselItemDiv.classList = "carousel-item";
-    carouselItemDiv.setAttribute("data-bs-interval", "4000");
-
-    //imageParentDiv
-    const imageParentDiv = document.createElement("div");
-    carouselItemDiv.appendChild(imageParentDiv);
-    imageParentDiv.classList =
-      "carousel-img-parent d-flex justify-content-center";
-    //img
-    const img = document.createElement("img");
-    imageParentDiv.appendChild(img);
-    img.classList = "d-block w-100";
-    img.classList = "carousel-img-size";
-    img.src = image.url;
-    img.setAttribute(
-      "title",
-      `${
-        image.description ? image.description + ": " : data.countryName + ": "
-      }${image.alt_description ? image.alt_description : ""}`
-    );
-
-    //captionDiv
-    const captionDiv = document.createElement("div");
-    carouselItemDiv.appendChild(captionDiv);
-    captionDiv.classList = "carousel-caption p-0 m-0";
-    //title
-    const title = document.createElement("h5");
-    captionDiv.appendChild(title);
-    title.textContent = reduceText(image.description, 60, "...");
-    //alt_description
-    const altDescription = document.createElement("p");
-    captionDiv.appendChild(altDescription);
-    altDescription.textContent = reduceText(image.alt_description, 60, "...");
-  });
-  const images = document.querySelectorAll(".carousel-item");
-  images[0].classList.add("active");
-  //CREATE BUTTONS
-  //PREV
-  const prevButton = document.createElement("button");
-  carouselInner.appendChild(prevButton);
-  prevButton.classList = "carousel-control-prev";
-  prevButton.type = "button";
-  prevButton.setAttribute("data-bs-target", "#country-images-carousel");
-  prevButton.setAttribute("data-bs-slide", "prev");
-  //SPANS
-  const prevSpan1 = document.createElement("span");
-  prevButton.appendChild(prevSpan1);
-  prevSpan1.classList = "carousel-control-prev-icon";
-  prevSpan1.setAttribute("aria-hidden", "true");
-  const prevSpan2 = document.createElement("span");
-  prevButton.appendChild(prevSpan2);
-  prevSpan2.classList = "visually-hidden";
-
-  //NEXT
-  const nextButton = document.createElement("button");
-  carouselInner.appendChild(nextButton);
-  nextButton.classList = "carousel-control-next";
-  nextButton.type = "button";
-  nextButton.setAttribute("data-bs-target", "#country-images-carousel");
-  nextButton.setAttribute("data-bs-slide", "next");
-  //SPANS
-  const nextSpan1 = document.createElement("span");
-  nextButton.appendChild(nextSpan1);
-  nextSpan1.classList = "carousel-control-next-icon";
-  nextSpan1.setAttribute("aria-hidden", "true");
-  const nextSpan2 = document.createElement("span");
-  nextButton.appendChild(nextSpan2);
-  nextSpan2.classList = "visually-hidden";
-}
-
-function addCities(data) {
-  data.cityMarkers = {};
-  if (!data.cities) return;
-
-  const modal = document.querySelector('[data-modal="cities"]');
-
-  //outer div one
-  const citiesList = document.createElement("div");
-  citiesList.classList = "accordion accordion-flush";
-  citiesList.id = "cities-list";
-  modal.appendChild(citiesList);
-
-  data.cities.forEach((city, index) => {
-    //set cityName also used for storing marker names
-    let cityName = cityNameValidCharactersOnly(city.name);
-
-    if (city.name !== data.capital) {
-      data.cityMarkers[cityName] = L.marker([city.lat, city.lng], {
-        icon: cityIcon,
-        riseOnHover: true,
-      })
-        .addTo(citiesMCG)
-        .bindPopup(
-          `<h6><strong id="" class="">
-          ${city.name}</strong><br>Pop. ${makeNumberReadable(
-            city.population
-          )}</h6>`
-        )
-        .addEventListener("click", (e) => flyToPin(e));
-    } else {
-      data.cityMarkers[cityName] = L.marker([city.lat, city.lng], {
-        icon: capitalCityIcon,
-        riseOnHover: true,
-      })
-        .addTo(capitalMCG)
-        .bindPopup(
-          `<h6><strong id="" class="">${
-            city.name
-          }</strong><br>Capital City<br>Pop. ${makeNumberReadable(
-            city.population
-          )}</h6>`
-        )
-        .addEventListener("click", (e) => flyToPin(e));
-      data.cityMarkers[cityName].openPopup();
-    }
-
-    //outer div two
-    const accordionItemDiv = document.createElement("div");
-    citiesList.appendChild(accordionItemDiv);
-    accordionItemDiv.classList = "accordion-item";
-
-    //h2 header
-    const header = document.createElement("h2");
-    accordionItemDiv.appendChild(header);
-    header.classList = "accordion-header";
-    header.id = `${city.name}-accordion-header`;
-
-    //create button
-    const button = document.createElement("button");
-    header.appendChild(button);
-    const buttonName = document.createTextNode(`${city.name}`);
-    button.appendChild(buttonName);
-    button.setAttribute("class", "accordion-button collapsed");
-    button.setAttribute("type", "button");
-    button.setAttribute("data-bs-toggle", "collapse");
-    button.setAttribute("data-bs-target", `#${cityName}-accordion`);
-    button.setAttribute("aria-expanded", "true");
-    button.setAttribute("aria-controls", `${city.name}-accordion`);
-    button.addEventListener("click", function (e) {
-      const targetCity = data.cities.find(
-        (city) => city.name === e.target.textContent
-      );
-
-      //if there is data already just remove the unclickable
-      if (!targetCity.clickedAlready) {
-        document.body.classList.add("unclickable");
-        cityAPICalls(targetCity, data.offset_sec);
-        setTimeout(function () {
-          document.body.classList.remove("unclickable");
-          console.log("you can click again now");
-        }, 1000);
-      }
-    });
-
-    const accordionCollapseDiv = document.createElement("div");
-    accordionItemDiv.appendChild(accordionCollapseDiv);
-    accordionCollapseDiv.classList = "accordion-collapse collapse";
-    if (index === 0) {
-      accordionCollapseDiv.classList.add("open");
-    }
-    accordionCollapseDiv.id = `${cityNameValidCharactersOnly(
-      city.name
-    )}-accordion`;
-    accordionCollapseDiv.setAttribute(
-      "aria-labelledby",
-      `${city.name}-accordion-header`
-    );
-
-    const accordionBody = document.createElement("div");
-    accordionBody.classList = "accordion-body p-1";
-    accordionCollapseDiv.appendChild(accordionBody);
-
-    const cityNameAccBody = document.createElement("h3");
-    cityNameAccBody.id = "city-name-accordion-body";
-    cityNameAccBody.textContent = city.name;
-    cityNameAccBody.classList =
-      "shadow-sm bg-white sticky-top text-center py-3";
-    accordionBody.append(cityNameAccBody);
-
-    //create table
-    const table = document.createElement("table");
-    accordionBody.appendChild(table);
-    table.id = `${cityNameValidCharactersOnly(cityName)}-table`;
-    table.classList = "table table-borderless mt-3 blue-striped";
-
-    //findCityOnMap
-    const findOnMapDiv = document.createElement("div");
-    accordionBody.appendChild(findOnMapDiv);
-    findOnMapDiv.classList = "my-2 container d-flex justify-content-end";
-
-    const findOnMapbtn = document.createElement("button");
-    findOnMapbtn.textContent = `Go to ${city.name}  `;
-    findOnMapbtn.classList = "btn btn-sm btn-primary";
-    findOnMapDiv.appendChild(findOnMapbtn);
-
-    const iconSpan = document.createElement("span");
-    findOnMapbtn.appendChild(iconSpan);
-    iconSpan.classList = "fa-solid fa-arrow-right-long";
-
-    //set zoom to city function
-    findOnMapbtn.addEventListener("click", function (e) {
-      const innerHTML =
-        e.target.parentElement.parentElement.parentElement.previousElementSibling.querySelector(
-          "button"
-        ).textContent;
-
-      // console.log(innerHTML);
-      data.cities.find((city) => {
-        citiesModal.hide();
-        if (city.name === innerHTML) {
-          map.flyTo([city.lat, city.lng], 12, [2, 2]);
-          let cityName = cityNameValidCharactersOnly(city.name);
-          const marker = data.cityMarkers[cityName];
-
-          (function openPopupOnZoomLevel12() {
-            setTimeout(function () {
-              if (map.getZoom() === 12) {
-                marker.openPopup();
-              } else {
-                console.log(map.getZoom());
-                openPopupOnZoomLevel12();
-              }
-            }, 750);
-          })();
-          marker.openPopup();
-        }
-      });
-    });
-  });
-}
-
-function addCameras(data) {
-  if (!data.cameras) return;
-
-  data.cameras.forEach((camera) => {
-    const marker = L.marker(
-      [camera.location.latitude, camera.location.longitude],
-      {
-        icon: cameraIcon,
-        riseOnHover: true,
-      }
-    )
-      .addTo(camerasMCG)
-      .addEventListener("click", (e) => flyToPin(e));
-
-    const popup = L.DomUtil.create("div", "camera-popup");
-
-    popup.innerHTML = `<div><h6><strong>${
-      camera.title
-    }</strong></h6><iframe src=${
-      camera.player.day.embed
-    }></iframe><select id="camera-${
-      camera.id
-    }" class="form-select camera-select">${
-      camera.player.day.available
-        ? `<option value=${camera.player.day.embed}>Day</option>`
-        : null
-    }${
-      camera.player.month.available
-        ? `<option value=${camera.player.month.embed}>Month</option>`
-        : null
-    }${
-      camera.player.year.available
-        ? `<option value=${camera.player.year.embed}>Year</option>`
-        : null
-    }${
-      camera.player.lifetime.available
-        ? `<option value=${camera.player.lifetime.embed}>Lifetime</option>`
-        : null
-    }${
-      camera.player.live.available
-        ? `<option value=${camera.player.live.embed}>Live</option>`
-        : null
-    }<select></div>`;
-
-    marker.bindPopup(popup);
-
-    // const selectBar = L.DomUtil.get(`${camera.id}`);
-
-    const selectBar = popup.querySelector(`#camera-${camera.id}`);
-
-    if (selectBar) {
-      selectBar.addEventListener("change", function (e) {
-        const parent = e.target.parentElement;
-        const iframe = parent.querySelector("iframe");
-        iframe.src = e.target.value;
-        // console.log(e.target.value);
-      });
-    } else {
-      console.log("can't find it sorry");
-    }
-  });
-}
-
-//----------------------------CITY API CALLS
-
-function cityAPICalls(data, offset) {
-  console.log(data);
-  if (data.clickedAlready) return;
-  console.log("cityapicalls");
-  let cityName = cityNameValidCharactersOnly(data.name);
-  const table = document.querySelector(`#${cityName}-table`);
-  // for (let i = 0; i < 8; i++) {
-  //   const row = table.insertRow();
-  //   const cell1 = row.insertCell();
-  //   const cell2 = row.insertCell();
-  //   cell1.classList = "skeleton skeleton-text";
-  //   cell2.classList = "skeleton skeleton-text";
-  // }
-
-  const outerDiv = document.createElement("div");
-  outerDiv.id = "spinner";
-  outerDiv.classList = "d-flex justify-content-center";
-  document.body.append(outerDiv);
-  const innerDiv = document.createElement("div");
-  innerDiv.classList = "spinner-border";
-  outerDiv.append(innerDiv);
-
-  table.after(outerDiv);
-  Promise.all([
-    apiOpenWeatherOneCall(data),
-    apiOpenweatherAirPollution(data),
-    opencageCall(data),
-    apiYelpCall(data),
-  ])
-    .then(() => {
-      updateCityInfoHTML(data, offset);
-    })
-    .catch((e) => console.log(e));
-}
-
-//---------------------------CITY  UPDATE HTML
-function updateCityInfoHTML(data, offset) {
-  const hourlyForecastArr = data.weather.hourly;
-  let cityName = cityNameValidCharactersOnly(data.name);
-  const table = document.querySelector(`#${cityName}-table`);
-  // console.log(data);
-  // table.classList.add("blue-striped");
-  //remove skeleton rows
-
-  const spinner = document.getElementById("spinner");
-  spinner.remove();
-
-  data.county ? addRow("County", data.county, table, 0) : null;
-
-  addAirPollutionRow("Air Quality Index", data.airPollution, table, 4);
-  addUVIRow("UVI", data.weather.current.uvi, table, 0);
-  data.state_district
-    ? addRow("State District", data.state_district, table, 0)
-    : null;
-  addRow("Population", makeNumberReadable(data.population), table, 0, "w-50");
-  data.clickedAlready = true;
-
-  const weatherTable = document.createElement("table");
-  weatherTable.classList = "table table-borderless blue-striped";
-  table.after(weatherTable);
-
-  data.weather.hourly.forEach((item) => {
-    item.localisedTime = forecastTime(item.dt, offset);
-    item.localisedDay = forecastDay(item.dt, offset);
-  });
-
-  const weatherArr = hourlyForecastArr.filter(
-    (forecast) =>
-      forecast.localisedTime === "12pm" ||
-      forecast.localisedTime === "3pm" ||
-      forecast.localisedTime === "6pm" ||
-      forecast.localisedTime === "9pm" ||
-      forecast.localisedTime === "12am" ||
-      forecast.localisedTime === "3am" ||
-      forecast.localisedTime === "6am" ||
-      forecast.localisedTime === "9am"
-  );
-
-  const reducedWeatherArr = [];
-
-  for (let i = 0; i < 4; i++) {
-    reducedWeatherArr.push(weatherArr[i]);
-  }
-
-  let day = "";
-  for (let i = reducedWeatherArr.length - 1; i > -1; i--) {
-    if (i === 0 || reducedWeatherArr[i].localisedTime === "12am") {
-      day = reducedWeatherArr[i].localisedDay;
-    } else {
-      day = "";
-    }
-
-    let textEnd = true;
-
-    addWeatherRow(
-      day,
-      textEnd,
-      reducedWeatherArr[i].localisedTime,
-      reducedWeatherArr[i].temp,
-      reducedWeatherArr[i].weather[0].description,
-      reducedWeatherArr[i].weather[0].icon,
-      weatherTable,
-      0
-    );
-  }
-  if (data.yelp) {
-    const yelpContainer = document.createElement("div");
-    weatherTable.after(yelpContainer);
-    data.yelp.forEach((business) => addYelpBusiness(business, yelpContainer));
-  }
-}
-
-function addYelpBusiness(business, yelpContainer) {
-  // name, picture, rating, url
-  const businessContainer = document.createElement("div");
-  businessContainer.classList =
-    "yelp-businesses mx-2 my-1 d-flex p-2 bg-light rounded";
-
-  const link = document.createElement("a");
-  link.target = "_blank";
-  link.href = business.url;
-
-  const imgDiv = document.createElement("div");
-  imgDiv.classList =
-    "yelp-image-div flex-shrink-0 d-flex justify-content-center";
-  const img = document.createElement("img");
-  img.src = business.image_url;
-  img.classList = "yelp-image w-100";
-  img.alt = business.name;
-  imgDiv.append(img);
-
-  const textDiv = document.createElement("div");
-  textDiv.classList =
-    "text-div ms-1 flex-grow-1 d-flex flex-column justify-content-between text-dark";
-
-  const nameDiv = document.createElement("div");
-  nameDiv.classList = "name-div ms-2 d-flex flex-column";
-  const name = document.createElement("h5");
-  name.classList = "ms-1";
-  name.textContent = reduceText(business.name, 20);
-
-  const categoriesPara = document.createElement("small");
-  categoriesPara.classList = "ms-1 text-muted";
-  let catText = "";
-  business.categories.forEach((category) => {
-    // if (catText.length > 40) return;
-    catText += category.title + " | ";
-  });
-  catText = catText.slice(0, -2);
-  // catText = reduceText(catText, 40);
-  // if (catText.slice(-3) === " | ") {
-  //   catText = catText.slice(0, -3);
-  // }
-  categoriesPara.textContent = catText;
-
-  const ratingDiv = document.createElement("div");
-  ratingDiv.classList = "rating-div ms-1 d-flex align-items-center";
-  const ratingImg = document.createElement("img");
-  ratingImg.src = getYelpRatingImg(business.rating);
-  ratingDiv.append(ratingImg);
-
-  textDiv.append(name, ratingDiv, categoriesPara);
-  businessContainer.append(imgDiv, textDiv);
-  link.append(businessContainer);
-  yelpContainer.append(link);
 }

@@ -74,7 +74,6 @@ $filtered_results = filter_volcanoes_data($decoded_results, $country);
 	echo $encoded_output;
 }
 
-
-get_volcanoes($_REQUEST['countryname']);
+	get_volcanoes($_REQUEST['countryname']);
 
 ?>
