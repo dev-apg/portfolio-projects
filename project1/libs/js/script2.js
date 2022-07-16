@@ -21,6 +21,7 @@ $(window).on("load", function () {
 const map = L.map("map", {
   center: [50.8476, 4.3572],
   zoom: 4,
+  // zoomControl: false,
 });
 
 //alternative tiles for when maptiler not available due to free account
@@ -125,7 +126,39 @@ const overlays = {
 
 //-------------------MAP CONTROLS/BUTTONS
 
-L.control.layers(baseLayers, overlays, { collapsed: true }).addTo(map);
+// -----------------------------------------
+
+// Create additional Control placeholders
+function addControlPlaceholders(map) {
+  var corners = map._controlCorners,
+    l = "leaflet-",
+    container = map._controlContainer;
+
+  function createCorner(vSide, hSide) {
+    var className = l + vSide + " " + l + hSide;
+
+    corners[vSide + hSide] = L.DomUtil.create("div", className, container);
+  }
+
+  createCorner("verticalcenter", "left");
+  createCorner("verticalcenter", "right");
+}
+addControlPlaceholders(map);
+
+L.control
+  .layers(baseLayers, overlays, {
+    collapsed: true,
+    position: "topright",
+  })
+  .addTo(map);
+
+// Change the position of the Zoom Control to a newly created placeholder.
+map.zoomControl.setPosition("verticalcenterright");
+
+// You can also put other controls in the same placeholder.
+// L.control.scale({ position: "verticalcenterright" }).addTo(map);
+
+// --------------------------------------------------------
 
 const generalInfoButton = L.easyButton({
   states: [
@@ -261,13 +294,6 @@ $("#select").change(function (e) {
   ll.getData(countryCodeISO2, countryName);
 });
 
-// $("#select-start").change(function (e) {
-//   const select = e.target;
-//   const countryCodeISO2 = select.value;
-//   const countryName = select.item(select.selectedIndex).textContent;
-//   ll.getData(countryCodeISO2, countryName);
-// });
-
 $(".nav-flag-div").on("click", function () {
   const select = document.getElementById("select");
   const countryCodeISO2 = select.value;
@@ -287,7 +313,6 @@ $("#logo").on("click", function () {
 //--------------------------Progress Modal -------------------------//
 
 let countriesArr = [];
-
 let selected_CountryCodeISO2 = null;
 let selected_CountryName = null;
 let dataMissing = false;
@@ -524,7 +549,15 @@ function modalFootprints() {
     setTimeout(function () {
       prints[4].style.color = "black";
       prints[4].style.transform = "rotate(-5deg)";
-    }, 4000);
+    }, 4800);
+    setTimeout(function () {
+      prints[4].style.color = "black";
+      prints[4].style.transform = "rotate(-5deg)";
+    }, 5600);
+    setTimeout(function () {
+      prints[4].style.color = "black";
+      prints[4].style.transform = "rotate(-5deg)";
+    }, 6400);
     setTimeout(function () {
       if (continueAnimation) {
         animateFootprints(prints);
@@ -535,7 +568,7 @@ function modalFootprints() {
           print.style.color = "white";
         });
       }
-    }, 4800);
+    }, 7400);
   })(prints, continueAnimation);
 }
 
@@ -552,13 +585,6 @@ const citiesModal = new bootstrap.Modal(
     keyboard: false,
   }
 );
-
-// const errorsModal = new bootstrap.Modal(
-//   document.getElementById("errorsModal"),
-//   {
-//     keyboard: false,
-//   }
-// );
 
 // ---------------------DATA NODE AND LINKED LIST-------//
 // Node that contains country data for linked list
@@ -691,11 +717,6 @@ const ll = new LinkedList();
 populateSelect();
 
 //-----------------------------REQUEST USER LOCATION
-
-// const getLocationBtn = document.getElementById("get-location-btn");
-// getLocationBtn.addEventListener("click", function () {
-//   getUserLocation();
-// });
 
 function getUserLocation() {
   var options = {

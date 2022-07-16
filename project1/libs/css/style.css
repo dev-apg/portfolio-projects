@@ -128,20 +128,38 @@ body {
 }
 
 .leaflet-control-layers {
-  top: 30px;
-  right: 8px;
+  /* top: 30px;
+  right: 8px; */
 }
 
 div.leaflet-control-zoom.leaflet-bar.leaflet-control {
-  top: calc(100vh - 150px);
+  /* top: calc(100vh - 150px);
+  top: 97px;
+  right: 10px; */
 }
 
-div.leaflet-control-layers.leaflet-control {
-  top: calc(100vh - 200px);
-  color: var(--primary-color);
-  background-color: #1e272ed2;
-  background-color: var(--bs-dark);
+.leaflet-top.leaflet-left {
+  top: 48px;
+}
+
+div.leaflet-top.leaflet-right {
+  top: 46px;
+}
+
+/* container for zoom */
+.leaflet-verticalcenter {
   position: absolute;
+  z-index: 1000;
+  pointer-events: none;
+  top: calc(
+    100% - 61px
+  ); /* possible because the placeholder's parent is the map */
+  transform: translateY(-50%); /* using the CSS3 Transform technique */
+  padding-top: 10px;
+}
+
+.leaflet-verticalcenter .leaflet-control {
+  margin-bottom: 10px;
 }
 
 div.leaflet-control-layers-overlays {
