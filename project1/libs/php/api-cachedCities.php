@@ -75,12 +75,13 @@ return $results;
 
 function get_cities() {
     $executionStartTime = microtime(true);
-    $expires = time() - 30*24*60*60;
+    $expires = time() - 180*24*60*60;
     $cache_file = '../resources/cities15000.txt';
 
     if (!file_exists($cache_file)) {
        cache_data();
     } else if ( filectime($cache_file) < $expires || file_get_contents($cache_file)  == '') {
+        unlink($cache_file);
         cache_data();
     } 
 

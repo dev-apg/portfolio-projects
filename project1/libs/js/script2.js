@@ -136,7 +136,6 @@ function addControlPlaceholders(map) {
 
   function createCorner(vSide, hSide) {
     var className = l + vSide + " " + l + hSide;
-
     corners[vSide + hSide] = L.DomUtil.create("div", className, container);
   }
 
@@ -327,7 +326,12 @@ function progressModal_start() {
       child.remove();
     });
   }
+
+  const welcomeDiv = document.createElement("div");
+  welcomeDiv.id = "welcome-div";
+
   const welcomeMessage = document.createElement("h3");
+
   welcomeMessage.textContent = "Welcome to Gazatteer";
   welcomeMessage.id = "welcome-message";
   welcomeMessage.classList = "text-center mb-4";
@@ -366,21 +370,10 @@ function progressModal_start() {
     ll.getData(countryCodeISO2, countryName);
   });
 
-  modal.append(welcomeMessage, buttonsContainer);
+  modal.append(welcomeDiv, buttonsContainer);
   buttonsContainer.append(getLocationBtn, select);
+  welcomeDiv.append(welcomeMessage);
   progressModal.show();
-}
-
-//---------------ProgressModal Errors
-
-function progressModal_userLocationFailed() {
-  const modal = document.querySelector('[data-modal="progress"]');
-  const children = modal.children;
-  if (children) {
-    Array.from(children).forEach((child) => {
-      child.remove();
-    });
-  }
 }
 
 function progressModal_gettingData(data) {
@@ -431,6 +424,24 @@ function progressModal_gettingData(data) {
   messageDiv.append(footprints, loadingMessage, para);
   progressBarContainer.append(progressBar);
   progressModal.show();
+}
+
+//---------------ProgressModal Errors
+
+function progressModal_userLocationFailed() {
+  const modal = document.querySelector('[data-modal="progress"]');
+
+  //add alert
+  const welcomeDiv = document.getElementById("welcome-div");
+  const getLocationBtn = document.getElementById("get-location-btn");
+  const alertDiv = document.createElement("div");
+  alertDiv.classList = "alert alert-primary";
+  const text = document.createElement("p");
+  text.textContent = "Unable to access your location - please choose a country";
+  alertDiv.append(text);
+  //make button disabled
+  getLocationBtn.classList.add("disabled");
+  welcomeDiv.append(alertDiv);
 }
 
 function progressModal_someDataMissing() {
@@ -551,12 +562,12 @@ function modalFootprints() {
       prints[4].style.transform = "rotate(-5deg)";
     }, 4800);
     setTimeout(function () {
-      prints[4].style.color = "black";
-      prints[4].style.transform = "rotate(-5deg)";
+      prints[5].style.color = "black";
+      prints[5].style.transform = "rotate(-5deg)";
     }, 5600);
     setTimeout(function () {
-      prints[4].style.color = "black";
-      prints[4].style.transform = "rotate(-5deg)";
+      prints[6].style.color = "black";
+      prints[6].style.transform = "rotate(-5deg)";
     }, 6400);
     setTimeout(function () {
       if (continueAnimation) {
@@ -733,12 +744,7 @@ function getUserLocation() {
 
   //consent declined
   function error(err) {
-    document.getElementById("welcome-message").classList.add("d-none");
-    getLocationBtn.setAttribute("disabled", true);
-    const errMessages = document.querySelectorAll(".error-message");
-    // errMessages.forEach((message) => {
-    //   message.classList.remove("d-none");
-    // });
+    progressModal_userLocationFailed();
     console.warn(`ERROR(${err.code}): ${err.message}`);
   }
   navigator.geolocation.getCurrentPosition(success, error, options);
@@ -1717,7 +1723,7 @@ function createCurrentForecast(data, offset) {
   const iconDiv = document.createElement("div");
   iconDiv.id = "icon-div";
   iconDiv.classList =
-    "border flex-grow-1 d-flex flex-column align-items-center justify-content-evenly";
+    "px-2 border flex-grow-1 d-flex flex-column align-items-center justify-content-evenly";
   cardBody.append(iconDiv);
 
   const title = document.createElement("em");
@@ -2576,8 +2582,9 @@ function setNavButtons() {
 }
 
 function removeFocusFromSelect() {
-  const mapDiv = document.getElementById("map");
-  mapDiv.focus();
+  // const mapDiv = document.getElementById("map");
+  const select = document.getElementById("select");
+  select.blur();
 }
 
 //------populates select tag list of countries--------------//
