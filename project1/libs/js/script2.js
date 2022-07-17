@@ -1430,7 +1430,7 @@ function apiYelpCall(data) {
 
 function updateHTML(data) {
   //recenter
-  ll.recenter();
+  // ll.recenter();
 
   addGeoJSONOutline(data.geoJSON);
 
@@ -1485,6 +1485,8 @@ function updateHTML(data) {
 
   //earthquakes
   addEarthquakes(data);
+
+  ll.recenter();
 }
 
 function addEarthquakes(data) {
