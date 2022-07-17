@@ -64,12 +64,12 @@ body {
   background-color: var(--bs-dark);
 }
 
-.leaflet-bar button:hover {
+/* .leaflet-bar button:hover {
   color: var(--accent-color);
   background-color: var(--bs-dark);
-}
+} */
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .leaflet-bar button:hover {
     color: var(--bs-dark);
     background-color: var(--accent-color);
@@ -87,12 +87,12 @@ body {
   background-color: var(--bs-dark);
 }
 
-.leaflet-bar a:hover {
+/* .leaflet-bar a:hover {
   color: var(--bs-light);
   background-color: var(--bs-dark);
-}
+} */
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .leaflet-bar a:hover {
     color: var(--bs-dark);
     background-color: var(--bs-light);
@@ -546,6 +546,7 @@ caption {
 
 /* COVID MODAL */
 
+/* charts dont't display properly on screens this size */
 @media only screen and (max-width: 350px) {
   #confirmed-deaths-per-day {
     display: none !important;
