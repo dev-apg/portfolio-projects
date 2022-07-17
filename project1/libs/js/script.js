@@ -777,7 +777,7 @@ function countryAPICalls(data) {
       Promise.allSettled([
         apiVolcanoesCall(data),
         geonamesCitiesCall(data),
-        openExchangeRatesCall(data), // 1k starting from 6th of the month
+        //openExchangeRatesCall(data), // 1k starting from 6th of the month
         geonamesEarthquakesCall(data),
         geonamesWikiCall(data),
         apiOpenWeatherOneCall(data), // openweather 1M calls per month
@@ -1453,9 +1453,6 @@ function updateHTML(data) {
   //COUNTRY IMAGES CAROUSEL
   addCarouselImages(data);
 
-  // cities modal
-  addCities(data);
-
   addCameras(data);
 
   // weather modal
@@ -1487,6 +1484,9 @@ function updateHTML(data) {
   addEarthquakes(data);
 
   ll.recenter();
+
+  // cities modal
+  addCities(data);
 }
 
 function addEarthquakes(data) {
