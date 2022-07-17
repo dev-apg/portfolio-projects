@@ -1724,7 +1724,7 @@ function createCurrentForecast(data, offset) {
 
   //card body
   const cardBody = document.createElement("div");
-  cardBody.classList = "shadow-sm";
+  cardBody.classList = "shadow-sm border";
   accordionBody.appendChild(cardBody);
 
   // const div = document.createElement("div");
@@ -1734,13 +1734,14 @@ function createCurrentForecast(data, offset) {
   const iconDiv = document.createElement("div");
   iconDiv.id = "icon-div";
   iconDiv.classList =
-    "px-2 d-flex flex-column align-items-center justify-content-evenly";
+    "m-1 px-2 d-flex flex-column align-items-center justify-content-evenly";
   cardBody.append(iconDiv);
 
   //title
   const title = document.createElement("em");
   title.textContent = data.current.weather[0].description;
-  title.classList = "mt-2 display-3 text-center text-muted text-capitalize";
+  title.classList =
+    "mt-2 display-3 text-center text-muted text-capitalize overflow-hidden";
   iconDiv.appendChild(title);
 
   //icon
