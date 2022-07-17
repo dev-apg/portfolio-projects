@@ -24,6 +24,15 @@ const map = L.map("map", {
   // zoomControl: false,
 });
 
+var southWest = L.latLng(-89.98155760646617, -180),
+  northEast = L.latLng(89.99346179538875, 180);
+var bounds = L.latLngBounds(southWest, northEast);
+
+map.setMaxBounds(bounds);
+map.on("drag", function () {
+  map.panInsideBounds(bounds, { animate: false });
+});
+
 //alternative tiles for when maptiler not available due to free account
 const streetTiles = L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
