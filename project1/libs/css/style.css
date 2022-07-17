@@ -64,10 +64,10 @@ body {
   background-color: var(--bs-dark);
 }
 
-/* .leaflet-bar button:hover {
+.leaflet-bar button:hover {
   color: var(--accent-color);
   background-color: var(--bs-dark);
-} */
+}
 
 @media (hover: hover) and (pointer: fine) {
   .leaflet-bar button:hover {
@@ -87,10 +87,10 @@ body {
   background-color: var(--bs-dark);
 }
 
-/* .leaflet-bar a:hover {
+.leaflet-bar a:hover {
   color: var(--bs-light);
   background-color: var(--bs-dark);
-} */
+}
 
 @media (hover: hover) and (pointer: fine) {
   .leaflet-bar a:hover {
