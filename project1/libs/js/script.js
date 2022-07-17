@@ -1715,7 +1715,7 @@ function createCurrentForecast(data, offset) {
 
   //card body
   const cardBody = document.createElement("div");
-  cardBody.classList = "shadow-sm d-flex justify-content-evenly";
+  cardBody.classList = "shadow-sm";
   accordionBody.appendChild(cardBody);
 
   // const div = document.createElement("div");
@@ -1725,43 +1725,44 @@ function createCurrentForecast(data, offset) {
   const iconDiv = document.createElement("div");
   iconDiv.id = "icon-div";
   iconDiv.classList =
-    "px-2 border flex-grow-1 d-flex flex-column align-items-center justify-content-evenly";
+    "px-2 d-flex flex-column align-items-center justify-content-evenly";
   cardBody.append(iconDiv);
 
+  //title
   const title = document.createElement("em");
   title.textContent = data.current.weather[0].description;
-  title.classList = "mt-1 lead text-center text-capitalize";
+  title.classList = "mt-2 display-3 text-center text-muted text-capitalize";
   iconDiv.appendChild(title);
 
+  //icon
   const span = document.createElement("span");
   span.id = "current-weather-icon";
-  iconDiv.appendChild(span);
   span.classList = `mt-2 mb-3 ${getWeatherIcon(data.current.weather[0].icon)}`;
+  iconDiv.appendChild(span);
 
   const textDiv = document.createElement("div");
   textDiv.id = "text-div";
-  textDiv.classList =
-    "border flex-grow-1 d-flex flex-column justify-content-center";
+  textDiv.classList = "pb-3";
   cardBody.append(textDiv);
 
   const cardText = document.createElement("p");
-  cardText.classList = "text-center";
+  cardText.classList = "text-center my-3";
   textDiv.appendChild(cardText);
 
   //temp, wind speed, feels like, humidity
 
-  let innerHTML = `<span class="fw-bold blue-text">Temperature </span>${data.current.temp}<span class="text-muted">°C</span><br>`;
-  innerHTML += `<span class="fw-bold blue-text">Wind speed </span>${data.current.wind_speed}<span class="text-muted">m/s</span><br>`;
-  innerHTML += `<span class="fw-bold blue-text">Feels like </span>${data.current.feels_like}<span class="text-muted">°C</span><br>`;
-  innerHTML += `<span class="fw-bold blue-text">Humidity </span>${data.current.humidity}<span class="text-muted">%</span>`;
+  let innerHTML = `<span class="">Temperature </span><span class="lead">${data.current.temp}</span><span class="text-muted">°C</span><br>`;
+  innerHTML += `<span class="">Wind speed </span><span class="lead">${data.current.wind_speed}</span><span class="text-muted">m/s</span><br>`;
+  innerHTML += `<span class="">Feels like </span><span class="lead">${data.current.feels_like}</span><span class="text-muted">°C</span><br>`;
+  innerHTML += `<span class="">Humidity </span><span class="lead">${data.current.humidity}</span><span class="text-muted">%</span>`;
   cardText.innerHTML = innerHTML;
 
   //-------------table
   const table = document.createElement("table");
-  table.classList = "table table-borderless table-sm";
+  table.classList = "table table-borderless";
   let colspan = 0;
   let classList = "w-50";
-  addRowWithUnits(
+  addRowWithUnits_currentWeather(
     "Humidity",
     `${data.current.humidity}`,
     "%",
@@ -1769,14 +1770,25 @@ function createCurrentForecast(data, offset) {
     colspan,
     classList
   );
-  addRowWithUnits("Feels like", `${data.current.feels_like}`, "°C", table);
-  addRowWithUnits("Wind speed", `${data.current.wind_speed}`, `m/s`, table);
-  addRowWithUnits("Temperature", `${data.current.temp}`, `°C`, table);
+  addRowWithUnits_currentWeather(
+    "Feels like",
+    `${data.current.feels_like}`,
+    "°C",
+    table
+  );
+  addRowWithUnits_currentWeather(
+    "Wind",
+    `${data.current.wind_speed}`,
+    `m/s`,
+    table
+  );
+  addRowWithUnits_currentWeather("Temp", `${data.current.temp}`, `°C`, table);
 
-  const caption = document.createElement("caption");
-  caption.textContent = data.current.weather[0].description;
-  caption.classList = "text-center text-capitalize";
-  table.prepend(caption);
+  // const caption = document.createElement("caption");
+  // caption.textContent = data.current.weather[0].description;
+  // caption.classList = "text-center text-capitalize";
+  // table.prepend(caption);
+  // cardBody.append(table);
 }
 
 function create48hrForecast(data, offset) {
@@ -2963,6 +2975,31 @@ function addRowWithUnits(
   if (!cellInfo) return;
   const row = table.insertRow(0);
   const cell1 = document.createElement("th");
+  cell1.classList = `text-end ${classList}`;
+  row.appendChild(cell1);
+  const cell2 = row.insertCell();
+  let text1 = document.createTextNode(cellTitle);
+  let text2 = document.createTextNode(cellInfo);
+  cell1.appendChild(text1);
+  cell2.appendChild(text2);
+  const span = document.createElement("span");
+  const currencySymbol = document.createTextNode(`${units}`);
+  span.appendChild(currencySymbol);
+  span.classList = "text-muted";
+  cell2.appendChild(span);
+}
+
+function addRowWithUnits_currentWeather(
+  cellTitle,
+  cellInfo,
+  units,
+  table,
+  colSpan = "",
+  classList = ""
+) {
+  if (!cellInfo) return;
+  const row = table.insertRow(0);
+  const cell1 = document.createElement("td");
   cell1.classList = `text-end ${classList}`;
   row.appendChild(cell1);
   const cell2 = row.insertCell();
