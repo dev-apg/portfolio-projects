@@ -109,6 +109,8 @@ body {
   background: var(--bs-gray);
 }
 
+/* move easy buttons located top left */
+
 .leaflet-top.leaflet-left {
   top: 48px;
 }

@@ -21,7 +21,6 @@ $(window).on("load", function () {
 const map = L.map("map", {
   center: [50.8476, 4.3572],
   zoom: 4,
-  // zoomControl: false,
 });
 
 var southWest = L.latLng(-89.98155760646617, -180),
@@ -134,8 +133,6 @@ const overlays = {
 };
 
 //-------------------MAP CONTROLS/BUTTONS
-
-// -----------------------------------------
 
 // Create additional Control placeholders
 function addControlPlaceholders(map) {
@@ -408,7 +405,11 @@ function progressModal_gettingData(data) {
 
   const loadingMessage = document.createElement("h3");
   loadingMessage.id = "loading-message";
-  const messageTextArr = ["With you shortly...", "Comin' up!", "One second..."];
+  const messageTextArr = [
+    "With you shortly...",
+    "We got this...",
+    "One second...",
+  ];
   const messageText =
     messageTextArr[Math.floor(Math.random() * messageTextArr.length)];
   loadingMessage.innerHTML = messageText;
@@ -432,6 +433,35 @@ function progressModal_gettingData(data) {
   modal.append(messageDiv, progressBarContainer);
   messageDiv.append(footprints, loadingMessage, para);
   progressBarContainer.append(progressBar);
+  progressModal.show();
+}
+
+function progressModal_backForward(data) {
+  const modal = document.querySelector('[data-modal="progress"]');
+  const children = modal.children;
+  if (children) {
+    Array.from(children).forEach((child) => {
+      child.remove();
+    });
+  }
+
+  const messageDiv = document.createElement("div");
+  messageDiv.id = "loading-message-div";
+
+  const loadingMessage = document.createElement("p");
+  loadingMessage.id = "loading-message";
+  const messageTextArr = ["Heading to..."];
+  const messageText =
+    messageTextArr[Math.floor(Math.random() * messageTextArr.length)];
+  loadingMessage.textContent = messageText;
+
+  const countryName = document.createElement("h1");
+  countryName.classList = "text-center";
+  countryName.textContent =
+    data.capital === "Nouméa" ? "New Caledonia" : data.countryName;
+
+  modal.append(messageDiv);
+  messageDiv.append(loadingMessage, countryName);
   progressModal.show();
 }
 
@@ -678,23 +708,45 @@ class LinkedList {
     this.current = this.current.next;
     this.next = this.current.next;
     this.previous = this.current.previous;
+    progressModal_backForward(this.current.data);
     updateHTML(this.current.data);
     setNavButtons();
     setSelected(this.current.data.countryCodeISO2);
+    setTimeout(function () {
+      progressModal.hide();
+    }, 1000);
   }
   backward() {
     if (!this.current.previous) return;
     removeFocusFromSelect();
+
     clearHTML(this.current.data);
     this.current = this.current.previous;
     this.next = this.current.next;
     this.previous = this.current.previous;
+    progressModal_backForward(this.current.data);
     updateHTML(this.current.data);
     setNavButtons();
     setSelected(this.current.data.countryCodeISO2);
+    setTimeout(function () {
+      progressModal.hide();
+    }, 1000);
   }
 
   recenter() {
+    if (this.current.data.countryName === "New Zealand") {
+      console.log("new zealand selected");
+      map.fitBounds(
+        [
+          [-53.407843174143494, 164.51329050789408],
+          [-29.26476158951111, 180.06993113289406],
+        ],
+        {
+          padding: [0, 0],
+        }
+      );
+      return;
+    }
     if (
       this.current.data.countryName === "Russia" ||
       this.current.data.countryName === "United States"
@@ -926,6 +978,7 @@ function geonamesCountryInfoCall(data) {
       }
       data.countryName = result.data[0].countryName;
       data.capital = result.data[0].capital;
+      if (data.capital === "Noumea") data.capital = "Nouméa";
       data.population = result.data[0].population;
       data.currencyISO3Code = result.data[0].currencyCode;
       data.countryCodeISO3 = result.data[0].isoAlpha3;
@@ -1727,10 +1780,6 @@ function createCurrentForecast(data, offset) {
   cardBody.classList = "shadow-sm border";
   accordionBody.appendChild(cardBody);
 
-  // const div = document.createElement("div");
-  // div.classList = "container pt-3 d-flex justify-content-center";
-  // cardBody.appendChild(div);
-
   const iconDiv = document.createElement("div");
   iconDiv.id = "icon-div";
   iconDiv.classList =
@@ -1939,10 +1988,14 @@ function create8DayForecast(data, offset) {
 }
 
 function createCovidDeathsTable(data) {
-  if (!data.covidTotalDeaths) return;
-
   const modal = document.querySelector('[data-modal="covid"]');
-
+  if (data.covidTotalDeaths.length === 0) {
+    const alert = document.createElement("div");
+    alert.classList = "alert alert-primary mt-3 text-center";
+    alert.textContent = "No covid data for this location";
+    modal.append(alert);
+    return;
+  }
   const title = document.createElement("h3");
   title.classList = "mt-3 text-center lead";
   title.textContent = "Confirmed Deaths";
@@ -1990,7 +2043,7 @@ function createCovidDeathsTable(data) {
 }
 
 function createCovidCasesTable(data) {
-  if (!data.covidTotalConfirmed) return;
+  if (data.covidTotalConfirmed.length === 0) return;
   const modal = document.querySelector('[data-modal="covid"]');
 
   const title = document.createElement("h3");
@@ -2044,7 +2097,7 @@ function createCovidCasesTable(data) {
 }
 
 function addCovidChart_deathsPerDay(data) {
-  if (!data.covidTotalDeaths) return;
+  if (data.covidTotalDeaths.length === 0) return;
 
   const modal = document.querySelector('[data-modal="covid"]');
 
@@ -2200,7 +2253,7 @@ function addCovidChart_deathsPerDay(data) {
 }
 
 function addCovidChart_deathsPerYear(data) {
-  if (!data.covidTotalDeaths) return;
+  if (data.covidTotalDeaths.length === 0) return;
   const modal = document.querySelector('[data-modal="covid"]');
   const canvas = document.createElement("canvas");
   canvas.getContext("2d");
@@ -2297,7 +2350,7 @@ function addCovidChart_deathsPerYear(data) {
 }
 
 function addCovidChart_dailyInfections(data) {
-  if (!data.covidTotalConfirmed) return;
+  if (data.covidTotalConfirmed.length === 0) return;
   const modal = document.querySelector('[data-modal="covid"]');
   const canvas = document.createElement("canvas");
   canvas.getContext("2d");
@@ -2648,6 +2701,7 @@ function populateSelect(countryCodeISO3) {
 
 function addCities(data) {
   if (!data.cities) return;
+
   data.cityMarkers = {};
 
   const modal = document.querySelector('[data-modal="cities"]');
