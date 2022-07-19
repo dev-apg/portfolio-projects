@@ -183,7 +183,7 @@ div.leaflet-control-layers-overlays {
   cursor: pointer;
 }
 
-@media only screen and (max-width: 345px) {
+@media only screen and (max-width: 365px) {
   #globe-icon {
     display: none;
   }
@@ -228,7 +228,7 @@ div.input-group {
 }
 
 /* responsive setting for smaller screens */
-@media only screen and (max-width: 345px) {
+@media only screen and (max-width: 380px) {
   div.input-group {
     position: relative;
     right: 16px;
@@ -256,23 +256,35 @@ div.input-group {
   border-radius: 3px;
 }
 
-#nav-icons {
-  color: var(--bs-gray);
+#nav-buttons-div {
+  /* color: var(--bs-gray); */
   position: absolute;
   left: calc(50% + 131px);
-  font-size: 30px;
+  /* font-size: 30px; */
 }
 
-.active-icon {
+/* .active-icon {
   color: var(--bs-light);
   cursor: pointer;
+} */
+
+.nav-button {
+  padding: 0.5rem;
+}
+
+@media only screen and (max-width: 330px) {
+  .nav-button {
+    padding: 0.1rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
 }
 
 /* responsive setting for smaller screens */
-@media only screen and (max-width: 345px) {
-  #nav-icons {
+@media only screen and (max-width: 380px) {
+  #nav-buttons-div {
     left: calc(50% + 106px);
-    font-size: 22px;
+    /* font-size: 22px; */
   }
 }
 

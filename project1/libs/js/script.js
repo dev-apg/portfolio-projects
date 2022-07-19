@@ -2651,17 +2651,14 @@ function setSelected(countryCodeISO2) {
 
 function setNavButtons() {
   if (!ll.current.previous) {
-    // backButton.removeClass("active-icon");
-    backButton.classList.remove("active-icon");
+    backButton.classList.add("disabled");
   } else {
-    backButton.classList.add("active-icon");
+    backButton.classList.remove("disabled");
   }
   if (!ll.current.next) {
-    // forwardButton.removeClass("active-icon");
-    forwardButton.classList.remove("active-icon");
+    forwardButton.classList.add("disabled");
   } else {
-    // forwardButton.addClass("active-icon");
-    forwardButton.classList.add("active-icon");
+    forwardButton.classList.remove("disabled");
   }
 }
 
