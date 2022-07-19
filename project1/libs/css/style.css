@@ -82,29 +82,36 @@ body {
 
 /* zoom buttons with hover fix for mobiles */
 
-.leaflet-bar a {
+a.leaflet-control-zoom-in,
+a.leaflet-control-zoom-out {
   color: var(--bs-light);
   background-color: var(--bs-dark);
 }
 
-.leaflet-bar a:hover {
+a.leaflet-control-zoom-in:hover,
+a.leaflet-control-zoom-out:hover {
   color: var(--bs-light);
   background-color: var(--bs-dark);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .leaflet-bar a:hover {
+  a.leaflet-control-zoom-in:hover,
+  a.leaflet-control-zoom-out:hover {
     color: var(--bs-dark);
     background-color: var(--bs-light);
   }
 }
 
-.leaflet-bar a:active {
+/* a.leaflet-control-zoom-in:hover,
+a.leaflet-control-zoom-out:hover {
   background: var(--bs-light);
-}
+} */
 
 /* For when the zoom in/out buttons are maximised */
-.leaflet-bar a.leaflet-disabled {
+a.leaflet-control-zoom-in.leaflet-disabled,
+a.leaflet-control-zoom-out.leaflet-disabled,
+a.leaflet-control-zoom-in.leaflet-disabled:hover,
+a.leaflet-control-zoom-out.leaflet-disabled:hover {
   color: var(--bs-light);
   background: var(--bs-gray);
 }

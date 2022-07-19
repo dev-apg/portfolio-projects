@@ -437,7 +437,7 @@ function progressModal_gettingData(data) {
 }
 
 function progressModal_backForward(data) {
-  const modal = document.querySelector('[data-modal="progress"]');
+  const modal = document.querySelector('[data-modal="back-forward"]');
   const children = modal.children;
   if (children) {
     Array.from(children).forEach((child) => {
@@ -462,7 +462,7 @@ function progressModal_backForward(data) {
 
   modal.append(messageDiv);
   messageDiv.append(loadingMessage, countryName);
-  progressModal.show();
+  backForwardModal.show();
 }
 
 //---------------ProgressModal Errors
@@ -636,6 +636,13 @@ const citiesModal = new bootstrap.Modal(
   }
 );
 
+const backForwardModal = new bootstrap.Modal(
+  document.getElementById("back-forwardModal"),
+  {
+    keyboard: false,
+  }
+);
+
 // ---------------------DATA NODE AND LINKED LIST-------//
 // Node that contains country data for linked list
 //DataNode - formerly CountryDataNode
@@ -713,7 +720,7 @@ class LinkedList {
     setNavButtons();
     setSelected(this.current.data.countryCodeISO2);
     setTimeout(function () {
-      progressModal.hide();
+      backForwardModal.hide();
     }, 1000);
   }
   backward() {
@@ -729,7 +736,7 @@ class LinkedList {
     setNavButtons();
     setSelected(this.current.data.countryCodeISO2);
     setTimeout(function () {
-      progressModal.hide();
+      backForwardModal.hide();
     }, 1000);
   }
 
