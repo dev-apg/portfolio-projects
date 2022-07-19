@@ -3640,7 +3640,7 @@ function forecastDay(timestamp, offset) {
   let date = new Date(timestamp + offset);
   let options = {
     timeZone: "UTC",
-    weekday: "long",
+    weekday: "short",
   };
   return new Intl.DateTimeFormat("en-GB", options).format(date);
 }
