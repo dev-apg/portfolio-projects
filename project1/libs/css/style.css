@@ -68,7 +68,7 @@ body {
 
 .leaflet-bar button:hover {
   color: var(--accent-color);
-  background-color: var(--bs-dark);
+  background-color: var(--dark-transparent);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -94,7 +94,7 @@ a.leaflet-control-zoom-out {
 a.leaflet-control-zoom-in:hover,
 a.leaflet-control-zoom-out:hover {
   color: var(--bs-light);
-  background-color: var(--bs-dark);
+  background-color: var(--dark-transparent);
 }
 
 @media (hover: hover) and (pointer: fine) {
