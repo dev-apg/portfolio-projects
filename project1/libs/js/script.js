@@ -850,7 +850,7 @@ function countryAPICalls(data) {
         geonamesWikiCall(data),
         apiOpenWeatherOneCall(data), // openweather 1M calls per month
         apiUnsplashCall(data),
-        apiNewsCall(data),
+        // apiNewsCall(data),
         getDateTime(),
       ])
     )

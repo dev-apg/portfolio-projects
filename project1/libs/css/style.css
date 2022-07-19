@@ -1,6 +1,7 @@
 :root {
   --accent-color: #00d8d6;
   /* --darker-grey-reduced-opacity: #1e272ed2; */
+  --dark-transparent: #343a40bf;
   /* --blue-text: #36a2eb; */
   --weather-icon-light: #e9de82;
   --weather-icon-dark: #5c606e;
@@ -61,7 +62,8 @@ body {
 
 .leaflet-bar button {
   color: var(--accent-color);
-  background-color: var(--bs-dark);
+  background-color: var(--dark-transparent);
+  transition: background-color 0.2s ease-in;
 }
 
 .leaflet-bar button:hover {
@@ -71,8 +73,8 @@ body {
 
 @media (hover: hover) and (pointer: fine) {
   .leaflet-bar button:hover {
-    color: var(--bs-dark);
-    background-color: var(--accent-color);
+    background-color: var(--bs-dark);
+    color: var(--accent-color);
   }
 }
 
@@ -85,7 +87,8 @@ body {
 a.leaflet-control-zoom-in,
 a.leaflet-control-zoom-out {
   color: var(--bs-light);
-  background-color: var(--bs-dark);
+  background-color: var(--dark-transparent);
+  transition: background-color 0.2s ease-in;
 }
 
 a.leaflet-control-zoom-in:hover,
@@ -97,15 +100,16 @@ a.leaflet-control-zoom-out:hover {
 @media (hover: hover) and (pointer: fine) {
   a.leaflet-control-zoom-in:hover,
   a.leaflet-control-zoom-out:hover {
-    color: var(--bs-dark);
-    background-color: var(--bs-light);
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
   }
 }
 
-/* a.leaflet-control-zoom-in:hover,
-a.leaflet-control-zoom-out:hover {
-  background: var(--bs-light);
-} */
+a.leaflet-control-zoom-in:active,
+a.leaflet-control-zoom-out:active {
+  /* color: var(--bs-light); */
+  background-color: var(--bs-light);
+}
 
 /* For when the zoom in/out buttons are maximised */
 a.leaflet-control-zoom-in.leaflet-disabled,
@@ -158,8 +162,6 @@ div.leaflet-control-layers-overlays {
   right: 0;
   z-index: 500;
   width: 100%;
-  color: var(--bs-light);
-  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -176,41 +178,34 @@ div.leaflet-control-layers-overlays {
 
 #globe-icon {
   color: var(--accent-color);
-  position: absolute;
-  top: 7px;
-  left: 15px;
   font-size: 30px;
   cursor: pointer;
 }
 
-@media only screen and (max-width: 365px) {
-  #globe-icon {
-    display: none;
+@media only screen and (max-width: 340px) {
+  #globe-logo-container {
+    display: none !important;
   }
 }
 
 #logo {
-  position: absolute;
-  left: 54px;
   height: 30px;
-  top: 6px;
   cursor: pointer;
 }
 
-@media only screen and (max-width: 570px) {
+@media only screen and (max-width: 512px) {
   #logo {
     display: none;
   }
 }
 
 #flag-select-container {
-  display: flex;
+  /* display: flex; */
+  min-width: 232px;
 }
 
 .nav-flag-div {
   background: no-repeat url("") center center/cover;
-  /* background-color: var(--accent-color);
-  background-color: #dff9fb; */
   height: 38px;
   width: 75px;
   margin-top: auto;
@@ -227,11 +222,13 @@ div.input-group {
   max-height: 37px;
 }
 
-/* responsive setting for smaller screens */
-@media only screen and (max-width: 380px) {
-  div.input-group {
-    position: relative;
-    right: 16px;
+#nav-buttons-div {
+  justify-content: start;
+}
+
+@media only screen and (max-width: 768px) {
+  #nav-buttons-div {
+    justify-content: center;
   }
 }
 
@@ -256,36 +253,8 @@ div.input-group {
   border-radius: 3px;
 }
 
-#nav-buttons-div {
-  /* color: var(--bs-gray); */
-  position: absolute;
-  left: calc(50% + 131px);
-  /* font-size: 30px; */
-}
-
-/* .active-icon {
-  color: var(--bs-light);
-  cursor: pointer;
-} */
-
 .nav-button {
-  padding: 0.5rem;
-}
-
-@media only screen and (max-width: 330px) {
-  .nav-button {
-    padding: 0.1rem;
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
-  }
-}
-
-/* responsive setting for smaller screens */
-@media only screen and (max-width: 380px) {
-  #nav-buttons-div {
-    left: calc(50% + 106px);
-    /* font-size: 22px; */
-  }
+  font-size: 1.2rem;
 }
 
 /* END OF NAV/TITLE BAR CSS */
