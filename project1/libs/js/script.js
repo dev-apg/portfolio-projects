@@ -32,28 +32,28 @@ map.on("drag", function () {
   map.panInsideBounds(bounds, { animate: false });
 });
 
-//alternative tiles for when maptiler not available due to free account
-// const streetTiles = L.tileLayer(
-//   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-//   {
-//     attribution:
-//       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-//     minZoom: 2,
-//     maxZoom: 15,
-//   }
-// ).addTo(map);
-
-// MAPTILER TILES
-// import map tiles
+// alternative tiles for when maptiler not available due to free account
 const streetTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
     attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     minZoom: 2,
     maxZoom: 15,
   }
 ).addTo(map);
+
+// MAPTILER TILES
+// import map tiles
+// const streetTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 2,
+//     maxZoom: 15,
+//   }
+// ).addTo(map);
 
 // const topographicTiles = L.tileLayer(
 //   "https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
@@ -65,15 +65,15 @@ const streetTiles = L.tileLayer(
 //   }
 // ).addTo(map);
 
-const satelliteTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
-  {
-    attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-    minZoom: 2,
-    maxZoom: 15,
-  }
-).addTo(map);
+// const satelliteTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 2,
+//     maxZoom: 15,
+//   }
+// ).addTo(map);
 
 //----------------------------MAP ICONS
 
@@ -119,7 +119,7 @@ capitalMCG.addTo(featureGroup1);
 camerasMCG.addTo(featureGroup1);
 
 const baseLayers = {
-  Satellite: satelliteTiles,
+  // Satellite: satelliteTiles,
   // Topographic: topographicTiles,
   Street: streetTiles,
 };
@@ -1634,9 +1634,9 @@ function addVolcanoes(data) {
 
 function addGeneralInfoData(data) {
   const modal = document.querySelector('[data-modal="general-info"]');
-
+  const genInfoFragment = new DocumentFragment();
+  const flagContainer = document.createElement("div");
   if (data.flag && data.countryName) {
-    const flagContainer = document.createElement("div");
     flagContainer.classList = "container mt-2 mb-4";
     modal.appendChild(flagContainer);
     const flag = document.createElement("img");
@@ -1649,7 +1649,6 @@ function addGeneralInfoData(data) {
   }
 
   const table = document.createElement("table");
-  modal.appendChild(table);
   table.classList = "table table-borderless blue-striped";
   table.id = "general-info-table";
 
@@ -1674,6 +1673,9 @@ function addGeneralInfoData(data) {
   addRow("Population", makeNumberReadable(data.population), table);
   addRow("Capital", data.capital, table);
   addRow("Country", data.countryName, table);
+
+  genInfoFragment.append(flagContainer, table);
+  modal.replaceChildren(genInfoFragment);
 }
 
 function addNewsArticles(newsArticles) {
@@ -1718,12 +1720,14 @@ function addNewsArticles(newsArticles) {
 function addNewsArticles_Bing(newsArticles) {
   if (!newsArticles) return;
   const modal = document.querySelector('[data-modal="news"]');
+  const newsFragment = new DocumentFragment();
+
   let floatClass = "float-start";
   let marginClass = "me-3";
   newsArticles.forEach((article) => {
     const container = document.createElement("div");
     container.classList = "container rounded pt-1 pb-1 mb-2 articles-container";
-    modal.appendChild(container);
+    newsFragment.appendChild(container);
     const link = document.createElement("a");
     container.appendChild(link);
     link.href = article.url;
@@ -1756,18 +1760,21 @@ function addNewsArticles_Bing(newsArticles) {
     );
     link.appendChild(articleDesc);
   });
+  modal.replaceChildren(newsFragment);
 }
 
 function addWikipediaArticles(wikipediaArticles) {
   if (!wikipediaArticles) return;
   const modal = document.querySelector('[data-modal="wiki"]');
+  const wikiFragment = new DocumentFragment();
+
   let floatClass = "float-start";
   let marginClass = "me-2";
   wikipediaArticles.forEach((article) => {
     const articleContainer = document.createElement("div");
     articleContainer.classList =
       "container rounded pt-1 pb-1 articles-container";
-    modal.appendChild(articleContainer);
+    wikiFragment.appendChild(articleContainer);
     const link = document.createElement("a");
     link.href = article[8];
     link.target = "_blank";
@@ -1788,6 +1795,8 @@ function addWikipediaArticles(wikipediaArticles) {
     para.textContent = article[2];
     link.appendChild(para);
   });
+
+  modal.replaceChildren(wikiFragment);
 }
 
 function addGeoJSONOutline(geoJSON) {
@@ -1802,15 +1811,15 @@ function addGeoJSONOutline(geoJSON) {
 function createCurrentForecast(data, offset) {
   if (!data) return;
   const modal = document.querySelector('[data-modal="weather"]');
+  const currentFragment = new DocumentFragment();
+
   const accordion = document.createElement("div");
   accordion.id = "weather-accordion";
   accordion.classList = "accordion accordion-flush";
-  modal.appendChild(accordion);
-  //outer div one
-  const accordionContainer = document.getElementById("weather-accordion");
-  //outer div two
+
+  //outer div
   const accordionItemDiv = document.createElement("div");
-  accordionContainer.appendChild(accordionItemDiv);
+  accordion.appendChild(accordionItemDiv);
   accordionItemDiv.classList = "accordion-item";
 
   // h2 header
@@ -1892,46 +1901,49 @@ function createCurrentForecast(data, offset) {
   cardText.innerHTML = innerHTML;
 
   //-------------table
-  const table = document.createElement("table");
-  table.classList = "table table-borderless";
-  let colspan = 0;
-  let classList = "w-50";
-  addRowWithUnits_currentWeather(
-    "Humidity",
-    `${data.current.humidity}`,
-    "%",
-    table,
-    colspan,
-    classList
-  );
-  addRowWithUnits_currentWeather(
-    "Feels like",
-    `${data.current.feels_like}`,
-    "°C",
-    table
-  );
-  addRowWithUnits_currentWeather(
-    "Wind",
-    `${data.current.wind_speed}`,
-    `m/s`,
-    table
-  );
-  addRowWithUnits_currentWeather("Temp", `${data.current.temp}`, `°C`, table);
+  // const table = document.createElement("table");
+  // table.classList = "table table-borderless";
+  // let colspan = 0;
+  // let classList = "w-50";
+  // addRowWithUnits_currentWeather(
+  //   "Humidity",
+  //   `${data.current.humidity}`,
+  //   "%",
+  //   table,
+  //   colspan,
+  //   classList
+  // );
+  // addRowWithUnits_currentWeather(
+  //   "Feels like",
+  //   `${data.current.feels_like}`,
+  //   "°C",
+  //   table
+  // );
+  // addRowWithUnits_currentWeather(
+  //   "Wind",
+  //   `${data.current.wind_speed}`,
+  //   `m/s`,
+  //   table
+  // );
+  // addRowWithUnits_currentWeather("Temp", `${data.current.temp}`, `°C`, table);
 
   // const caption = document.createElement("caption");
   // caption.textContent = data.current.weather[0].description;
   // caption.classList = "text-center text-capitalize";
   // table.prepend(caption);
   // cardBody.append(table);
+  currentFragment.append(accordion);
+  modal.replaceChildren(currentFragment);
 }
 
 function create48hrForecast(data, offset) {
   if (!data) return;
+
   //outer div one
   const accordionContainer = document.getElementById("weather-accordion");
+
   //outer div two
   const accordionItemDiv = document.createElement("div");
-  accordionContainer.appendChild(accordionItemDiv);
   accordionItemDiv.classList = "accordion-item";
 
   // h2 header
@@ -1997,13 +2009,16 @@ function create48hrForecast(data, offset) {
   // caption.textContent = "48hr forecast";
   // caption.classList = "text-center";
   // table.prepend(caption);
+
+  const fourtyEightHourFragment = new DocumentFragment();
+  fourtyEightHourFragment.append(accordionItemDiv);
+  accordionContainer.append(fourtyEightHourFragment);
 }
 
 function create8DayForecast(data, offset) {
   if (!data) return;
-  //outer div one
   const accordionContainer = document.getElementById("weather-accordion");
-  //outer div two
+
   const accordionItemDiv = document.createElement("div");
   accordionContainer.appendChild(accordionItemDiv);
   accordionItemDiv.classList = "accordion-item";
@@ -2054,32 +2069,35 @@ function create8DayForecast(data, offset) {
       dayForecast.weather[0].icon,
       table
     );
-  });
 
-  // const caption = document.createElement("caption");
-  // caption.textContent = `8 day forecast`;
-  // caption.classList = "text-center";
-  // table.prepend(caption);
+    const eightDayFragment = new DocumentFragment();
+    eightDayFragment.append(accordionItemDiv);
+    accordionContainer.append(eightDayFragment);
+  });
 }
 
 function createCovidDeathsTable(data) {
   const modal = document.querySelector('[data-modal="covid"]');
+  const tableFragment = new DocumentFragment();
+
   if (data.covidTotalDeaths.length === 0) {
     const alert = document.createElement("div");
     alert.classList = "alert alert-primary mt-3 text-center";
     alert.textContent = "No covid data for this location";
-    modal.append(alert);
+    tableFragment.append(alert);
+    modal.replaceChildren();
     return;
   }
+
   const title = document.createElement("h3");
   title.classList = "mt-3 text-center lead";
   title.textContent = "Confirmed Deaths";
-  modal.appendChild(title);
+  tableFragment.appendChild(title);
 
   const table = document.createElement("table");
   table.id = "covid-deaths-table";
   table.classList = "table table-borderless blue-striped";
-  modal.appendChild(table);
+  tableFragment.appendChild(table);
 
   const deathsArr = data.covidTotalDeaths;
   const latestDeaths = deathsArr[deathsArr.length - 1];
@@ -2115,26 +2133,24 @@ function createCovidDeathsTable(data) {
 
   addRow("Per million", parseInt(deathsPerMillion).toLocaleString(), table);
   addRow("Total", latestDeaths.Cases.toLocaleString(), table, "", "w-50");
+
+  modal.replaceChildren(tableFragment);
 }
 
 function createCovidCasesTable(data) {
   if (data.covidTotalConfirmed.length === 0) return;
   const modal = document.querySelector('[data-modal="covid"]');
+  const casesTableFragment = new DocumentFragment();
 
   const title = document.createElement("h3");
   title.classList = "text-center lead mt-5";
   title.textContent = "Confirmed Cases";
-  modal.appendChild(title);
+  casesTableFragment.appendChild(title);
 
   const table = document.createElement("table");
   table.id = "covid-cases-table";
   table.classList = "table table-borderless blue-striped";
-  modal.appendChild(table);
-
-  // const caption = document.createElement("caption");
-  // caption.textContent = "Confirmed Infections";
-  // caption.classList = "text-center";
-  // table.appendChild(caption);
+  casesTableFragment.appendChild(table);
 
   const confirmedArr = data.covidTotalConfirmed;
   const latestConfirmed = confirmedArr[confirmedArr.length - 1];
@@ -2169,12 +2185,15 @@ function createCovidCasesTable(data) {
     table
   );
   addRow("Total", latestConfirmed.Cases.toLocaleString(), table, "", "w-50");
+
+  modal.append(casesTableFragment);
 }
 
 function addCovidChart_deathsPerDay(data) {
   if (data.covidTotalDeaths.length === 0) return;
 
   const modal = document.querySelector('[data-modal="covid"]');
+  const chartFragment = new DocumentFragment();
 
   const canvas = document.createElement("canvas");
   canvas.getContext("2d");
@@ -2204,8 +2223,6 @@ function addCovidChart_deathsPerDay(data) {
       },
     },
   });
-
-  modal.appendChild(canvas);
 
   const deathsArr = data.covidTotalDeaths.filter(
     (item) => item.Date.slice(5, 10) !== "02-29"
@@ -2325,15 +2342,18 @@ function addCovidChart_deathsPerDay(data) {
     datasets: datasets,
   };
   chart.update();
+  chartFragment.appendChild(canvas);
+  modal.appendChild(chartFragment);
 }
 
 function addCovidChart_deathsPerYear(data) {
   if (data.covidTotalDeaths.length === 0) return;
   const modal = document.querySelector('[data-modal="covid"]');
+  const chartFragment = new DocumentFragment();
+
   const canvas = document.createElement("canvas");
   canvas.getContext("2d");
-
-  modal.appendChild(canvas);
+  canvas.id = "confirmed-deaths-per-year";
 
   const chart = new Chart(canvas, {
     type: "bar",
@@ -2422,11 +2442,15 @@ function addCovidChart_deathsPerYear(data) {
     ],
   };
   chart.update();
+  chartFragment.appendChild(canvas);
+  modal.appendChild(chartFragment);
 }
 
 function addCovidChart_dailyInfections(data) {
   if (data.covidTotalConfirmed.length === 0) return;
   const modal = document.querySelector('[data-modal="covid"]');
+  const chartFragment = new DocumentFragment();
+
   const canvas = document.createElement("canvas");
   canvas.getContext("2d");
   canvas.id = "covid-infections-per-day";
@@ -2492,9 +2516,15 @@ function addCovidChart_dailyInfections(data) {
     ],
   };
   chart.update();
+  chartFragment.appendChild(canvas);
+  modal.appendChild(chartFragment);
 }
 
 function createDateTypeCheckBoxes(datesArray) {
+  const container1 = document.getElementById("date-options-col-one");
+  const container2 = document.getElementById("date-options-col-two");
+  container1.replaceChildren();
+  container2.replaceChildren();
   if (!datesArray) return;
   const types = [];
   datesArray.forEach((holiday) => {
@@ -2514,11 +2544,14 @@ function createDateCheckboxes(type, index) {
   // const container = document.getElementById("date-options-container");
   const container1 = document.getElementById("date-options-col-one");
   const container2 = document.getElementById("date-options-col-two");
+  const colOneFragment = new DocumentFragment();
+  const colTwoFragment = new DocumentFragment();
+
   const div = document.createElement("div");
   if (index % 2 === 0) {
-    container1.appendChild(div);
+    colOneFragment.appendChild(div);
   } else {
-    container2.appendChild(div);
+    colTwoFragment.appendChild(div);
   }
   div.classList = "form-check";
   const input = document.createElement("input");
@@ -2535,6 +2568,9 @@ function createDateCheckboxes(type, index) {
   label.classList = "form-check-label";
   label.textContent = formatType(type);
   input.addEventListener("change", datesCheckboxesEvent);
+
+  container1.append(colOneFragment);
+  container2.append(colTwoFragment);
 }
 
 function datesCheckboxesEvent() {
@@ -2607,13 +2643,12 @@ function createDatesUpcomingOnlyCheckbox() {
 
 function createDatesTable(dates) {
   if (!dates) return;
-  const modal = document.querySelector('[data-modal="dates"]');
+
   let table = document.getElementById("dates-table");
   table && table.remove();
   table = document.createElement("table");
   table.classList = "table table-borderless blue-striped";
   table.id = "dates-table";
-  modal.appendChild(table);
 
   // sort holidays
   dates.sort((a, b) => {
@@ -2666,26 +2701,27 @@ function createDatesTable(dates) {
     cell2.classList = "w-25 fw-bold";
     cell2.textContent = holiday.readableDate;
   });
+
+  const datesTableFragment = new DocumentFragment();
+  datesTableFragment.appendChild(table);
+  const modal = document.querySelector('[data-modal="dates"]');
+  modal.replaceChildren(datesTableFragment);
 }
 
 function clearHTML(data) {
   console.log("clear HTML");
-  const modals = document.querySelectorAll("[data-modal]");
-  Array.from(modals).forEach((modal) => {
-    const children = modal.children;
-    if (children) {
-      Array.from(children).forEach((child) => {
-        child.remove();
-      });
-    }
-  });
+  // const modals = document.querySelectorAll("[data-modal]");
+  // Array.from(modals).forEach((modal) => {
+  //   const children = modal.children;
+  //   if (children) {
+  //     Array.from(children).forEach((child) => {
+  //       child.remove();
+  //     });
+  //   }
+  // });
 
   //clear map pins
   featureGroup1.eachLayer((layer) => layer.clearLayers());
-
-  //remove chart
-  // const twentyFourHourChart = document.getElementById("twentyFourHourChart");
-  // twentyFourHourChart && twentyFourHourChart.remove();
 
   //close options accordion
   const optionsButton = document.getElementById("dates-options-button");
@@ -2764,12 +2800,13 @@ function addCities(data) {
   data.cityMarkers = {};
 
   const modal = document.querySelector('[data-modal="cities"]');
+  const citiesFragment = new DocumentFragment();
 
   //outer div one
   const citiesList = document.createElement("div");
   citiesList.classList = "accordion accordion-flush";
   citiesList.id = "cities-list";
-  modal.appendChild(citiesList);
+  citiesFragment.appendChild(citiesList);
 
   data.cities.forEach((city, index) => {
     //set cityName also used for storing marker names
@@ -2917,6 +2954,8 @@ function addCities(data) {
       });
     });
   });
+
+  modal.replaceChildren(citiesFragment);
 }
 
 function addCameras(data) {
@@ -2983,13 +3022,12 @@ function addCameras(data) {
 function addCarouselImages(data) {
   if (!data.countryImages) return;
   const modal = document.querySelector('[data-modal="images"]');
+  const carouselFragment = new DocumentFragment();
 
-  // const carousel = document.getElementById("country-images-carousel");
   const carousel = document.createElement("div");
   carousel.id = "country-images-carousel";
   carousel.classList = "carousel slide carousel-fade";
   carousel.setAttribute("data-bs-ride", "carousel");
-  modal.appendChild(carousel);
   const carouselInner = document.createElement("div");
   carousel.appendChild(carouselInner);
   carouselInner.classList = "carousel-inner";
@@ -3035,8 +3073,7 @@ function addCarouselImages(data) {
     captionDiv.appendChild(altDescription);
     altDescription.textContent = reduceText(image.alt_description, 60, "...");
   });
-  const images = document.querySelectorAll(".carousel-item");
-  images[0].classList.add("active");
+
   //CREATE BUTTONS
   //PREV
   const prevButton = document.createElement("button");
@@ -3069,6 +3106,11 @@ function addCarouselImages(data) {
   const nextSpan2 = document.createElement("span");
   nextButton.appendChild(nextSpan2);
   nextSpan2.classList = "visually-hidden";
+
+  carouselFragment.append(carousel);
+  modal.replaceChildren(carouselFragment);
+  const images = document.querySelectorAll(".carousel-item");
+  images[0].classList.add("active");
 }
 
 //---------------TABLE ROW FUNCTIONS-----------//
