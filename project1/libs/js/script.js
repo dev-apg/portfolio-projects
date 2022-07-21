@@ -1854,22 +1854,28 @@ function createCurrentForecast(data, offset) {
 
   const iconDiv = document.createElement("div");
   iconDiv.id = "icon-div";
-  iconDiv.classList =
-    "m-1 px-2 d-flex flex-column align-items-center justify-content-evenly";
+  iconDiv.classList = "m-2";
   cardBody.append(iconDiv);
+
+  //inner icon div
+  const innerIconDiv = document.createElement("div");
+  innerIconDiv.id = "inner-icon-div";
+  innerIconDiv.classList =
+    "d-flex flex-column align-items-center justify-content-evenly";
+  iconDiv.append(innerIconDiv);
 
   //title
   const title = document.createElement("em");
   title.textContent = data.current.weather[0].description;
   title.classList =
-    "mt-2 display-3 text-center text-muted text-capitalize overflow-hidden";
-  iconDiv.appendChild(title);
+    "mt-2 display-3 text-center text-capitalize overflow-hidden";
+  innerIconDiv.appendChild(title);
 
   //icon
   const span = document.createElement("span");
   span.id = "current-weather-icon";
   span.classList = `mt-2 mb-3 ${getWeatherIcon(data.current.weather[0].icon)}`;
-  iconDiv.appendChild(span);
+  innerIconDiv.appendChild(span);
 
   const textDiv = document.createElement("div");
   textDiv.id = "text-div";

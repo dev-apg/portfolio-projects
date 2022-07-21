@@ -462,7 +462,7 @@ a.leaflet-popup-close-button {
 #inner-icon-div {
   height: 100%;
   width: 100%;
-  background-color: rgba(253, 253, 253, 0.9);
+  background-color: rgba(253, 253, 253, 0.8);
 }
 #current-weather-icon {
   font-size: 7rem;
