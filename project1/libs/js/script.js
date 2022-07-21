@@ -436,35 +436,6 @@ function progressModal_gettingData(data) {
   progressModal.show();
 }
 
-function progressModal_backForward(data) {
-  const modal = document.querySelector('[data-modal="back-forward"]');
-  const children = modal.children;
-  if (children) {
-    Array.from(children).forEach((child) => {
-      child.remove();
-    });
-  }
-
-  const messageDiv = document.createElement("div");
-  messageDiv.id = "loading-message-div";
-
-  const loadingMessage = document.createElement("p");
-  loadingMessage.id = "loading-message";
-  const messageTextArr = ["Heading to..."];
-  const messageText =
-    messageTextArr[Math.floor(Math.random() * messageTextArr.length)];
-  loadingMessage.textContent = messageText;
-
-  const countryName = document.createElement("h1");
-  countryName.classList = "text-center";
-  countryName.textContent =
-    data.capital === "Nouméa" ? "New Caledonia" : data.countryName;
-
-  modal.append(messageDiv);
-  messageDiv.append(loadingMessage, countryName);
-  backForwardModal.show();
-}
-
 //---------------ProgressModal Errors
 
 function progressModal_userLocationFailed() {
@@ -711,33 +682,32 @@ class LinkedList {
   forward() {
     if (!this.current.next) return;
     removeFocusFromSelect();
+    disableNavButtons();
     clearHTML(this.current.data);
     this.current = this.current.next;
     this.next = this.current.next;
     this.previous = this.current.previous;
-    progressModal_backForward(this.current.data);
     updateHTML(this.current.data);
     setNavButtons();
     setSelected(this.current.data.countryCodeISO2);
-    setTimeout(function () {
-      backForwardModal.hide();
-    }, 1000);
+    // setTimeout(function () {
+    //   backForwardModal.hide();
+    // }, 1000);
   }
   backward() {
     if (!this.current.previous) return;
     removeFocusFromSelect();
-
+    disableNavButtons();
     clearHTML(this.current.data);
     this.current = this.current.previous;
     this.next = this.current.next;
     this.previous = this.current.previous;
-    progressModal_backForward(this.current.data);
     updateHTML(this.current.data);
     setNavButtons();
     setSelected(this.current.data.countryCodeISO2);
-    setTimeout(function () {
-      backForwardModal.hide();
-    }, 1000);
+    // setTimeout(function () {
+    //   backForwardModal.hide();
+    // }, 1000);
   }
 
   recenter() {
@@ -783,11 +753,31 @@ class LinkedList {
 const backButton = document.getElementById("left-bracket");
 const forwardButton = document.getElementById("right-bracket");
 
+function setNavButtons() {
+  if (!ll.current.previous) {
+    backButton.classList.add("disabled");
+  } else {
+    backButton.classList.remove("disabled");
+  }
+  if (!ll.current.next) {
+    forwardButton.classList.add("disabled");
+  } else {
+    forwardButton.classList.remove("disabled");
+  }
+}
+
+function disableNavButtons() {
+  backButton.classList.add("disabled");
+  forwardButton.classList.add("disabled");
+}
+
 backButton.addEventListener("click", function () {
+  disableNavButtons();
   ll.backward();
 });
 
 forwardButton.addEventListener("click", function () {
+  disableNavButtons();
   ll.forward();
 });
 
@@ -2647,19 +2637,6 @@ function getDateTime() {
 function setSelected(countryCodeISO2) {
   const select = document.getElementById("select");
   select.value = countryCodeISO2;
-}
-
-function setNavButtons() {
-  if (!ll.current.previous) {
-    backButton.classList.add("disabled");
-  } else {
-    backButton.classList.remove("disabled");
-  }
-  if (!ll.current.next) {
-    forwardButton.classList.add("disabled");
-  } else {
-    forwardButton.classList.remove("disabled");
-  }
 }
 
 function removeFocusFromSelect() {
