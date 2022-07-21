@@ -1,7 +1,7 @@
 :root {
   --accent-color: #00d8d6;
   /* --darker-grey-reduced-opacity: #1e272ed2; */
-  --dark-transparent: #343a40bf;
+  --dark-transparent: #343a40de;
   /* --blue-text: #36a2eb; */
   --weather-icon-light: #e9de82;
   --weather-icon-dark: #5c606e;
@@ -63,7 +63,7 @@ body {
 .leaflet-bar button {
   color: var(--accent-color);
   background-color: var(--dark-transparent);
-  transition: background-color 0.2s ease-in;
+  transition: background-color 0.3s ease-in;
 }
 
 .leaflet-bar button:hover {
@@ -88,7 +88,7 @@ a.leaflet-control-zoom-in,
 a.leaflet-control-zoom-out {
   color: var(--bs-light);
   background-color: var(--dark-transparent);
-  transition: background-color 0.2s ease-in;
+  transition: background-color 0.3s ease-in;
 }
 
 a.leaflet-control-zoom-in:hover,
@@ -256,7 +256,7 @@ div.input-group {
 .nav-button {
   font-size: 1.2rem;
   width: 50%;
-  max-width: 300px;
+  max-width: 100px;
 }
 
 /* END OF NAV/TITLE BAR CSS */
