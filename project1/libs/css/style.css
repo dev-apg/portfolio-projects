@@ -453,9 +453,17 @@ a.leaflet-popup-close-button {
 
 #icon-div {
   height: 15rem;
-  background-color: aliceblue;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("https://live.staticflickr.com/65535/52231365453_7f0fc6948b_n.jpg");
 }
 
+#inner-icon-div {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(253, 253, 253, 0.9);
+}
 #current-weather-icon {
   font-size: 7rem;
 }
@@ -470,6 +478,14 @@ a.leaflet-popup-close-button {
 .news-image,
 .wiki-thumbnail {
   width: 160px;
+  object-fit: cover;
+  max-height: 117px;
+}
+
+.news-image::after {
+  content: "";
+  clear: both;
+  display: table;
 }
 
 div#wiki-data .lead,

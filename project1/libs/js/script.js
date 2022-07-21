@@ -841,6 +841,7 @@ function countryAPICalls(data) {
         apiOpenWeatherOneCall(data), // openweather 1M calls per month
         apiUnsplashCall(data),
         // apiNewsCall(data),
+        apiBingNewsSearchCall(data),
         getDateTime(),
       ])
     )
@@ -1422,6 +1423,36 @@ function apiNewsCall(data) {
   });
 }
 
+function apiBingNewsSearchCall(data) {
+  if (!data.countryName) {
+    console.log("apiNewsCall - country name not defined");
+    errors.push("news articles");
+    dataMissing = true;
+    incLoadingBar(6.25);
+    return;
+  }
+  return $.ajax({
+    url: "libs/php/api-bingnewssearch.php",
+    type: "POST",
+    dataType: "json",
+    data: {
+      countryname: data.countryName,
+    },
+    success: function (result) {
+      incLoadingBar(6.25);
+      if (result.data.value.length === 0) {
+        errors.push("news articles");
+        dataMissing = true;
+      }
+      data.newsArticles = result.data.value;
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      incLoadingBar(6.25);
+      console.log({ apiNewsCall: jqXHR, textStatus, errorThrown });
+    },
+  });
+}
+
 function apiWindyCall(data) {
   if (!data.countryCodeISO2) {
     console.log("ISO2 not defined");
@@ -1537,7 +1568,8 @@ function updateHTML(data) {
   addWikipediaArticles(data.wikipediaArticles);
 
   //news modal
-  addNewsArticles(data.newsArticles);
+  // addNewsArticles(data.newsArticles);
+  addNewsArticles_Bing(data.newsArticles);
 
   //earthquakes
   addEarthquakes(data);
@@ -1682,6 +1714,49 @@ function addNewsArticles(newsArticles) {
     marginClass === "me-2" ? (marginClass = "ms-2") : (marginClass = "me-2");
     const articleDesc = document.createElement("p");
     articleDesc.textContent = stripHTMLFromString(article.description);
+    link.appendChild(articleDesc);
+  });
+}
+
+function addNewsArticles_Bing(newsArticles) {
+  if (!newsArticles) return;
+  const modal = document.querySelector('[data-modal="news"]');
+  let floatClass = "float-start";
+  let marginClass = "me-3";
+  newsArticles.forEach((article) => {
+    const container = document.createElement("div");
+    container.classList = "container rounded pt-1 pb-1 mb-2 articles-container";
+    modal.appendChild(container);
+    const link = document.createElement("a");
+    container.appendChild(link);
+    link.href = article.url;
+    link.target = "_blank";
+    link.classList = "text-dark";
+    const title = document.createElement("h5");
+    title.textContent = article.name;
+    link.appendChild(title);
+    const dateContainer = document.createElement("p");
+    dateContainer.classList = "fst-italic news-story-date text-muted";
+    link.appendChild(dateContainer);
+    dateContainer.textContent = readableDate(article.datePublished);
+    if (article.image) {
+      const img = document.createElement("img");
+      img.classList = `news-image ${floatClass} ${marginClass}`;
+      img.src = article.image.thumbnail.contentUrl;
+      img.title = article.title;
+      img.alt = article.title;
+      link.appendChild(img);
+    }
+    floatClass === "float-start"
+      ? (floatClass = "float-end")
+      : (floatClass = "float-start");
+    marginClass === "me-3" ? (marginClass = "ms-3") : (marginClass = "me-3");
+    const articleDesc = document.createElement("p");
+    articleDesc.textContent = reduceText(
+      stripHTMLFromString(article.description),
+      450,
+      "[...]"
+    );
     link.appendChild(articleDesc);
   });
 }
@@ -3663,15 +3738,20 @@ function getLongitudeUnit(lon) {
 }
 
 function reduceText(text, maxChar, string = "") {
+  if (text === null) return;
+  const initialLength = text.length;
   if (text === null) return (text = "");
-  let words = 10;
+  let words = 100;
   let newText = text;
   while (newText.length > maxChar) {
     newText = newText.split(" ").slice(0, words).join(" ");
     words--;
   }
-
-  return newText + string;
+  if (newText.length < initialLength) {
+    return newText + string;
+  } else {
+    return newText;
+  }
 }
 
 function makeNumberReadable(num) {
