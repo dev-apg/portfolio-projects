@@ -33,27 +33,27 @@ map.on("drag", function () {
 });
 
 //alternative tiles for when maptiler not available due to free account
-const streetTiles = L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    minZoom: 2,
-    maxZoom: 15,
-  }
-).addTo(map);
-
-// MAPTILER TILES
-// import map tiles
 // const streetTiles = L.tileLayer(
-//   "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+//   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 //   {
 //     attribution:
-//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 //     minZoom: 2,
 //     maxZoom: 15,
 //   }
 // ).addTo(map);
+
+// MAPTILER TILES
+// import map tiles
+const streetTiles = L.tileLayer(
+  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+  {
+    attribution:
+      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    minZoom: 2,
+    maxZoom: 15,
+  }
+).addTo(map);
 
 // const topographicTiles = L.tileLayer(
 //   "https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
@@ -65,15 +65,15 @@ const streetTiles = L.tileLayer(
 //   }
 // ).addTo(map);
 
-// const satelliteTiles = L.tileLayer(
-//   "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
-//   {
-//     attribution:
-//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-//     minZoom: 2,
-//     maxZoom: 15,
-//   }
-// ).addTo(map);
+const satelliteTiles = L.tileLayer(
+  "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
+  {
+    attribution:
+      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    minZoom: 2,
+    maxZoom: 15,
+  }
+).addTo(map);
 
 //----------------------------MAP ICONS
 
@@ -119,7 +119,7 @@ capitalMCG.addTo(featureGroup1);
 camerasMCG.addTo(featureGroup1);
 
 const baseLayers = {
-  // Satellite: satelliteTiles,
+  Satellite: satelliteTiles,
   // Topographic: topographicTiles,
   Street: streetTiles,
 };
@@ -159,9 +159,6 @@ L.control
 
 // Change the position of the Zoom Control to a newly created placeholder.
 map.zoomControl.setPosition("verticalcenterright");
-
-// You can also put other controls in the same placeholder.
-// L.control.scale({ position: "verticalcenterright" }).addTo(map);
 
 // --------------------------------------------------------
 
@@ -835,7 +832,7 @@ function countryAPICalls(data) {
       Promise.allSettled([
         apiVolcanoesCall(data),
         geonamesCitiesCall(data),
-        //openExchangeRatesCall(data), // 1k starting from 6th of the month
+        openExchangeRatesCall(data), // 1k starting from 6th of the month
         geonamesEarthquakesCall(data),
         geonamesWikiCall(data),
         apiOpenWeatherOneCall(data), // openweather 1M calls per month
