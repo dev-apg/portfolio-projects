@@ -33,27 +33,27 @@ map.on("drag", function () {
 });
 
 // alternative tiles for when maptiler not available due to free account
-// const streetTiles = L.tileLayer(
-//   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-//   {
-//     attribution:
-//       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-//     minZoom: 2,
-//     maxZoom: 15,
-//   }
-// ).addTo(map);
-
-// MAPTILER TILES
-// import map tiles
 const streetTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
     attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     minZoom: 2,
     maxZoom: 15,
   }
 ).addTo(map);
+
+// MAPTILER TILES
+// import map tiles
+// const streetTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 2,
+//     maxZoom: 15,
+//   }
+// ).addTo(map);
 
 // const topographicTiles = L.tileLayer(
 //   "https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
@@ -65,15 +65,15 @@ const streetTiles = L.tileLayer(
 //   }
 // ).addTo(map);
 
-const satelliteTiles = L.tileLayer(
-  "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
-  {
-    attribution:
-      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-    minZoom: 2,
-    maxZoom: 15,
-  }
-).addTo(map);
+// const satelliteTiles = L.tileLayer(
+//   "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
+//   {
+//     attribution:
+//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//     minZoom: 2,
+//     maxZoom: 15,
+//   }
+// ).addTo(map);
 
 //----------------------------MAP ICONS
 
@@ -106,11 +106,56 @@ let cameraIcon = L.icon({
 
 const featureGroup1 = L.featureGroup().addTo(map);
 
-const citiesMCG = L.markerClusterGroup();
-const earthquakesMCG = L.markerClusterGroup();
-const volcanoesMCG = L.markerClusterGroup();
-const capitalMCG = L.markerClusterGroup();
-const camerasMCG = L.markerClusterGroup();
+const citiesMCG = L.markerClusterGroup({
+  maxClusterRadius: 50,
+  polygonOptions: {
+    fillColor: "green",
+    color: "green",
+    weight: 0.5,
+    opacity: 1,
+    fillOpacity: 0.2,
+  },
+});
+const earthquakesMCG = L.markerClusterGroup({
+  maxClusterRadius: 50,
+  polygonOptions: {
+    fillColor: "orange",
+    color: "orange",
+    weight: 0.5,
+    opacity: 1,
+    fillOpacity: 0.2,
+  },
+});
+const volcanoesMCG = L.markerClusterGroup({
+  maxClusterRadius: 50,
+  polygonOptions: {
+    fillColor: "blue",
+    color: "blue",
+    weight: 0.5,
+    opacity: 1,
+    fillOpacity: 0.2,
+  },
+});
+const capitalMCG = L.markerClusterGroup({
+  maxClusterRadius: 50,
+  polygonOptions: {
+    fillColor: "red",
+    color: "red",
+    weight: 0.5,
+    opacity: 1,
+    fillOpacity: 0.2,
+  },
+});
+const camerasMCG = L.markerClusterGroup({
+  maxClusterRadius: 50,
+  polygonOptions: {
+    fillColor: "purple",
+    color: "purple",
+    weight: 0.5,
+    opacity: 1,
+    fillOpacity: 0.2,
+  },
+});
 
 citiesMCG.addTo(featureGroup1);
 earthquakesMCG.addTo(featureGroup1);
@@ -119,7 +164,7 @@ capitalMCG.addTo(featureGroup1);
 camerasMCG.addTo(featureGroup1);
 
 const baseLayers = {
-  Satellite: satelliteTiles,
+  // Satellite: satelliteTiles,
   // Topographic: topographicTiles,
   Street: streetTiles,
 };
@@ -832,13 +877,13 @@ function countryAPICalls(data) {
       Promise.allSettled([
         apiVolcanoesCall(data),
         geonamesCitiesCall(data),
-        openExchangeRatesCall(data), // 1k starting from 6th of the month
+        // openExchangeRatesCall(data), // 1k starting from 6th of the month
         geonamesEarthquakesCall(data),
         geonamesWikiCall(data),
         apiOpenWeatherOneCall(data), // openweather 1M calls per month
         apiUnsplashCall(data),
         // apiNewsCall(data),
-        apiBingNewsSearchCall(data),
+        // apiBingNewsSearchCall(data),
         getDateTime(),
       ])
     )
@@ -934,11 +979,7 @@ async function getGeoJSONData(data) {
         return;
       }
       data.geoJSON = result.data;
-      data.geojsonCountryOutline = L.geoJSON(result.data, {
-        style: function (feature) {
-          return { color: "rgba(15, 188, 249, 0.548)" };
-        },
-      });
+      data.geojsonCountryOutline = L.geoJSON(result.data);
       data.boundingBox = data.geojsonCountryOutline.getBounds();
     },
     error: function (jqXHR, textStatus, errorThrown) {
@@ -1803,9 +1844,9 @@ function addWikipediaArticles(wikipediaArticles) {
 function addGeoJSONOutline(geoJSON) {
   if (!geoJSON) return;
   const outline = L.geoJSON(geoJSON, {
-    style: function (feature) {
-      return { color: "rgba(13, 110, 253, 0.5)" };
-    },
+    color: "#ce4f97",
+    weight: 2,
+    fillOpacity: 0.1,
   }).addTo(featureGroup1);
 }
 
