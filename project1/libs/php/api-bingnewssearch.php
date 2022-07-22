@@ -10,7 +10,6 @@ $executionStartTime = microtime(true);
 $today = date("Y-m-d");
 $country = urlencode($_REQUEST['countryname']);
 $url = "https://bing-news-search1.p.rapidapi.com/news/search?q={$country}&count=20&freshness=Week&textFormat=Raw&safeSearch=Moderate";
-// $url = "https://newsdata.io/api/1/news?apikey=pub_94341406609c9ece335b7716c05bf58e7cf0&q={$country}&language=en";
 $headers = array("X-BingApis-SDK: true",
 "X-RapidAPI-Host: bing-news-search1.p.rapidapi.com",
 "X-RapidAPI-Key: f5ca45876bmshb7c392f2aed5607p133d90jsnf97cb03d1862");

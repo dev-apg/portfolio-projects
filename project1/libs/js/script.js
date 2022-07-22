@@ -649,13 +649,6 @@ const citiesModal = new bootstrap.Modal(
   }
 );
 
-const backForwardModal = new bootstrap.Modal(
-  document.getElementById("back-forwardModal"),
-  {
-    keyboard: false,
-  }
-);
-
 // ---------------------DATA NODE AND LINKED LIST-------//
 // Node that contains country data for linked list
 //DataNode - formerly CountryDataNode
@@ -1851,54 +1844,22 @@ function addGeoJSONOutline(geoJSON) {
 }
 
 function createCurrentForecast(data, offset) {
-  if (!data) return;
   const modal = document.querySelector('[data-modal="weather"]');
+  if (!data) {
+    modal.replaceChildren();
+
+    return;
+  }
+
   const currentFragment = new DocumentFragment();
 
-  const accordion = document.createElement("div");
-  accordion.id = "weather-accordion";
-  accordion.classList = "accordion accordion-flush";
-
-  //outer div
-  const accordionItemDiv = document.createElement("div");
-  accordion.appendChild(accordionItemDiv);
-  accordionItemDiv.classList = "accordion-item";
-
-  // h2 header
-  const header = document.createElement("h2");
-  accordionItemDiv.appendChild(header);
-  header.classList = "accordion-header";
-  header.id = "currentWeather-accordion-header";
-
-  const button = document.createElement("button");
-  header.appendChild(button);
-  const buttonName = document.createTextNode("Current Weather");
-  button.appendChild(buttonName);
-  button.setAttribute("class", "accordion-button");
-  button.setAttribute("type", "button");
-  button.setAttribute("data-bs-toggle", "collapse");
-  button.setAttribute("data-bs-target", `#currentWeather-accordion`);
-  button.setAttribute("aria-expanded", "true");
-  button.setAttribute("aria-controls", `currentWeather-accordion`);
-
-  const accordionCollapseDiv = document.createElement("div");
-  accordionItemDiv.appendChild(accordionCollapseDiv);
-  accordionCollapseDiv.classList = "accordion-collapse collapse show";
-  accordionCollapseDiv.id = `currentWeather-accordion`;
-  accordionCollapseDiv.setAttribute(
-    "aria-labelledby",
-    `currentWeather-accordion-header`
-  );
-  accordionCollapseDiv.setAttribute("data-bs-parent", `#weather-accordion`);
-
-  const accordionBody = document.createElement("div");
-  accordionBody.classList = "accordion-body";
-  accordionCollapseDiv.appendChild(accordionBody);
+  const container = document.createElement("div");
+  container.id = "weather-container";
+  container.classList = "container mt-2";
 
   //card body
   const cardBody = document.createElement("div");
   cardBody.classList = "shadow-sm border";
-  accordionBody.appendChild(cardBody);
 
   const iconDiv = document.createElement("div");
   iconDiv.id = "icon-div";
@@ -1941,90 +1902,23 @@ function createCurrentForecast(data, offset) {
   innerHTML += `<span class="">Feels like </span><span class="lead">${data.current.feels_like}</span><span class="text-muted">°C</span><br>`;
   innerHTML += `<span class="">Humidity </span><span class="lead">${data.current.humidity}</span><span class="text-muted">%</span>`;
   cardText.innerHTML = innerHTML;
-
-  //-------------table
-  // const table = document.createElement("table");
-  // table.classList = "table table-borderless";
-  // let colspan = 0;
-  // let classList = "w-50";
-  // addRowWithUnits_currentWeather(
-  //   "Humidity",
-  //   `${data.current.humidity}`,
-  //   "%",
-  //   table,
-  //   colspan,
-  //   classList
-  // );
-  // addRowWithUnits_currentWeather(
-  //   "Feels like",
-  //   `${data.current.feels_like}`,
-  //   "°C",
-  //   table
-  // );
-  // addRowWithUnits_currentWeather(
-  //   "Wind",
-  //   `${data.current.wind_speed}`,
-  //   `m/s`,
-  //   table
-  // );
-  // addRowWithUnits_currentWeather("Temp", `${data.current.temp}`, `°C`, table);
-
-  // const caption = document.createElement("caption");
-  // caption.textContent = data.current.weather[0].description;
-  // caption.classList = "text-center text-capitalize";
-  // table.prepend(caption);
-  // cardBody.append(table);
-  currentFragment.append(accordion);
+  container.append(cardBody);
+  currentFragment.append(container);
   modal.replaceChildren(currentFragment);
 }
 
 function create48hrForecast(data, offset) {
   if (!data) return;
 
-  //outer div one
-  const accordionContainer = document.getElementById("weather-accordion");
+  const modal = document.querySelector('[data-modal="weather"]');
 
-  //outer div two
-  const accordionItemDiv = document.createElement("div");
-  accordionItemDiv.classList = "accordion-item";
+  // const title = document.createElement("h3");
+  // title.classList = "mt-5 mb-4 text-center";
+  // title.textContent = "48hr Forecast";
 
-  // h2 header
-  const header = document.createElement("h2");
-  accordionItemDiv.appendChild(header);
-  header.classList = "accordion-header";
-  header.id = "48hr-accordion-header";
-
-  //create button
-  const button = document.createElement("button");
-  header.appendChild(button);
-  const buttonName = document.createTextNode("48hr Forecast");
-  button.appendChild(buttonName);
-  button.setAttribute("class", "accordion-button collapsed");
-  button.setAttribute("type", "button");
-  button.setAttribute("data-bs-toggle", "collapse");
-  button.setAttribute("data-bs-target", `#weather48hr-accordion`);
-  button.setAttribute("aria-expanded", "true");
-  button.setAttribute("aria-controls", `weather48hr-accordion`);
-
-  const accordionCollapseDiv = document.createElement("div");
-  accordionItemDiv.appendChild(accordionCollapseDiv);
-  accordionCollapseDiv.classList = "accordion-collapse collapse";
-  accordionCollapseDiv.id = `weather48hr-accordion`;
-  accordionCollapseDiv.setAttribute(
-    "aria-labelledby",
-    `weather48hr-accordion-header`
-  );
-  accordionCollapseDiv.setAttribute("data-bs-parent", `#weather-accordion`);
-
-  const accordionBody = document.createElement("div");
-  accordionBody.classList = "accordion-body";
-  accordionCollapseDiv.appendChild(accordionBody);
-
-  // const container = document.getElementById("weather-data");
   const table = document.createElement("table");
-  table.classList = "table table-borderless blue-striped";
+  table.classList = "mt-5 table table-borderless blue-striped";
   table.style.color = "blue-text";
-  accordionBody.appendChild(table);
 
   for (let i = 0; i < data.hourly.length; i++) {
     const hour = data.hourly[i];
@@ -2047,58 +1941,23 @@ function create48hrForecast(data, offset) {
     );
   }
 
-  // const caption = document.createElement("caption");
-  // caption.textContent = "48hr forecast";
-  // caption.classList = "text-center";
-  // table.prepend(caption);
-
   const fourtyEightHourFragment = new DocumentFragment();
-  fourtyEightHourFragment.append(accordionItemDiv);
-  accordionContainer.append(fourtyEightHourFragment);
+  fourtyEightHourFragment.append(table);
+  modal.append(fourtyEightHourFragment);
 }
 
 function create8DayForecast(data, offset) {
   if (!data) return;
-  const accordionContainer = document.getElementById("weather-accordion");
 
-  const accordionItemDiv = document.createElement("div");
-  accordionContainer.appendChild(accordionItemDiv);
-  accordionItemDiv.classList = "accordion-item";
+  const modal = document.querySelector('[data-modal="weather"]');
 
-  // h2 header
-  const header = document.createElement("h2");
-  accordionItemDiv.appendChild(header);
-  header.classList = "accordion-header";
-  header.id = "currentWeather-accordion-header";
-
-  const button = document.createElement("button");
-  header.appendChild(button);
-  const buttonName = document.createTextNode("Eight Day Forecast");
-  button.appendChild(buttonName);
-  button.setAttribute("class", "accordion-button collapsed");
-  button.setAttribute("type", "button");
-  button.setAttribute("data-bs-toggle", "collapse");
-  button.setAttribute("data-bs-target", `#eightDay-accordion`);
-  button.setAttribute("aria-expanded", "true");
-  button.setAttribute("aria-controls", `eightDay-accordion`);
-
-  const accordionCollapseDiv = document.createElement("div");
-  accordionItemDiv.appendChild(accordionCollapseDiv);
-  accordionCollapseDiv.classList = "accordion-collapse collapse";
-  accordionCollapseDiv.id = `eightDay-accordion`;
-  accordionCollapseDiv.setAttribute(
-    "aria-labelledby",
-    `eightDay-accordion-header`
-  );
-  accordionCollapseDiv.setAttribute("data-bs-parent", `#weather-accordion`);
-
-  const accordionBody = document.createElement("div");
-  accordionBody.classList = "accordion-body";
-  accordionCollapseDiv.appendChild(accordionBody);
+  // const title = document.createElement("h3");
+  // title.classList = "mt-5 mb-4 text-center";
+  // title.textContent = "Eight Day Forecast";
 
   const table = document.createElement("table");
-  table.classList = "table table-borderless blue-striped";
-  accordionBody.appendChild(table);
+  table.classList = "mt-5 table table-borderless blue-striped";
+
   data.daily.forEach((dayForecast) => {
     let textEnd = false;
     let day = forecastDay(dayForecast.dt, offset);
@@ -2111,11 +1970,11 @@ function create8DayForecast(data, offset) {
       dayForecast.weather[0].icon,
       table
     );
-
-    const eightDayFragment = new DocumentFragment();
-    eightDayFragment.append(accordionItemDiv);
-    accordionContainer.append(eightDayFragment);
   });
+
+  const eightDayFragment = new DocumentFragment();
+  eightDayFragment.append(table);
+  modal.append(eightDayFragment);
 }
 
 function createCovidDeathsTable(data) {
