@@ -33,27 +33,27 @@ map.on("drag", function () {
 });
 
 // alternative tiles for when maptiler not available due to free account
-const streetTiles = L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    minZoom: 2,
-    maxZoom: 15,
-  }
-).addTo(map);
-
-// MAPTILER TILES
-// import map tiles
 // const streetTiles = L.tileLayer(
-//   "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+//   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
 //   {
 //     attribution:
-//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+//       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 //     minZoom: 2,
 //     maxZoom: 15,
 //   }
 // ).addTo(map);
+
+// MAPTILER TILES
+// import map tiles
+const streetTiles = L.tileLayer(
+  "https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
+  {
+    attribution:
+      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    minZoom: 2,
+    maxZoom: 15,
+  }
+).addTo(map);
 
 // const topographicTiles = L.tileLayer(
 //   "https://api.maptiler.com/maps/topographique/{z}/{x}/{y}.png?key=I6Fjse9RiOJDIsWoxSx2",
@@ -65,15 +65,15 @@ const streetTiles = L.tileLayer(
 //   }
 // ).addTo(map);
 
-// const satelliteTiles = L.tileLayer(
-//   "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
-//   {
-//     attribution:
-//       '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
-//     minZoom: 2,
-//     maxZoom: 15,
-//   }
-// ).addTo(map);
+const satelliteTiles = L.tileLayer(
+  "https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=I6Fjse9RiOJDIsWoxSx2",
+  {
+    attribution:
+      '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    minZoom: 2,
+    maxZoom: 15,
+  }
+).addTo(map);
 
 //----------------------------MAP ICONS
 
@@ -119,7 +119,7 @@ capitalMCG.addTo(featureGroup1);
 camerasMCG.addTo(featureGroup1);
 
 const baseLayers = {
-  // Satellite: satelliteTiles,
+  Satellite: satelliteTiles,
   // Topographic: topographicTiles,
   Street: streetTiles,
 };
@@ -1656,7 +1656,7 @@ function addGeneralInfoData(data) {
   addLatLngRow("Latitude/Longitude", data.latitude, data.longitude, table);
   addAreaRow("Land Area", data.area.toLocaleString(), table);
   // addWeatherRow("Current Weather", data.weather.current.temp, data.weather.current.weather[0].icon, table);
-  addRow("GMT offset", data.offset_string, table);
+  addRow("GMT offset", data.offset_string, table, "", "w-50");
   addLocalTimeRow("Local date and Time", data.localTime, table);
   data.exchangeRate && addRow("$1 USD", data.exchangeRate.toFixed(2), table);
   addRowWithUnits(
