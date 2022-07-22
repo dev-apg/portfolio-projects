@@ -1571,10 +1571,11 @@ function updateHTML(data) {
   //earthquakes
   addEarthquakes(data);
 
-  ll.recenter();
+  // ll.recenter();
 
   // cities modal
   addCities(data);
+  ll.recenter();
 }
 
 function addEarthquakes(data) {
